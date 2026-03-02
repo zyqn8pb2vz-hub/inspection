@@ -554,13 +554,10 @@ body {
     </div>
     <div class="form-group">
       <label>担当者</label>
-      <select id="staffName">
-        <option value="">選択してください</option>
-        <option value="竹田原秀央">竹田原秀央</option>
-        <option value="矢島徹">矢島徹</option>
-        <option value="野澤建友">野澤建友</option>
-        <option value="畑裕作">畑裕作</option>
-      </select>
+      <div class="input-wrapper">
+        <input type="text" id="staffName" placeholder="担当者名を入力（初回のみ）">
+      </div>
+      <div style="font-size:11px;color:#7f8c8d;margin-top:3px;">※ 初回入力後は自動で記憶されます</div>
     </div>
     <div class="form-group">
       <label>お客様名</label>
@@ -658,6 +655,7 @@ body {
   ];
   var CHECK_ITEMS = ["ココチＥフード","給湯器","床下","天井裏"];
   var STORAGE_KEY = "afterInspection_v3";
+  var STAFF_KEY = "afterInspection_staff";
   var MAX_ISSUES = 30;
 
   /* ===== State ===== */
@@ -709,9 +707,12 @@ body {
       document.getElementById('resetModal').classList.remove('active');
     });
     addClick('btnResetYes', function() {
+      var savedStaff = appData.staffName; // Keep staff name
       try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
       appData = getDefaultData();
+      appData.staffName = savedStaff; // Restore staff name
       renderAll();
+      saveData();
       document.getElementById('resetModal').classList.remove('active');
     });
     addClick('btnAddIssue', addIssue);
@@ -806,6 +807,10 @@ body {
     appData.inspectionType = gv('inspectionType');
     appData.branchName = gv('branchName');
     appData.staffName = gv('staffName');
+    // Save staff name separately so it persists across resets
+    if (appData.staffName) {
+      try { localStorage.setItem(STAFF_KEY, appData.staffName); } catch(e) {}
+    }
     appData.customerName = gv('customerName');
     appData.address = gv('address');
     appData.issues.forEach(function(issue, i) {
@@ -832,6 +837,11 @@ body {
           if (!appData.checkItems[i] || appData.checkItems[i].name !== name)
             appData.checkItems[i] = { name: name, photo: null, comment: "" };
         });
+      }
+      // Load staff name from separate storage if not in main data
+      if (!appData.staffName) {
+        var savedStaff = localStorage.getItem(STAFF_KEY);
+        if (savedStaff) appData.staffName = savedStaff;
       }
     } catch(e) {}
   }
