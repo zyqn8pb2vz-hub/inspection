@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>アフター点検報告書</title>
+<style>
+/* ============================================================
+   SCREEN STYLES
+   ============================================================ */
+:root {
+  --primary: #1a5276;
+  --primary-light: #2980b9;
+  --accent: #e67e22;
+  --bg: #f0f3f6;
+  --card: #ffffff;
+  --text: #2c3e50;
+  --text-light: #7f8c8d;
+  --border: #dce1e6;
+  --danger: #e74c3c;
+  --success: #27ae60;
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 100px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* App Header */
+.app-header {
+background: linear-gradient(135deg, var(–primary), var(–primary-light));
+color: white;
+padding: 16px 20px;
+text-align: center;
+position: sticky;
+top: 0;
+z-index: 100;
+box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+.app-header h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.app-header .sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+
+/* Sections */
+.section {
+background: var(–card);
+margin: 12px;
+border-radius: var(–radius);
+box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+overflow: hidden;
+}
+.section-title {
+background: var(–primary);
+color: white;
+padding: 10px 16px;
+font-size: 14px;
+font-weight: 600;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.section-body { padding: 16px; }
+
+/* Forms */
+.form-group { margin-bottom: 14px; }
+.form-group label {
+display: block;
+font-size: 13px;
+font-weight: 600;
+color: var(–text);
+margin-bottom: 5px;
+}
+.form-group select, .form-group input, .form-group textarea {
+width: 100%;
+padding: 10px 12px;
+border: 1.5px solid var(–border);
+border-radius: 8px;
+font-size: 16px;
+background: #fafbfc;
+color: var(–text);
+-webkit-appearance: none;
+appearance: none;
+}
+.form-group select {
+background: #fafbfc url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%237f8c8d’ stroke-width=‘2’ fill=‘none’/%3E%3C/svg%3E”) no-repeat right 12px center;
+padding-right: 36px;
+}
+.form-group textarea { resize: vertical; min-height: 60px; }
+.input-wrapper { position: relative; }
+.input-wrapper input, .input-wrapper textarea { padding-right: 40px; }
+.voice-btn {
+position: absolute;
+right: 8px;
+top: 50%;
+transform: translateY(-50%);
+background: none;
+border: none;
+font-size: 20px;
+cursor: pointer;
+padding: 4px;
+color: var(–primary-light);
+touch-action: manipulation;
+}
+
+/* Buttons */
+.btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+padding: 10px 18px;
+border: none;
+border-radius: 8px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+-webkit-user-select: none;
+user-select: none;
+touch-action: manipulation;
+}
+.btn:active { opacity: 0.85; transform: scale(0.98); }
+.btn-primary { background: var(–primary-light); color: white; }
+.btn-accent { background: var(–accent); color: white; }
+.btn-danger { background: var(–danger); color: white; }
+.btn-success { background: var(–success); color: white; }
+.btn-outline { background: transparent; color: var(–primary-light); border: 1.5px solid var(–primary-light); }
+.btn-block { width: 100%; }
+.btn-lg { padding: 14px 24px; font-size: 16px; border-radius: 10px; }
+
+/* Photo slots */
+.photo-slot {
+width: 100%;
+aspect-ratio: 4/3;
+background: #eef1f5;
+border: 2px dashed var(–border);
+border-radius: 8px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+position: relative;
+overflow: hidden;
+touch-action: manipulation;
+cursor: pointer;
+}
+.photo-slot img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 6px;
+}
+.photo-slot .placeholder {
+text-align: center;
+color: var(–text-light);
+pointer-events: none;
+}
+.photo-slot .placeholder .icon { font-size: 32px; margin-bottom: 4px; }
+.photo-slot .placeholder .text { font-size: 12px; }
+.photo-slot .remove-photo {
+position: absolute;
+top: 6px; right: 6px;
+width: 30px; height: 30px;
+background: rgba(231,76,60,0.9);
+color: white;
+border: none;
+border-radius: 50%;
+font-size: 16px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 2;
+touch-action: manipulation;
+}
+.photo-pair {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 8px;
+margin-bottom: 8px;
+}
+.photo-label {
+font-size: 11px;
+text-align: center;
+color: var(–text-light);
+margin-bottom: 4px;
+}
+
+/* Issue cards */
+.issue-card {
+background: #f8f9fb;
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 12px;
+margin-bottom: 12px;
+position: relative;
+}
+.issue-card .issue-number {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 28px; height: 28px;
+background: var(–accent);
+color: white;
+border-radius: 50%;
+font-size: 13px;
+font-weight: 700;
+margin-bottom: 8px;
+}
+.issue-card .delete-issue {
+position: absolute;
+top: 10px; right: 10px;
+background: none;
+border: none;
+color: var(–danger);
+font-size: 20px;
+cursor: pointer;
+padding: 4px;
+touch-action: manipulation;
+}
+
+/* Check item cards */
+.check-item-card {
+background: #f0faf4;
+border: 1px solid #b8e6cc;
+border-radius: 10px;
+padding: 12px;
+margin-bottom: 12px;
+}
+.check-item-card .item-title {
+font-size: 14px;
+font-weight: 700;
+color: var(–success);
+margin-bottom: 8px;
+}
+
+/* Add issue button */
+.new-issue-btn {
+background: white;
+border: 2px dashed var(–accent);
+border-radius: 10px;
+padding: 16px;
+width: 100%;
+text-align: center;
+color: var(–accent);
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+touch-action: manipulation;
+}
+.new-issue-btn:active { background: #fef5ec; }
+
+.pdf-section { padding: 20px 12px; text-align: center; }
+
+/* Modals */
+.modal-overlay {
+display: none;
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: rgba(0,0,0,0.6);
+z-index: 1000;
+align-items: center;
+justify-content: center;
+padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+background: white;
+border-radius: 16px;
+padding: 24px;
+max-width: 340px;
+width: 100%;
+text-align: center;
+}
+.modal-box h3 { margin-bottom: 12px; font-size: 16px; }
+.modal-box p { font-size: 14px; color: var(–text-light); margin-bottom: 20px; }
+.modal-buttons { display: flex; gap: 10px; }
+.modal-buttons .btn { flex: 1; }
+
+/* Preview */
+.preview-overlay {
+display: none;
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: black;
+z-index: 2000;
+flex-direction: column;
+}
+.preview-overlay.active { display: flex; }
+.preview-image-container {
+flex: 1;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+padding: 10px;
+}
+.preview-image-container img {
+max-width: 100%;
+max-height: 100%;
+object-fit: contain;
+border-radius: 8px;
+}
+.preview-controls {
+background: rgba(0,0,0,0.85);
+padding: 20px 30px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 20px;
+}
+
+/* Status bar */
+.status-bar {
+position: fixed;
+bottom: 0; left: 0; right: 0;
+background: white;
+border-top: 1px solid var(–border);
+padding: 8px 16px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+z-index: 50;
+font-size: 12px;
+color: var(–text-light);
+}
+.status-bar .save-status { display: flex; align-items: center; gap: 4px; }
+.status-bar .save-dot { width: 8px; height: 8px; border-radius: 50%; background: var(–success); }
+
+/* Hidden */
+.hidden-input { position:absolute; left:-9999px; opacity:0; pointer-events:none; }
+
+/* ============================================================
+PRINT PDF LAYOUT
+The #printArea is hidden on screen, shown only when printing.
+============================================================ */
+#printArea { display: none; }
+
+@media print {
+/* Hide everything except the print area */
+body > *:not(#printArea) { display: none !important; }
+#printArea {
+display: block !important;
+margin: 0;
+padding: 0;
+}
+body {
+background: white;
+padding: 0;
+margin: 0;
+-webkit-print-color-adjust: exact;
+print-color-adjust: exact;
+}
+.print-page {
+page-break-after: always;
+width: 100%;
+min-height: 100vh;
+padding: 12mm 15mm;
+position: relative;
+}
+.print-page:last-child { page-break-after: auto; }
+.print-page-footer {
+position: absolute;
+bottom: 8mm;
+left: 0;
+right: 0;
+text-align: center;
+font-size: 9px;
+color: #999;
+}
+
+/* Cover */
+.print-cover-header {
+background: linear-gradient(135deg,#1a5276,#2980b9) !important;
+padding: 20px;
+text-align: center;
+border-radius: 4px;
+margin-bottom: 20px;
+}
+.print-cover-header h1 { color: white; font-size: 24px; letter-spacing: 2px; margin-bottom: 4px; }
+.print-cover-header .sub { color: rgba(255,255,255,0.85); font-size: 13px; }
+
+.print-info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+.print-info-table th {
+background: #f0f3f6 !important;
+padding: 8px 12px;
+text-align: left;
+font-size: 12px;
+width: 90px;
+border: 1px solid #dce1e6;
+font-weight: 700;
+}
+.print-info-table td {
+padding: 8px 12px;
+font-size: 12px;
+border: 1px solid #dce1e6;
+}
+.print-exterior-photo { text-align: center; margin-top: 10px; }
+.print-exterior-photo img { max-width: 75%; max-height: 300px; border: 1px solid #ddd; border-radius: 4px; }
+.print-exterior-photo h3 { font-size: 13px; margin-bottom: 8px; color: #1a5276; }
+
+/* Issue list */
+.print-section-title {
+padding: 8px 14px;
+font-size: 14px;
+font-weight: 700;
+border-radius: 4px 4px 0 0;
+color: white;
+margin-bottom: 0;
+}
+.print-section-title.orange { background: #e67e22 !important; }
+.print-section-title.green { background: #27ae60 !important; }
+
+.print-issue-table { width: 100%; border-collapse: collapse; }
+.print-issue-table th {
+background: #f0f3f6 !important;
+padding: 6px 8px;
+font-size: 10px;
+border: 1px solid #dce1e6;
+text-align: left;
+}
+.print-issue-table td {
+padding: 5px 8px;
+font-size: 10px;
+border: 1px solid #dce1e6;
+vertical-align: top;
+line-height: 1.4;
+}
+
+/* Issue photo pages */
+.print-issue-slot {
+margin-bottom: 6px;
+min-height: 30%;
+}
+.print-issue-badge {
+display: inline-block;
+background: #e67e22 !important;
+color: white;
+width: 22px; height: 22px;
+line-height: 22px;
+text-align: center;
+border-radius: 50%;
+font-size: 11px;
+font-weight: 700;
+margin-bottom: 4px;
+}
+.print-photo-row {
+display: flex;
+gap: 8px;
+margin-bottom: 4px;
+}
+.print-photo-box { flex: 1; }
+.print-photo-box img {
+width: 100%;
+height: auto;
+max-height: 160px;
+object-fit: cover;
+border: 1px solid #ddd;
+border-radius: 2px;
+}
+.print-photo-box .no-photo {
+width: 100%;
+height: 120px;
+background: #f5f5f5;
+border: 1px dashed #ccc;
+border-radius: 2px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: #aaa;
+font-size: 10px;
+}
+.print-photo-box-label { font-size: 9px; color: #666; margin-bottom: 2px; }
+.print-issue-info { font-size: 10px; line-height: 1.4; }
+.print-issue-info .loc { color: #1a5276; font-weight: 700; }
+.print-issue-separator { border-top: 1px dashed #ddd; margin: 4px 0; }
+
+/* Check items */
+.print-check-item {
+margin-bottom: 14px;
+padding-bottom: 10px;
+border-bottom: 1px dashed #ddd;
+}
+.print-check-item:last-child { border-bottom: none; }
+.print-check-title {
+background: #f0faf4 !important;
+border: 1px solid #b8e6cc;
+padding: 6px 10px;
+font-size: 12px;
+font-weight: 700;
+color: #27ae60;
+border-radius: 3px;
+margin-bottom: 8px;
+}
+.print-check-content { display: flex; gap: 12px; }
+.print-check-photo { width: 180px; flex-shrink: 0; }
+.print-check-photo img {
+width: 100%;
+max-height: 135px;
+object-fit: cover;
+border: 1px solid #ddd;
+border-radius: 2px;
+}
+.print-check-photo .no-photo {
+width: 100%;
+height: 100px;
+background: #f5f5f5;
+border: 1px dashed #ccc;
+border-radius: 2px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: #aaa;
+font-size: 10px;
+}
+.print-check-comment { flex: 1; font-size: 11px; line-height: 1.5; }
+.print-check-comment .clabel { font-size: 10px; color: #666; font-weight: 600; margin-bottom: 3px; }
+}
+</style>
+
+</head>
+<body>
+
+<header class="app-header">
+  <h1>アフター点検報告書</h1>
+  <div class="sub">住宅アフター点検システム</div>
+</header>
+
+<!-- Reset Button -->
+
+<div style="padding:12px 12px 0;">
+  <button class="btn btn-danger btn-block" id="btnReset">✦ 新規入力を開始する</button>
+</div>
+
+<!-- Basic Info Section -->
+
+<div class="section">
+  <div class="section-title">📋 基本情報</div>
+  <div class="section-body">
+    <div class="form-group">
+      <label>点検種別</label>
+      <select id="inspectionType">
+        <option value="6ヶ月">6ヶ月</option>
+        <option value="2年">2年</option>
+        <option value="臨時">臨時</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>支社名</label>
+      <select id="branchName">
+        <option value="埼玉支社" selected>埼玉支社</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>担当者</label>
+      <select id="staffName">
+        <option value="">選択してください</option>
+        <option value="竹田原秀央">竹田原秀央</option>
+        <option value="矢島徹">矢島徹</option>
+        <option value="野澤建友">野澤建友</option>
+        <option value="畑裕作">畑裕作</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>お客様名</label>
+      <div class="input-wrapper">
+        <input type="text" id="customerName" placeholder="お客様名を入力">
+        <button class="voice-btn" data-voice-target="customerName">🎤</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>住所</label>
+      <div class="input-wrapper">
+        <input type="text" id="address" placeholder="住所を入力">
+        <button class="voice-btn" data-voice-target="address">🎤</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>外観写真</label>
+      <div class="photo-slot" id="exteriorPhotoSlot" data-photo-target="exterior">
+        <div class="placeholder">
+          <div class="icon">📷</div>
+          <div class="text">タップして外観写真を撮影</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Issues Section -->
+
+<div class="section">
+  <div class="section-title">🔍 指摘箇所 <span id="issueCount" style="margin-left:auto;font-size:12px;opacity:0.8">0件</span></div>
+  <div class="section-body">
+    <div id="issuesContainer"></div>
+    <button class="new-issue-btn" id="btnAddIssue">＋ 指摘箇所を追加</button>
+  </div>
+</div>
+
+<!-- Check Items Section -->
+
+<div class="section">
+  <div class="section-title">✅ 検査項目</div>
+  <div class="section-body" id="checkItemsContainer"></div>
+</div>
+
+<!-- PDF Output -->
+
+<div class="pdf-section">
+  <button class="btn btn-success btn-lg btn-block" id="btnPDF">📄 ＰＤＦ出力</button>
+  <p style="font-size:11px;color:#999;margin-top:8px;">印刷画面が開きます →「プリント」→ 左下の共有ボタンから「PDFとして保存」</p>
+</div>
+
+<!-- Reset Modal -->
+
+<div class="modal-overlay" id="resetModal">
+  <div class="modal-box">
+    <h3>新規入力を開始しますか？</h3>
+    <p>入力中のデータはすべてリセットされます。この操作は取り消せません。</p>
+    <div class="modal-buttons">
+      <button class="btn btn-outline" id="btnResetNo">いいえ</button>
+      <button class="btn btn-danger" id="btnResetYes">はい</button>
+    </div>
+  </div>
+</div>
+
+<!-- Preview Modal -->
+
+<div class="preview-overlay" id="previewOverlay">
+  <div class="preview-image-container">
+    <img id="previewImage" src="" alt="プレビュー">
+  </div>
+  <div class="preview-controls">
+    <button class="btn btn-danger btn-lg" id="btnRetake">撮り直す</button>
+    <button class="btn btn-success btn-lg" id="btnConfirm">OK</button>
+  </div>
+</div>
+
+<!-- Status Bar -->
+
+<div class="status-bar">
+  <div class="save-status"><div class="save-dot"></div> 自動保存済</div>
+  <div id="dateDisplay"></div>
+</div>
+
+<!-- Hidden file input & canvas -->
+
+<input type="file" accept="image/*" capture="environment" class="hidden-input" id="photoFileInput">
+<canvas id="photoCanvas" style="display:none;"></canvas>
+
+<!-- Print Area (hidden on screen, shown only on print) -->
+
+<div id="printArea"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ===== Constants ===== */
+  var LOCATIONS = [
+    "外構","屋根","雨樋","外壁","床下","玄関外ポーチ","玄関内ポーチ",
+    "ホール（A）","ホール(B)","階段","LDK","キッチン","洗面所","UB",
+    "トイレ（A）","トイレ(B)","和室","洋室(A)","洋室(B)","洋室(C)",
+    "洋室(D)","洋室(E)","小屋裏収納","バルコニー","青空リビング","極楽加湿","Z空調"
+  ];
+  var CHECK_ITEMS = ["ココチＥフード","給湯器","床下","天井裏"];
+  var STORAGE_KEY = "afterInspection_v3";
+  var MAX_ISSUES = 30;
+
+  /* ===== State ===== */
+  var appData = getDefaultData();
+  var currentPhotoTarget = null;
+  var pendingImageData = null;
+
+  function getDefaultData() {
+    return {
+      inspectionType: "6ヶ月",
+      branchName: "埼玉支社",
+      staffName: "",
+      customerName: "",
+      address: "",
+      exteriorPhoto: null,
+      issues: [],
+      checkItems: CHECK_ITEMS.map(function(name) {
+        return { name: name, photo: null, comment: "" };
+      })
+    };
+  }
+
+  /* ===== Init ===== */
+  function init() {
+    loadData();
+    renderAll();
+    updateDateDisplay();
+    bindEvents();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  function updateDateDisplay() {
+    var now = new Date();
+    var el = document.getElementById("dateDisplay");
+    if (el) el.textContent = now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0');
+  }
+
+  /* ===== Event Binding ===== */
+  function bindEvents() {
+    addClick('btnReset', function() {
+      document.getElementById('resetModal').classList.add('active');
+    });
+    addClick('btnResetNo', function() {
+      document.getElementById('resetModal').classList.remove('active');
+    });
+    addClick('btnResetYes', function() {
+      try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+      appData = getDefaultData();
+      renderAll();
+      document.getElementById('resetModal').classList.remove('active');
+    });
+    addClick('btnAddIssue', addIssue);
+    addClick('btnPDF', generatePDF);
+
+    addClick('exteriorPhotoSlot', function(e) {
+      if (e.target.closest('.remove-photo')) return;
+      takePhoto('exterior', 0);
+    });
+
+    document.getElementById('photoFileInput').addEventListener('change', onFileInputChange);
+
+    addClick('btnRetake', function() {
+      document.getElementById('previewOverlay').classList.remove('active');
+      pendingImageData = null;
+      document.getElementById('photoFileInput').value = '';
+      document.getElementById('photoFileInput').click();
+    });
+    addClick('btnConfirm', function() {
+      document.getElementById('previewOverlay').classList.remove('active');
+      if (pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData);
+      pendingImageData = null;
+    });
+
+    // Auto-save on form fields
+    ['inspectionType','branchName','staffName','customerName','address'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', saveData);
+        el.addEventListener('change', saveData);
+      }
+    });
+
+    // Delegated clicks
+    document.addEventListener('click', function(e) {
+      // Voice buttons
+      var voiceBtn = e.target.closest('.voice-btn');
+      if (voiceBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        startVoice(voiceBtn.getAttribute('data-voice-target'));
+        return;
+      }
+      // Delete issue
+      var delBtn = e.target.closest('.delete-issue');
+      if (delBtn) {
+        deleteIssue(parseInt(delBtn.getAttribute('data-idx')));
+        return;
+      }
+      // Remove photo
+      var rmBtn = e.target.closest('.remove-photo');
+      if (rmBtn) {
+        e.stopPropagation();
+        handleRemovePhoto(rmBtn);
+        return;
+      }
+      // Photo slot
+      var slot = e.target.closest('.photo-slot');
+      if (slot && !e.target.closest('.remove-photo')) {
+        var pt = slot.getAttribute('data-photo-target');
+        var pi = parseInt(slot.getAttribute('data-photo-idx') || '0');
+        if (pt) takePhoto(pt, pi);
+      }
+    });
+
+    // Delegated input/change for dynamic fields
+    document.addEventListener('input', function(e) {
+      if (e.target.id && (e.target.id.indexOf('issue_') === 0 || e.target.id.indexOf('check_') === 0)) saveData();
+    });
+    document.addEventListener('change', function(e) {
+      if (e.target.id && e.target.id.indexOf('issue_loc_') === 0) saveData();
+    });
+  }
+
+  function addClick(id, fn) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', fn);
+  }
+
+  function handleRemovePhoto(btn) {
+    var type = btn.getAttribute('data-rm-type');
+    var idx = parseInt(btn.getAttribute('data-rm-idx'));
+    if (type === 'exterior') { appData.exteriorPhoto = null; renderExteriorPhoto(); }
+    else if (type === 'issue_far' && appData.issues[idx]) { appData.issues[idx].photoFar = null; renderIssues(); }
+    else if (type === 'issue_close' && appData.issues[idx]) { appData.issues[idx].photoClose = null; renderIssues(); }
+    else if (type === 'check' && appData.checkItems[idx]) { appData.checkItems[idx].photo = null; renderCheckItems(); }
+    saveData();
+  }
+
+  /* ===== Persistence ===== */
+  function saveData() {
+    appData.inspectionType = gv('inspectionType');
+    appData.branchName = gv('branchName');
+    appData.staffName = gv('staffName');
+    appData.customerName = gv('customerName');
+    appData.address = gv('address');
+    appData.issues.forEach(function(issue, i) {
+      var ls = document.getElementById('issue_loc_' + i);
+      var lf = document.getElementById('issue_locfree_' + i);
+      var cm = document.getElementById('issue_comment_' + i);
+      if (ls) issue.location = ls.value;
+      if (lf) issue.locationFree = lf.value;
+      if (cm) issue.comment = cm.value;
+    });
+    appData.checkItems.forEach(function(item, i) {
+      var cm = document.getElementById('check_comment_' + i);
+      if (cm) item.comment = cm.value;
+    });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); } catch(e) {}
+  }
+
+  function loadData() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        appData = Object.assign(getDefaultData(), JSON.parse(saved));
+        CHECK_ITEMS.forEach(function(name, i) {
+          if (!appData.checkItems[i] || appData.checkItems[i].name !== name)
+            appData.checkItems[i] = { name: name, photo: null, comment: "" };
+        });
+      }
+    } catch(e) {}
+  }
+
+  function gv(id) { var el = document.getElementById(id); return el ? el.value : ""; }
+  function sv(id, val) { var el = document.getElementById(id); if (el) el.value = val || ""; }
+
+  /* ===== Render ===== */
+  function renderAll() {
+    sv('inspectionType', appData.inspectionType);
+    sv('branchName', appData.branchName);
+    sv('staffName', appData.staffName);
+    sv('customerName', appData.customerName);
+    sv('address', appData.address);
+    renderExteriorPhoto();
+    renderIssues();
+    renderCheckItems();
+  }
+
+  function renderExteriorPhoto() {
+    var slot = document.getElementById('exteriorPhotoSlot');
+    if (!slot) return;
+    if (appData.exteriorPhoto) {
+      slot.innerHTML = '<img src="' + appData.exteriorPhoto + '" alt="外観">' +
+        '<button class="remove-photo" data-rm-type="exterior" data-rm-idx="0">✕</button>';
+    } else {
+      slot.innerHTML = '<div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>';
+    }
+  }
+
+  function renderIssues() {
+    var c = document.getElementById('issuesContainer');
+    if (!c) return;
+    var cnt = document.getElementById('issueCount');
+    if (cnt) cnt.textContent = appData.issues.length + '件';
+    var h = '';
+    appData.issues.forEach(function(issue, i) {
+      var opts = LOCATIONS.map(function(l) {
+        return '<option value="' + l + '"' + (issue.location === l ? ' selected' : '') + '>' + l + '</option>';
+      }).join('');
+      var pf = issue.photoFar
+        ? '<img src="' + issue.photoFar + '"><button class="remove-photo" data-rm-type="issue_far" data-rm-idx="' + i + '">✕</button>'
+        : '<div class="placeholder"><div class="icon">📷</div><div class="text">遠景</div></div>';
+      var pc = issue.photoClose
+        ? '<img src="' + issue.photoClose + '"><button class="remove-photo" data-rm-type="issue_close" data-rm-idx="' + i + '">✕</button>'
+        : '<div class="placeholder"><div class="icon">📷</div><div class="text">接写</div></div>';
+      h += '<div class="issue-card" id="issueCard_' + i + '">' +
+        '<div class="issue-number">' + (i+1) + '</div>' +
+        '<button class="delete-issue" data-idx="' + i + '">🗑️</button>' +
+        '<div class="photo-pair">' +
+          '<div><div class="photo-label">遠景</div><div class="photo-slot" data-photo-target="issue_far" data-photo-idx="' + i + '">' + pf + '</div></div>' +
+          '<div><div class="photo-label">接写</div><div class="photo-slot" data-photo-target="issue_close" data-photo-idx="' + i + '">' + pc + '</div></div>' +
+        '</div>' +
+        '<div class="form-group" style="margin-bottom:8px;"><label>場所</label>' +
+          '<select id="issue_loc_' + i + '"><option value="">選択してください</option>' + opts + '</select></div>' +
+        '<div class="form-group" style="margin-bottom:8px;"><div class="input-wrapper">' +
+          '<input type="text" id="issue_locfree_' + i + '" value="' + esc(issue.locationFree) + '" placeholder="場所の補足（自由記述）">' +
+          '<button class="voice-btn" data-voice-target="issue_locfree_' + i + '">🎤</button></div></div>' +
+        '<div class="form-group" style="margin-bottom:0;"><label>コメント</label><div class="input-wrapper">' +
+          '<textarea id="issue_comment_' + i + '" placeholder="指摘内容を入力">' + esc(issue.comment) + '</textarea>' +
+
+```
+      '<button class="voice-btn" data-voice-target="issue_comment_' + i + '">🎤</button></div></div>' +
+  '</div>';
+});
+c.innerHTML = h;
+```
+
+}
+
+function renderCheckItems() {
+var c = document.getElementById(‘checkItemsContainer’);
+if (!c) return;
+var h = ‘’;
+appData.checkItems.forEach(function(item, i) {
+var ph = item.photo
+? ‘<img src="' + item.photo + '"><button class="remove-photo" data-rm-type="check" data-rm-idx="' + i + '">✕</button>’
+: ‘<div class="placeholder"><div class="icon">📷</div><div class="text">撮影</div></div>’;
+h += ‘<div class="check-item-card">’ +
+’<div class="item-title">📌 ’ + item.name + ‘</div>’ +
+‘<div style="margin-bottom:8px;"><div class="photo-label">写真</div>’ +
+‘<div class="photo-slot" style="max-width:50%;" data-photo-target="check" data-photo-idx="' + i + '">’ + ph + ‘</div></div>’ +
+‘<div class="form-group" style="margin-bottom:0;"><label>コメント</label><div class="input-wrapper">’ +
+‘<textarea id="check_comment_' + i + '" placeholder="コメントを入力">’ + esc(item.comment) + ‘</textarea>’ +
+‘<button class="voice-btn" data-voice-target="check_comment_' + i + '">🎤</button></div></div>’ +
+‘</div>’;
+});
+c.innerHTML = h;
+}
+
+/* ===== Issues ===== */
+function addIssue() {
+if (appData.issues.length >= MAX_ISSUES) { alert(“最大” + MAX_ISSUES + “件です。”); return; }
+appData.issues.push({ location:””, locationFree:””, comment:””, photoFar:null, photoClose:null });
+saveData();
+renderIssues();
+setTimeout(function() {
+var el = document.getElementById(‘issueCard_’ + (appData.issues.length-1));
+if (el) el.scrollIntoView({ behavior:‘smooth’, block:‘center’ });
+}, 100);
+}
+
+function deleteIssue(idx) {
+if (confirm(“指摘箇所 “ + (idx+1) + “ を削除しますか？”)) {
+appData.issues.splice(idx, 1);
+saveData();
+renderIssues();
+}
+}
+
+/* ===== Photo ===== */
+function takePhoto(type, idx) {
+currentPhotoTarget = { type: type, index: idx };
+var fi = document.getElementById(‘photoFileInput’);
+fi.value = ‘’;
+fi.click();
+}
+
+function onFileInputChange(e) {
+var file = e.target.files && e.target.files[0];
+if (!file) return;
+var reader = new FileReader();
+reader.onload = function(ev) { cropAndPreview(ev.target.result); };
+reader.onerror = function() { alert(“読み込みエラー”); };
+reader.readAsDataURL(file);
+}
+
+function cropAndPreview(dataUrl) {
+var img = new Image();
+img.onload = function() {
+var canvas = document.getElementById(‘photoCanvas’);
+var sw, sh;
+if (img.width / img.height > 4/3) { sh = img.height; sw = Math.round(sh * 4/3); }
+else { sw = img.width; sh = Math.round(sw * 3/4); }
+var sx = Math.round((img.width - sw) / 2);
+var sy = Math.round((img.height - sh) / 2);
+canvas.width = 800; canvas.height = 600;
+canvas.getContext(‘2d’).drawImage(img, sx, sy, sw, sh, 0, 0, 800, 600);
+pendingImageData = canvas.toDataURL(‘image/jpeg’, 0.82);
+document.getElementById(‘previewImage’).src = pendingImageData;
+document.getElementById(‘previewOverlay’).classList.add(‘active’);
+};
+img.src = dataUrl;
+}
+
+function savePhotoToTarget(data) {
+var t = currentPhotoTarget;
+if (!t) return;
+if (t.type === ‘exterior’) { appData.exteriorPhoto = data; renderExteriorPhoto(); }
+else if (t.type === ‘issue_far’ && appData.issues[t.index]) { appData.issues[t.index].photoFar = data; renderIssues(); }
+else if (t.type === ‘issue_close’ && appData.issues[t.index]) { appData.issues[t.index].photoClose = data; renderIssues(); }
+else if (t.type === ‘check’ && appData.checkItems[t.index]) { appData.checkItems[t.index].photo = data; renderCheckItems(); }
+saveData();
+currentPhotoTarget = null;
+}
+
+/* ===== Voice ===== */
+function startVoice(targetId) {
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SR) { alert(“音声入力非対応です。キーボードのマイクをご利用ください。”); return; }
+var r = new SR();
+r.lang = ‘ja-JP’;
+r.onresult = function(ev) {
+var txt = ev.results[0][0].transcript;
+var el = document.getElementById(targetId);
+if (el) { el.value += (el.value && el.tagName === ‘TEXTAREA’ ? ’ ’ : ‘’) + txt; saveData(); }
+};
+r.onerror = function(ev) { if (ev.error !== ‘aborted’ && ev.error !== ‘no-speech’) alert(“音声エラー: “ + ev.error); };
+try { r.start(); } catch(e) {}
+}
+
+/* ===== PDF (print-based) ===== */
+function generatePDF() {
+saveData();
+if (!appData.staffName) { alert(“担当者を選択してください。”); return; }
+if (!appData.customerName) { alert(“お客様名を入力してください。”); return; }
+if (!appData.address) { alert(“住所を入力してください。”); return; }
+
+```
+buildPrintArea();
+setTimeout(function() { window.print(); }, 300);
+```
+
+}
+
+function buildPrintArea() {
+var pa = document.getElementById(‘printArea’);
+var today = new Date();
+var dateStr = today.getFullYear() + ‘年’ + (today.getMonth()+1) + ‘月’ + today.getDate() + ‘日’;
+var html = ‘’;
+
+```
+// === Page 1: Cover ===
+html += '<div class="print-page">';
+html += '<div class="print-cover-header"><h1>アフター点検報告書</h1><div class="sub">（' + appData.inspectionType + '点検）</div></div>';
+html += '<table class="print-info-table">';
+html += '<tr><th>点検日</th><td>' + dateStr + '</td></tr>';
+html += '<tr><th>支社名</th><td>' + appData.branchName + '</td></tr>';
+html += '<tr><th>担当者</th><td>' + appData.staffName + '</td></tr>';
+html += '<tr><th>お客様名</th><td>' + esc(appData.customerName) + ' 様</td></tr>';
+html += '<tr><th>住所</th><td>' + esc(appData.address) + '</td></tr>';
+html += '</table>';
+if (appData.exteriorPhoto) {
+  html += '<div class="print-exterior-photo"><h3>■ 外観写真</h3><img src="' + appData.exteriorPhoto + '"></div>';
+}
+html += '</div>';
+
+// === Page 2+: Issue List ===
+if (appData.issues.length > 0) {
+  html += '<div class="print-page">';
+  html += '<div class="print-section-title orange">指摘箇所一覧（全' + appData.issues.length + '件）</div>';
+  html += '<table class="print-issue-table"><tr><th style="width:35px;text-align:center;">No.</th><th style="width:120px;">場所</th><th>コメント</th></tr>';
+  appData.issues.forEach(function(issue, i) {
+    var loc = (issue.location || '') + (issue.locationFree ? ' ' + issue.locationFree : '');
+    html += '<tr><td style="text-align:center;font-weight:700;color:#e67e22;">' + (i+1) + '</td><td>' + esc(loc) + '</td><td>' + esc(issue.comment) + '</td></tr>';
+  });
+  html += '</table></div>';
+
+  // === Issue Photo Pages (3 per page) ===
+  for (var p = 0; p < Math.ceil(appData.issues.length / 3); p++) {
+    html += '<div class="print-page">';
+    html += '<div class="print-section-title orange">指摘箇所詳細</div>';
+    for (var s = 0; s < 3; s++) {
+      var idx = p * 3 + s;
+      if (idx < appData.issues.length) {
+        var iss = appData.issues[idx];
+        var loc2 = (iss.location || '') + (iss.locationFree ? ' ' + iss.locationFree : '');
+        html += '<div class="print-issue-slot">';
+        html += '<div class="print-issue-badge">' + (idx+1) + '</div>';
+        html += '<div class="print-photo-row">';
+        html += '<div class="print-photo-box"><div class="print-photo-box-label">【遠景】</div>';
+        html += iss.photoFar ? '<img src="' + iss.photoFar + '">' : '<div class="no-photo">写真なし</div>';
+        html += '</div>';
+        html += '<div class="print-photo-box"><div class="print-photo-box-label">【接写】</div>';
+        html += iss.photoClose ? '<img src="' + iss.photoClose + '">' : '<div class="no-photo">写真なし</div>';
+        html += '</div></div>';
+        html += '<div class="print-issue-info"><span class="loc">場所: ' + esc(loc2) + '</span><br>' + esc(iss.comment) + '</div>';
+        if (s < 2 && idx < appData.issues.length - 1) html += '<div class="print-issue-separator"></div>';
+        html += '</div>';
+      } else {
+        html += '<div class="print-issue-slot" style="flex:1;"></div>';
+      }
+    }
+    html += '</div>';
+  }
+}
+
+// === Check Items Page ===
+html += '<div class="print-page">';
+html += '<div class="print-section-title green">検査項目</div>';
+appData.checkItems.forEach(function(item) {
+  html += '<div class="print-check-item">';
+  html += '<div class="print-check-title">■ ' + item.name + '</div>';
+  html += '<div class="print-check-content">';
+  html += '<div class="print-check-photo">';
+  html += item.photo ? '<img src="' + item.photo + '">' : '<div class="no-photo">写真なし</div>';
+  html += '</div>';
+  html += '<div class="print-check-comment"><div class="clabel">コメント:</div>' + esc(item.comment || 'なし') + '</div>';
+  html += '</div></div>';
+});
+html += '</div>';
+
+pa.innerHTML = html;
+```
+
+}
+
+/* ===== Util ===== */
+function esc(s) {
+if (!s) return ‘’;
+return s.replace(/&/g,’&’).replace(/</g,’<’).replace(/>/g,’>’).replace(/”/g,’"’);
+}
+
+})();
+</script>
+
+</body>
+</html>
