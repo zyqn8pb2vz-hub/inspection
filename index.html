@@ -645,9 +645,29 @@ body {
 <!-- Print Area (hidden on screen, shown only on print) -->
 <div id="printArea"></div>
 
+<div id="debugBox" style="position:fixed;top:0;left:0;right:0;background:rgba(255,0,0,0.9);color:white;font-size:11px;padding:8px 12px;z-index:99999;max-height:40vh;overflow:auto;display:none;font-family:monospace;"></div>
+<script>
+// Debug: catch all errors and show on screen
+window.onerror = function(msg, url, line, col, err) {
+  var d = document.getElementById('debugBox');
+  if (d) { d.style.display = 'block'; d.innerHTML += 'ERROR: ' + msg + ' (line:' + line + ')<br>'; }
+  return false;
+};
+try {
+  document.getElementById('debugBox').style.display = 'block';
+  document.getElementById('debugBox').innerHTML = 'JS loaded OK. Init starting...<br>';
+} catch(e) {}
+</script>
 <script>
 (function() {
   'use strict';
+
+  // Debug logger
+  function dbg(msg) {
+    var d = document.getElementById('debugBox');
+    if (d) { d.style.display = 'block'; d.innerHTML += msg + '<br>'; }
+  }
+  dbg('IIFE started');
 
   /* ===== Constants ===== */
   var LOCATIONS = [
@@ -682,10 +702,19 @@ body {
 
   /* ===== Init ===== */
   function init() {
-    loadData();
-    renderAll();
-    updateDateDisplay();
-    bindEvents();
+    dbg('init() called');
+    try {
+      loadData();
+      dbg('loadData OK');
+      renderAll();
+      dbg('renderAll OK');
+      updateDateDisplay();
+      dbg('updateDateDisplay OK');
+      bindEvents();
+      dbg('bindEvents OK - ALL READY');
+    } catch(e) {
+      dbg('INIT ERROR: ' + e.message + ' at ' + e.stack);
+    }
   }
 
   if (document.readyState === 'loading') {
