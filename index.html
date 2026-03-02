@@ -645,29 +645,9 @@ body {
 <!-- Print Area (hidden on screen, shown only on print) -->
 <div id="printArea"></div>
 
-<div id="debugBox" style="position:fixed;top:0;left:0;right:0;background:rgba(255,0,0,0.9);color:white;font-size:11px;padding:8px 12px;z-index:99999;max-height:40vh;overflow:auto;display:none;font-family:monospace;"></div>
-<script>
-// Debug: catch all errors and show on screen
-window.onerror = function(msg, url, line, col, err) {
-  var d = document.getElementById('debugBox');
-  if (d) { d.style.display = 'block'; d.innerHTML += 'ERROR: ' + msg + ' (line:' + line + ')<br>'; }
-  return false;
-};
-try {
-  document.getElementById('debugBox').style.display = 'block';
-  document.getElementById('debugBox').innerHTML = 'JS loaded OK. Init starting...<br>';
-} catch(e) {}
-</script>
 <script>
 (function() {
   'use strict';
-
-  // Debug logger
-  function dbg(msg) {
-    var d = document.getElementById('debugBox');
-    if (d) { d.style.display = 'block'; d.innerHTML += msg + '<br>'; }
-  }
-  dbg('IIFE started');
 
   /* ===== Constants ===== */
   var LOCATIONS = [
@@ -702,27 +682,10 @@ try {
 
   /* ===== Init ===== */
   function init() {
-    dbg('init() called');
-    try {
-      loadData();
-      dbg('loadData OK');
-      renderAll();
-      dbg('renderAll OK');
-      updateDateDisplay();
-      dbg('updateDateDisplay OK');
-      bindEvents();
-      dbg('bindEvents OK - ALL READY');
-    } catch(e) {
-      dbg('INIT ERROR: ' + e.message + ' at ' + e.stack);
-    }
-
-    // Debug: detect ANY tap on page
-    document.addEventListener('click', function(e) {
-      dbg('CLICK: ' + e.target.tagName + ' id=' + (e.target.id||'none') + ' class=' + (e.target.className||'none').substring(0,40));
-    }, true);
-    document.addEventListener('touchstart', function(e) {
-      dbg('TOUCH: ' + e.target.tagName + ' id=' + (e.target.id||'none') + ' class=' + (e.target.className||'none').substring(0,40));
-    }, true);
+    loadData();
+    renderAll();
+    updateDateDisplay();
+    bindEvents();
   }
 
   if (document.readyState === 'loading') {
@@ -759,8 +722,6 @@ try {
       takePhoto('exterior', 0);
     });
 
-    document.getElementById('photoFileInput').addEventListener('change', onFileInputChange);
-
     addClick('btnRetake', function() {
       document.getElementById('previewOverlay').classList.remove('active');
       pendingImageData = null;
@@ -770,7 +731,6 @@ try {
       }
     });
     addClick('btnConfirm', function() {
-      dbg('CONFIRM tapped, pendingImageData=' + (pendingImageData ? 'YES len=' + pendingImageData.length : 'NULL') + ', target=' + JSON.stringify(currentPhotoTarget));
       document.getElementById('previewOverlay').classList.remove('active');
       if (pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData);
       pendingImageData = null;
@@ -979,48 +939,45 @@ try {
   }
 
   /* ===== Photo ===== */
+  var photoLock = false;
   function takePhoto(type, idx) {
-    currentPhotoTarget = { type: type, index: idx };
-    dbg('takePhoto: ' + type + ' idx=' + idx);
+    if (photoLock) return;
+    photoLock = true;
+    setTimeout(function() { photoLock = false; }, 1000);
     
-    // iOS Safari workaround: recreate file input each time
+    currentPhotoTarget = { type: type, index: idx };
+    
+    // iOS Safari workaround: recreate input each time, append to body
     var oldInput = document.getElementById('photoFileInput');
-    if (oldInput) oldInput.remove();
+    if (oldInput) oldInput.parentNode.removeChild(oldInput);
     
     var newInput = document.createElement('input');
     newInput.type = 'file';
     newInput.accept = 'image/*';
     newInput.id = 'photoFileInput';
-    newInput.style.cssText = 'position:fixed;top:-100px;left:-100px;width:1px;height:1px;opacity:0.01;';
-    newInput.addEventListener('change', onFileInputChange);
+    newInput.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;z-index:-1;';
+    
+    newInput.onchange = function(e) {
+      var file = e.target.files && e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        cropAndPreview(ev.target.result);
+      };
+      reader.onerror = function() { alert("読み込みエラー"); };
+      reader.readAsDataURL(file);
+    };
+    
     document.body.appendChild(newInput);
     
-    // Small delay for iOS
     setTimeout(function() {
       newInput.click();
-      dbg('file input clicked');
-    }, 100);
-  }
-
-  function onFileInputChange(e) {
-    dbg('FILE INPUT CHANGED');
-    var file = e.target.files && e.target.files[0];
-    if (!file) { dbg('NO FILE SELECTED'); return; }
-    dbg('FILE: ' + file.name + ' size=' + file.size + ' type=' + file.type);
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-      dbg('FILE READ OK, length=' + ev.target.result.length);
-      cropAndPreview(ev.target.result);
-    };
-    reader.onerror = function(err) { dbg('FILE READ ERROR: ' + err); };
-    reader.readAsDataURL(file);
+    }, 200);
   }
 
   function cropAndPreview(dataUrl) {
-    dbg('cropAndPreview called, dataUrl length=' + dataUrl.length);
     var img = new Image();
     img.onload = function() {
-      dbg('IMG loaded: ' + img.width + 'x' + img.height);
       var canvas = document.getElementById('photoCanvas');
       var sw, sh;
       if (img.width / img.height > 4/3) { sh = img.height; sw = Math.round(sh * 4/3); }
@@ -1030,18 +987,15 @@ try {
       canvas.width = 800; canvas.height = 600;
       canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, 800, 600);
       pendingImageData = canvas.toDataURL('image/jpeg', 0.82);
-      dbg('CANVAS OK, result length=' + pendingImageData.length);
       document.getElementById('previewImage').src = pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
-      dbg('PREVIEW SHOWN');
     };
-    img.onerror = function(err) { dbg('IMG LOAD ERROR: ' + err); };
+    img.onerror = function() { alert("画像の処理に失敗しました。"); };
     img.src = dataUrl;
   }
 
   function savePhotoToTarget(data) {
     var t = currentPhotoTarget;
-    dbg('savePhotoToTarget called, type=' + (t ? t.type : 'null'));
     if (!t) return;
     if (t.type === 'exterior') { appData.exteriorPhoto = data; renderExteriorPhoto(); }
     else if (t.type === 'issue_far' && appData.issues[t.index]) { appData.issues[t.index].photoFar = data; renderIssues(); }
