@@ -332,7 +332,7 @@ body {
 .status-bar .save-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
 
 /* Hidden */
-.hidden-input { position:absolute; left:-9999px; opacity:0; pointer-events:none; }
+.hidden-input { position:fixed; top:-100px; left:-100px; width:1px; height:1px; opacity:0.01; }
 
 /* ============================================================
    PRINT PDF LAYOUT
@@ -639,7 +639,7 @@ body {
 </div>
 
 <!-- Hidden file input & canvas -->
-<input type="file" accept="image/*" capture="environment" class="hidden-input" id="photoFileInput">
+<input type="file" accept="image/*" class="hidden-input" id="photoFileInput">
 <canvas id="photoCanvas" style="display:none;"></canvas>
 
 <!-- Print Area (hidden on screen, shown only on print) -->
@@ -764,8 +764,10 @@ try {
     addClick('btnRetake', function() {
       document.getElementById('previewOverlay').classList.remove('active');
       pendingImageData = null;
-      document.getElementById('photoFileInput').value = '';
-      document.getElementById('photoFileInput').click();
+      // Re-trigger photo capture
+      if (currentPhotoTarget) {
+        takePhoto(currentPhotoTarget.type, currentPhotoTarget.index);
+      }
     });
     addClick('btnConfirm', function() {
       dbg('CONFIRM tapped, pendingImageData=' + (pendingImageData ? 'YES len=' + pendingImageData.length : 'NULL') + ', target=' + JSON.stringify(currentPhotoTarget));
@@ -979,9 +981,25 @@ try {
   /* ===== Photo ===== */
   function takePhoto(type, idx) {
     currentPhotoTarget = { type: type, index: idx };
-    var fi = document.getElementById('photoFileInput');
-    fi.value = '';
-    fi.click();
+    dbg('takePhoto: ' + type + ' idx=' + idx);
+    
+    // iOS Safari workaround: recreate file input each time
+    var oldInput = document.getElementById('photoFileInput');
+    if (oldInput) oldInput.remove();
+    
+    var newInput = document.createElement('input');
+    newInput.type = 'file';
+    newInput.accept = 'image/*';
+    newInput.id = 'photoFileInput';
+    newInput.style.cssText = 'position:fixed;top:-100px;left:-100px;width:1px;height:1px;opacity:0.01;';
+    newInput.addEventListener('change', onFileInputChange);
+    document.body.appendChild(newInput);
+    
+    // Small delay for iOS
+    setTimeout(function() {
+      newInput.click();
+      dbg('file input clicked');
+    }, 100);
   }
 
   function onFileInputChange(e) {
