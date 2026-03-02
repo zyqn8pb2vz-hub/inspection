@@ -715,6 +715,14 @@ try {
     } catch(e) {
       dbg('INIT ERROR: ' + e.message + ' at ' + e.stack);
     }
+
+    // Debug: detect ANY tap on page
+    document.addEventListener('click', function(e) {
+      dbg('CLICK: ' + e.target.tagName + ' id=' + (e.target.id||'none') + ' class=' + (e.target.className||'none').substring(0,40));
+    }, true);
+    document.addEventListener('touchstart', function(e) {
+      dbg('TOUCH: ' + e.target.tagName + ' id=' + (e.target.id||'none') + ' class=' + (e.target.className||'none').substring(0,40));
+    }, true);
   }
 
   if (document.readyState === 'loading') {
@@ -760,6 +768,7 @@ try {
       document.getElementById('photoFileInput').click();
     });
     addClick('btnConfirm', function() {
+      dbg('CONFIRM tapped, pendingImageData=' + (pendingImageData ? 'YES len=' + pendingImageData.length : 'NULL') + ', target=' + JSON.stringify(currentPhotoTarget));
       document.getElementById('previewOverlay').classList.remove('active');
       if (pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData);
       pendingImageData = null;
@@ -976,17 +985,24 @@ try {
   }
 
   function onFileInputChange(e) {
+    dbg('FILE INPUT CHANGED');
     var file = e.target.files && e.target.files[0];
-    if (!file) return;
+    if (!file) { dbg('NO FILE SELECTED'); return; }
+    dbg('FILE: ' + file.name + ' size=' + file.size + ' type=' + file.type);
     var reader = new FileReader();
-    reader.onload = function(ev) { cropAndPreview(ev.target.result); };
-    reader.onerror = function() { alert("読み込みエラー"); };
+    reader.onload = function(ev) {
+      dbg('FILE READ OK, length=' + ev.target.result.length);
+      cropAndPreview(ev.target.result);
+    };
+    reader.onerror = function(err) { dbg('FILE READ ERROR: ' + err); };
     reader.readAsDataURL(file);
   }
 
   function cropAndPreview(dataUrl) {
+    dbg('cropAndPreview called, dataUrl length=' + dataUrl.length);
     var img = new Image();
     img.onload = function() {
+      dbg('IMG loaded: ' + img.width + 'x' + img.height);
       var canvas = document.getElementById('photoCanvas');
       var sw, sh;
       if (img.width / img.height > 4/3) { sh = img.height; sw = Math.round(sh * 4/3); }
@@ -996,14 +1012,18 @@ try {
       canvas.width = 800; canvas.height = 600;
       canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, 800, 600);
       pendingImageData = canvas.toDataURL('image/jpeg', 0.82);
+      dbg('CANVAS OK, result length=' + pendingImageData.length);
       document.getElementById('previewImage').src = pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
+      dbg('PREVIEW SHOWN');
     };
+    img.onerror = function(err) { dbg('IMG LOAD ERROR: ' + err); };
     img.src = dataUrl;
   }
 
   function savePhotoToTarget(data) {
     var t = currentPhotoTarget;
+    dbg('savePhotoToTarget called, type=' + (t ? t.type : 'null'));
     if (!t) return;
     if (t.type === 'exterior') { appData.exteriorPhoto = data; renderExteriorPhoto(); }
     else if (t.type === 'issue_far' && appData.issues[t.index]) { appData.issues[t.index].photoFar = data; renderIssues(); }
