@@ -17,50 +17,34 @@
   --danger: #e74c3c;
   --success: #27ae60;
   --radius: 12px;
+  --blueprint: #5b3e8a;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding-bottom: 100px;
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: transparent;
+  background: var(--bg); color: var(--text); padding-bottom: 100px;
+  -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
 }
 .app-header {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white;
-  padding: 16px 20px;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  color: white; padding: 16px 20px; text-align: center;
+  position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 .app-header h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
 .app-header .sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
 .section {
-  background: var(--card);
-  margin: 12px;
-  border-radius: var(--radius);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  overflow: hidden;
+  background: var(--card); margin: 12px; border-radius: var(--radius);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden;
 }
 .section-title {
-  background: var(--primary);
-  color: white;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  background: var(--primary); color: white; padding: 10px 16px;
+  font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;
 }
+.section-title.green-bg { background: var(--success); }
+.section-title.blueprint-bg { background: var(--blueprint); }
 .section-body { padding: 16px; }
 .form-group { margin-bottom: 14px; }
-.form-group label {
-  display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px;
-}
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
 .form-group select, .form-group input, .form-group textarea {
   width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px;
   font-size: 16px; background: #fafbfc; color: var(--text); -webkit-appearance: none; appearance: none;
@@ -96,6 +80,22 @@ body {
   font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
   z-index: 2; touch-action: manipulation;
 }
+/* Blueprint photo slot - no fixed aspect ratio */
+.photo-slot-free {
+  width: 100%; min-height: 100px; background: #f3eef8; border: 2px dashed #c4b5d6;
+  border-radius: 8px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; position: relative; overflow: hidden; touch-action: manipulation; cursor: pointer;
+}
+.photo-slot-free img { width: 100%; border-radius: 6px; }
+.photo-slot-free .placeholder { text-align: center; color: var(--blueprint); pointer-events: none; }
+.photo-slot-free .placeholder .icon { font-size: 32px; margin-bottom: 4px; }
+.photo-slot-free .placeholder .text { font-size: 12px; }
+.photo-slot-free .remove-photo {
+  position: absolute; top: 6px; right: 6px; width: 30px; height: 30px;
+  background: rgba(231,76,60,0.9); color: white; border: none; border-radius: 50%;
+  font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  z-index: 2; touch-action: manipulation;
+}
 .photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
 .photo-label { font-size: 11px; text-align: center; color: var(--text-light); margin-bottom: 4px; }
 .issue-card {
@@ -116,12 +116,27 @@ body {
   padding: 12px; margin-bottom: 12px;
 }
 .check-item-card .item-title { font-size: 14px; font-weight: 700; color: var(--success); margin-bottom: 8px; }
+.blueprint-card {
+  background: #f5f0fa; border: 1px solid #c4b5d6; border-radius: 10px;
+  padding: 12px; margin-bottom: 12px; position: relative;
+}
+.blueprint-card .bp-title { font-size: 14px; font-weight: 700; color: var(--blueprint); margin-bottom: 8px; }
+.blueprint-card .delete-bp {
+  position: absolute; top: 10px; right: 10px; background: none; border: none;
+  color: var(--danger); font-size: 20px; cursor: pointer; padding: 4px; touch-action: manipulation;
+}
 .new-issue-btn {
   background: white; border: 2px dashed var(--primary-light); border-radius: 10px;
   padding: 16px; width: 100%; text-align: center; color: var(--primary-light);
   font-size: 14px; font-weight: 600; cursor: pointer; touch-action: manipulation;
 }
 .new-issue-btn:active { background: #eaf2f8; }
+.new-bp-btn {
+  background: white; border: 2px dashed var(--blueprint); border-radius: 10px;
+  padding: 16px; width: 100%; text-align: center; color: var(--blueprint);
+  font-size: 14px; font-weight: 600; cursor: pointer; touch-action: manipulation;
+}
+.new-bp-btn:active { background: #f5f0fa; }
 .pdf-section { padding: 20px 12px; text-align: center; }
 .modal-overlay {
   display: none; position: fixed; top:0;left:0;right:0;bottom:0;
@@ -157,7 +172,6 @@ body {
   body > *:not(#printArea) { display: none !important; }
   #printArea { display: block !important; }
   body { background:white; padding:0; margin:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  /* White footer to hide URL */
   body::after {
     content:''; position:fixed; bottom:0; left:0; right:0; height:14mm;
     background:white; z-index:99999;
@@ -166,13 +180,19 @@ body {
     page-break-after: always; width:100%; padding: 10mm 12mm 20mm 12mm; position:relative;
   }
   .pp:last-child { page-break-after: auto; }
-  /* Cover title */
+  /* Landscape page for blueprints */
+  .pp-land {
+    page-break-after: always; width: 100%; padding: 8mm 10mm 18mm 10mm;
+    page: landscape;
+  }
+  @page landscape { size: A4 landscape; }
+  .pp-land:last-child { page-break-after: auto; }
+  /* Cover */
   .pc-title {
     background: linear-gradient(135deg,#1a5276,#2980b9) !important;
     color: white; text-align: center; padding: 10px 0; font-size: 20px; font-weight: 700;
     letter-spacing: 2px; border-radius: 3px; margin-bottom: 12px;
   }
-  /* Cover header layout */
   .pc-header { display: flex; gap: 12px; margin-bottom: 12px; }
   .pc-photo { width: 140px; flex-shrink: 0; }
   .pc-photo img { width:100%; border:1px solid #ddd; border-radius:3px; }
@@ -181,7 +201,7 @@ body {
   .pc-info table { width:100%; border-collapse:collapse; font-size:10px; }
   .pc-info th { background:#f0f3f6 !important; padding:5px 8px; text-align:left; border:1px solid #dce1e6; font-weight:700; white-space:nowrap; }
   .pc-info td { padding:5px 8px; border:1px solid #dce1e6; }
-  /* Issue list table */
+  /* Issue list */
   .pi-title {
     background: linear-gradient(135deg,#1a5276,#2980b9) !important;
     color: white; padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 3px 3px 0 0;
@@ -194,9 +214,7 @@ body {
     background: linear-gradient(135deg,#1a5276,#2980b9) !important;
     color:white; padding:6px 12px; font-size:11px; font-weight:700; border-radius:3px; margin-bottom:8px;
   }
-  .pd-item {
-    border: 1.5px solid #1a5276; border-radius: 4px; padding: 8px; margin-bottom: 6px;
-  }
+  .pd-item { border: 1.5px solid #1a5276; border-radius: 4px; padding: 8px; margin-bottom: 6px; }
   .pd-badge {
     display:inline-block; background:#1a5276 !important; color:white;
     width:22px; height:22px; line-height:22px; text-align:center;
@@ -227,6 +245,13 @@ body {
   .pk-photos .plabel { font-size:8px; color:#666; margin-bottom:2px; }
   .pk-comment { font-size:10px; line-height:1.5; }
   .pk-comment .clabel { font-size:9px; color:#666; font-weight:600; margin-bottom:2px; }
+  /* Blueprint pages */
+  .pb-bar {
+    background: linear-gradient(135deg,#5b3e8a,#7b52b9) !important;
+    color:white; padding:6px 12px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:8px;
+  }
+  .pb-img { width:100%; }
+  .pb-img img { width:100%; border:1px solid #ddd; border-radius:3px; }
 }
 </style>
 </head>
@@ -241,6 +266,7 @@ body {
   <button class="btn btn-danger btn-block" id="btnReset">✦ 新規入力を開始する</button>
 </div>
 
+<!-- Basic Info -->
 <div class="section">
   <div class="section-title">📋 基本情報</div>
   <div class="section-body">
@@ -254,9 +280,7 @@ body {
     </div>
     <div class="form-group">
       <label>支社名</label>
-      <select id="branchName">
-        <option value="埼玉支社" selected>埼玉支社</option>
-      </select>
+      <select id="branchName"><option value="埼玉支社" selected>埼玉支社</option></select>
     </div>
     <div class="form-group">
       <label>担当者</label>
@@ -280,6 +304,7 @@ body {
   </div>
 </div>
 
+<!-- Issues -->
 <div class="section">
   <div class="section-title">🔍 指摘箇所 <span id="issueCount" style="margin-left:auto;font-size:12px;opacity:0.8">0件</span></div>
   <div class="section-body">
@@ -288,15 +313,27 @@ body {
   </div>
 </div>
 
+<!-- Check Items -->
 <div class="section">
-  <div class="section-title">✅ 検査項目</div>
+  <div class="section-title green-bg">✅ 検査項目</div>
   <div class="section-body" id="checkItemsContainer"></div>
 </div>
 
+<!-- Blueprints -->
+<div class="section">
+  <div class="section-title blueprint-bg">📐 図面 <span id="bpCount" style="margin-left:auto;font-size:12px;opacity:0.8">0枚</span></div>
+  <div class="section-body">
+    <div id="blueprintsContainer"></div>
+    <button class="new-bp-btn" id="btnAddBP">＋ 図面を撮影</button>
+  </div>
+</div>
+
+<!-- PDF -->
 <div class="pdf-section">
   <button class="btn btn-success btn-lg btn-block" id="btnPDF">📄 ＰＤＦ出力</button>
 </div>
 
+<!-- Modals -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal-box">
     <h3>新規入力を開始しますか？</h3>
@@ -335,9 +372,10 @@ body {
     "洋室(D)","洋室(E)","小屋裏収納","バルコニー","青空リビング","極楽加湿","Z空調"
   ];
   var CHECK_ITEMS = ["ココチＥ排気フード","給湯器","床下","天井裏"];
-  var STORAGE_KEY = "afterInspection_v4";
+  var STORAGE_KEY = "afterInspection_v5";
   var STAFF_KEY = "afterInspection_staff";
   var MAX_ISSUES = 30;
+  var MAX_BLUEPRINTS = 6;
 
   var appData = getDefaultData();
   var currentPhotoTarget = null;
@@ -345,159 +383,149 @@ body {
 
   function getDefaultData() {
     return {
-      inspectionType: "6ヶ月", branchName: "埼玉支社", staffName: "",
-      customerName: "", address: "", exteriorPhoto: null, issues: [],
-      checkItems: CHECK_ITEMS.map(function(n) { return { name:n, photoFar:null, photoClose:null, comment:"" }; })
+      inspectionType:"6ヶ月", branchName:"埼玉支社", staffName:"",
+      customerName:"", address:"", exteriorPhoto:null, issues:[],
+      checkItems: CHECK_ITEMS.map(function(n){ return {name:n,photoFar:null,photoClose:null,comment:""}; }),
+      blueprints: []
     };
   }
 
   function init() { loadData(); renderAll(); updateDateDisplay(); bindEvents(); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
 
   function updateDateDisplay() {
-    var n = new Date();
-    var el = document.getElementById("dateDisplay");
-    if (el) el.textContent = n.getFullYear()+'/'+String(n.getMonth()+1).padStart(2,'0')+'/'+String(n.getDate()).padStart(2,'0');
+    var n=new Date(), el=document.getElementById("dateDisplay");
+    if(el) el.textContent=n.getFullYear()+'/'+String(n.getMonth()+1).padStart(2,'0')+'/'+String(n.getDate()).padStart(2,'0');
   }
 
+  /* === Events === */
   function bindEvents() {
-    addClick('btnReset', function() { document.getElementById('resetModal').classList.add('active'); });
-    addClick('btnResetNo', function() { document.getElementById('resetModal').classList.remove('active'); });
-    addClick('btnResetYes', function() {
-      var staff = appData.staffName;
-      try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
-      appData = getDefaultData(); appData.staffName = staff;
+    addClick('btnReset', function(){ document.getElementById('resetModal').classList.add('active'); });
+    addClick('btnResetNo', function(){ document.getElementById('resetModal').classList.remove('active'); });
+    addClick('btnResetYes', function(){
+      var staff=appData.staffName;
+      try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
+      appData=getDefaultData(); appData.staffName=staff;
       renderAll(); saveData();
       document.getElementById('resetModal').classList.remove('active');
     });
     addClick('btnAddIssue', addIssue);
+    addClick('btnAddBP', addBlueprint);
     addClick('btnPDF', generatePDF);
-    addClick('exteriorPhotoSlot', function(e) {
-      if (e.target.closest('.remove-photo')) return;
-      takePhoto('exterior', 0);
+    addClick('exteriorPhotoSlot', function(e){
+      if(e.target.closest('.remove-photo')) return;
+      takePhoto('exterior',0);
     });
-    addClick('btnRetake', function() {
+    addClick('btnRetake', function(){
       document.getElementById('previewOverlay').classList.remove('active');
-      pendingImageData = null;
-      if (currentPhotoTarget) takePhoto(currentPhotoTarget.type, currentPhotoTarget.index);
+      pendingImageData=null;
+      if(currentPhotoTarget) takePhoto(currentPhotoTarget.type, currentPhotoTarget.index);
     });
-    addClick('btnConfirm', function() {
+    addClick('btnConfirm', function(){
       document.getElementById('previewOverlay').classList.remove('active');
-      if (pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData);
-      pendingImageData = null;
+      if(pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData);
+      pendingImageData=null;
     });
-    ['inspectionType','branchName','staffName','customerName','address'].forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) { el.addEventListener('input', saveData); el.addEventListener('change', saveData); }
+    ['inspectionType','branchName','staffName','customerName','address'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el){el.addEventListener('input',saveData);el.addEventListener('change',saveData);}
     });
-    document.addEventListener('click', function(e) {
-      var delBtn = e.target.closest('.delete-issue');
-      if (delBtn) { deleteIssue(parseInt(delBtn.getAttribute('data-idx'))); return; }
-      var rmBtn = e.target.closest('.remove-photo');
-      if (rmBtn) { e.stopPropagation(); handleRemovePhoto(rmBtn); return; }
-      var slot = e.target.closest('.photo-slot');
-      if (slot && !e.target.closest('.remove-photo')) {
-        var pt = slot.getAttribute('data-photo-target');
-        var pi = parseInt(slot.getAttribute('data-photo-idx') || '0');
-        if (pt) takePhoto(pt, pi);
+    document.addEventListener('click', function(e){
+      var delBtn=e.target.closest('.delete-issue');
+      if(delBtn){deleteIssue(parseInt(delBtn.getAttribute('data-idx')));return;}
+      var delBP=e.target.closest('.delete-bp');
+      if(delBP){deleteBlueprint(parseInt(delBP.getAttribute('data-idx')));return;}
+      var rmBtn=e.target.closest('.remove-photo');
+      if(rmBtn){e.stopPropagation();handleRemovePhoto(rmBtn);return;}
+      var slot=e.target.closest('.photo-slot, .photo-slot-free');
+      if(slot && !e.target.closest('.remove-photo')){
+        var pt=slot.getAttribute('data-photo-target');
+        var pi=parseInt(slot.getAttribute('data-photo-idx')||'0');
+        if(pt) takePhoto(pt,pi);
       }
     });
-    document.addEventListener('input', function(e) {
-      if (e.target.id && (e.target.id.indexOf('issue_')===0 || e.target.id.indexOf('check_')===0)) saveData();
+    document.addEventListener('input', function(e){
+      if(e.target.id && (e.target.id.indexOf('issue_')===0||e.target.id.indexOf('check_')===0)) saveData();
     });
-    document.addEventListener('change', function(e) {
-      if (e.target.id && e.target.id.indexOf('issue_loc_')===0) saveData();
+    document.addEventListener('change', function(e){
+      if(e.target.id && e.target.id.indexOf('issue_loc_')===0) saveData();
     });
   }
 
-  function addClick(id, fn) { var el=document.getElementById(id); if(el) el.addEventListener('click', fn); }
+  function addClick(id,fn){var el=document.getElementById(id);if(el)el.addEventListener('click',fn);}
 
-  function handleRemovePhoto(btn) {
-    var type = btn.getAttribute('data-rm-type');
-    var idx = parseInt(btn.getAttribute('data-rm-idx'));
-    if (type==='exterior') { appData.exteriorPhoto=null; renderExteriorPhoto(); }
-    else if (type==='issue_far' && appData.issues[idx]) { appData.issues[idx].photoFar=null; renderIssues(); }
-    else if (type==='issue_close' && appData.issues[idx]) { appData.issues[idx].photoClose=null; renderIssues(); }
-    else if (type==='check_far' && appData.checkItems[idx]) { appData.checkItems[idx].photoFar=null; renderCheckItems(); }
-    else if (type==='check_close' && appData.checkItems[idx]) { appData.checkItems[idx].photoClose=null; renderCheckItems(); }
+  function handleRemovePhoto(btn){
+    var type=btn.getAttribute('data-rm-type'), idx=parseInt(btn.getAttribute('data-rm-idx'));
+    if(type==='exterior'){appData.exteriorPhoto=null;renderExteriorPhoto();}
+    else if(type==='issue_far'&&appData.issues[idx]){appData.issues[idx].photoFar=null;renderIssues();}
+    else if(type==='issue_close'&&appData.issues[idx]){appData.issues[idx].photoClose=null;renderIssues();}
+    else if(type==='check_far'&&appData.checkItems[idx]){appData.checkItems[idx].photoFar=null;renderCheckItems();}
+    else if(type==='check_close'&&appData.checkItems[idx]){appData.checkItems[idx].photoClose=null;renderCheckItems();}
+    else if(type==='blueprint'&&appData.blueprints[idx]){appData.blueprints[idx].photo=null;renderBlueprints();}
     saveData();
   }
 
-  /* Persistence */
-  function saveData() {
-    appData.inspectionType = gv('inspectionType');
-    appData.branchName = gv('branchName');
-    appData.staffName = gv('staffName');
-    if (appData.staffName) { try { localStorage.setItem(STAFF_KEY, appData.staffName); } catch(e) {} }
-    appData.customerName = gv('customerName');
-    appData.address = gv('address');
-    appData.issues.forEach(function(issue, i) {
-      var ls=document.getElementById('issue_loc_'+i), lf=document.getElementById('issue_locfree_'+i), cm=document.getElementById('issue_comment_'+i);
-      if(ls) issue.location=ls.value; if(lf) issue.locationFree=lf.value; if(cm) issue.comment=cm.value;
+  /* === Persistence === */
+  function saveData(){
+    appData.inspectionType=gv('inspectionType'); appData.branchName=gv('branchName');
+    appData.staffName=gv('staffName');
+    if(appData.staffName){try{localStorage.setItem(STAFF_KEY,appData.staffName);}catch(e){}}
+    appData.customerName=gv('customerName'); appData.address=gv('address');
+    appData.issues.forEach(function(issue,i){
+      var ls=document.getElementById('issue_loc_'+i),lf=document.getElementById('issue_locfree_'+i),cm=document.getElementById('issue_comment_'+i);
+      if(ls)issue.location=ls.value;if(lf)issue.locationFree=lf.value;if(cm)issue.comment=cm.value;
     });
-    appData.checkItems.forEach(function(item, i) {
-      var cm=document.getElementById('check_comment_'+i);
-      if(cm) item.comment=cm.value;
+    appData.checkItems.forEach(function(item,i){
+      var cm=document.getElementById('check_comment_'+i);if(cm)item.comment=cm.value;
     });
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); } catch(e) {}
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(appData));}catch(e){}
   }
 
-  function loadData() {
-    try {
-      var saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        appData = Object.assign(getDefaultData(), JSON.parse(saved));
-        CHECK_ITEMS.forEach(function(name, i) {
-          if (!appData.checkItems[i] || appData.checkItems[i].name !== name)
-            appData.checkItems[i] = { name:name, photoFar:null, photoClose:null, comment:"" };
-          // Migrate old single photo to photoFar
-          if (appData.checkItems[i].photo && !appData.checkItems[i].photoFar) {
-            appData.checkItems[i].photoFar = appData.checkItems[i].photo;
-            delete appData.checkItems[i].photo;
+  function loadData(){
+    try{
+      var saved=localStorage.getItem(STORAGE_KEY);
+      if(saved){
+        appData=Object.assign(getDefaultData(),JSON.parse(saved));
+        CHECK_ITEMS.forEach(function(name,i){
+          if(!appData.checkItems[i]||appData.checkItems[i].name!==name)
+            appData.checkItems[i]={name:name,photoFar:null,photoClose:null,comment:""};
+          if(appData.checkItems[i].photo&&!appData.checkItems[i].photoFar){
+            appData.checkItems[i].photoFar=appData.checkItems[i].photo;delete appData.checkItems[i].photo;
           }
         });
+        if(!appData.blueprints) appData.blueprints=[];
       }
-      if (!appData.staffName) {
-        var ss = localStorage.getItem(STAFF_KEY);
-        if (ss) appData.staffName = ss;
-      }
-    } catch(e) {}
+      if(!appData.staffName){var ss=localStorage.getItem(STAFF_KEY);if(ss)appData.staffName=ss;}
+    }catch(e){}
   }
 
-  function gv(id) { var el=document.getElementById(id); return el ? el.value : ""; }
-  function sv(id, val) { var el=document.getElementById(id); if(el) el.value=val||""; }
+  function gv(id){var el=document.getElementById(id);return el?el.value:"";}
+  function sv(id,val){var el=document.getElementById(id);if(el)el.value=val||"";}
 
-  /* Render */
-  function renderAll() {
-    sv('inspectionType', appData.inspectionType); sv('branchName', appData.branchName);
-    sv('staffName', appData.staffName); sv('customerName', appData.customerName); sv('address', appData.address);
-    renderExteriorPhoto(); renderIssues(); renderCheckItems();
+  /* === Render === */
+  function renderAll(){
+    sv('inspectionType',appData.inspectionType);sv('branchName',appData.branchName);
+    sv('staffName',appData.staffName);sv('customerName',appData.customerName);sv('address',appData.address);
+    renderExteriorPhoto();renderIssues();renderCheckItems();renderBlueprints();
   }
 
-  function renderExteriorPhoto() {
-    var s = document.getElementById('exteriorPhotoSlot');
-    if (!s) return;
-    s.innerHTML = appData.exteriorPhoto
-      ? '<img src="'+appData.exteriorPhoto+'" alt="外観"><button class="remove-photo" data-rm-type="exterior" data-rm-idx="0">✕</button>'
-      : '<div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>';
+  function renderExteriorPhoto(){
+    var s=document.getElementById('exteriorPhotoSlot');if(!s)return;
+    s.innerHTML=appData.exteriorPhoto
+      ?'<img src="'+appData.exteriorPhoto+'"><button class="remove-photo" data-rm-type="exterior" data-rm-idx="0">✕</button>'
+      :'<div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>';
   }
 
-  function renderIssues() {
-    var c=document.getElementById('issuesContainer'); if(!c) return;
-    var cnt=document.getElementById('issueCount'); if(cnt) cnt.textContent=appData.issues.length+'件';
+  function renderIssues(){
+    var c=document.getElementById('issuesContainer');if(!c)return;
+    var cnt=document.getElementById('issueCount');if(cnt)cnt.textContent=appData.issues.length+'件';
     var h='';
-    appData.issues.forEach(function(issue, i) {
-      var opts = LOCATIONS.map(function(l) {
-        return '<option value="'+l+'"'+(issue.location===l?' selected':'')+'>'+l+'</option>';
-      }).join('');
-      var pf = issue.photoFar
-        ? '<img src="'+issue.photoFar+'"><button class="remove-photo" data-rm-type="issue_far" data-rm-idx="'+i+'">✕</button>'
-        : '<div class="placeholder"><div class="icon">📷</div><div class="text">遠景</div></div>';
-      var pc = issue.photoClose
-        ? '<img src="'+issue.photoClose+'"><button class="remove-photo" data-rm-type="issue_close" data-rm-idx="'+i+'">✕</button>'
-        : '<div class="placeholder"><div class="icon">📷</div><div class="text">接写</div></div>';
-      h += '<div class="issue-card" id="issueCard_'+i+'">'+
+    appData.issues.forEach(function(issue,i){
+      var opts=LOCATIONS.map(function(l){return '<option value="'+l+'"'+(issue.location===l?' selected':'')+'>'+l+'</option>';}).join('');
+      var pf=issue.photoFar?'<img src="'+issue.photoFar+'"><button class="remove-photo" data-rm-type="issue_far" data-rm-idx="'+i+'">✕</button>':'<div class="placeholder"><div class="icon">📷</div><div class="text">遠景</div></div>';
+      var pc=issue.photoClose?'<img src="'+issue.photoClose+'"><button class="remove-photo" data-rm-type="issue_close" data-rm-idx="'+i+'">✕</button>':'<div class="placeholder"><div class="icon">📷</div><div class="text">接写</div></div>';
+      h+='<div class="issue-card" id="issueCard_'+i+'">'+
         '<div class="issue-number">'+(i+1)+'</div>'+
         '<button class="delete-issue" data-idx="'+i+'">🗑️</button>'+
         '<div class="photo-pair">'+
@@ -509,202 +537,252 @@ body {
         '<div class="form-group" style="margin-bottom:8px;">'+
           '<input type="text" id="issue_locfree_'+i+'" value="'+esc(issue.locationFree)+'" placeholder="場所の補足（自由記述）"></div>'+
         '<div class="form-group" style="margin-bottom:0;"><label>コメント</label>'+
-          '<textarea id="issue_comment_'+i+'" placeholder="指摘内容を入力">'+esc(issue.comment)+'</textarea></div>'+
-      '</div>';
+          '<textarea id="issue_comment_'+i+'" placeholder="指摘内容を入力">'+esc(issue.comment)+'</textarea></div></div>';
     });
-    c.innerHTML = h;
+    c.innerHTML=h;
   }
 
-  function renderCheckItems() {
-    var c=document.getElementById('checkItemsContainer'); if(!c) return;
+  function renderCheckItems(){
+    var c=document.getElementById('checkItemsContainer');if(!c)return;
     var h='';
-    appData.checkItems.forEach(function(item, i) {
-      var pf = item.photoFar
-        ? '<img src="'+item.photoFar+'"><button class="remove-photo" data-rm-type="check_far" data-rm-idx="'+i+'">✕</button>'
-        : '<div class="placeholder"><div class="icon">📷</div><div class="text">遠景</div></div>';
-      var pc = item.photoClose
-        ? '<img src="'+item.photoClose+'"><button class="remove-photo" data-rm-type="check_close" data-rm-idx="'+i+'">✕</button>'
-        : '<div class="placeholder"><div class="icon">📷</div><div class="text">接写</div></div>';
-      h += '<div class="check-item-card">'+
+    appData.checkItems.forEach(function(item,i){
+      var pf=item.photoFar?'<img src="'+item.photoFar+'"><button class="remove-photo" data-rm-type="check_far" data-rm-idx="'+i+'">✕</button>':'<div class="placeholder"><div class="icon">📷</div><div class="text">写真①</div></div>';
+      var pc=item.photoClose?'<img src="'+item.photoClose+'"><button class="remove-photo" data-rm-type="check_close" data-rm-idx="'+i+'">✕</button>':'<div class="placeholder"><div class="icon">📷</div><div class="text">写真②</div></div>';
+      h+='<div class="check-item-card">'+
         '<div class="item-title">📌 '+item.name+'</div>'+
         '<div class="photo-pair">'+
-          '<div><div class="photo-label">遠景</div><div class="photo-slot" data-photo-target="check_far" data-photo-idx="'+i+'">'+pf+'</div></div>'+
-          '<div><div class="photo-label">接写</div><div class="photo-slot" data-photo-target="check_close" data-photo-idx="'+i+'">'+pc+'</div></div>'+
+          '<div><div class="photo-label">写真①</div><div class="photo-slot" data-photo-target="check_far" data-photo-idx="'+i+'">'+pf+'</div></div>'+
+          '<div><div class="photo-label">写真②</div><div class="photo-slot" data-photo-target="check_close" data-photo-idx="'+i+'">'+pc+'</div></div>'+
         '</div>'+
         '<div class="form-group" style="margin-bottom:0;"><label>コメント</label>'+
-          '<textarea id="check_comment_'+i+'" placeholder="コメントを入力">'+esc(item.comment)+'</textarea></div>'+
+          '<textarea id="check_comment_'+i+'" placeholder="コメントを入力">'+esc(item.comment)+'</textarea></div></div>';
+    });
+    c.innerHTML=h;
+  }
+
+  function renderBlueprints(){
+    var c=document.getElementById('blueprintsContainer');if(!c)return;
+    var cnt=document.getElementById('bpCount');if(cnt)cnt.textContent=appData.blueprints.length+'枚';
+    var h='';
+    appData.blueprints.forEach(function(bp,i){
+      var ph=bp.photo
+        ?'<img src="'+bp.photo+'"><button class="remove-photo" data-rm-type="blueprint" data-rm-idx="'+i+'">✕</button>'
+        :'<div class="placeholder"><div class="icon">📐</div><div class="text">タップして図面を撮影</div></div>';
+      h+='<div class="blueprint-card">'+
+        '<div class="bp-title">📐 図面'+(i+1<10?'⓪①②③④⑤⑥'.charAt(i+1):'('+(i+1)+')')+'</div>'+
+        '<button class="delete-bp" data-idx="'+i+'">🗑️</button>'+
+        '<div class="photo-slot-free" data-photo-target="blueprint" data-photo-idx="'+i+'">'+ph+'</div>'+
       '</div>';
     });
-    c.innerHTML = h;
+    c.innerHTML=h;
+    // Show/hide add button
+    var addBtn=document.getElementById('btnAddBP');
+    if(addBtn) addBtn.style.display=appData.blueprints.length>=MAX_BLUEPRINTS?'none':'block';
   }
 
-  /* Issues */
-  function addIssue() {
-    if (appData.issues.length >= MAX_ISSUES) { alert("最大"+MAX_ISSUES+"件です。"); return; }
-    appData.issues.push({ location:"", locationFree:"", comment:"", photoFar:null, photoClose:null });
-    saveData(); renderIssues();
-    setTimeout(function() {
-      var el=document.getElementById('issueCard_'+(appData.issues.length-1));
-      if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
-    }, 100);
+  /* === Issues === */
+  function addIssue(){
+    if(appData.issues.length>=MAX_ISSUES){alert("最大"+MAX_ISSUES+"件です。");return;}
+    appData.issues.push({location:"",locationFree:"",comment:"",photoFar:null,photoClose:null});
+    saveData();renderIssues();
+    setTimeout(function(){var el=document.getElementById('issueCard_'+(appData.issues.length-1));if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
+  }
+  function deleteIssue(idx){
+    if(confirm("指摘箇所 "+(idx+1)+" を削除しますか？")){appData.issues.splice(idx,1);saveData();renderIssues();}
   }
 
-  function deleteIssue(idx) {
-    if (confirm("指摘箇所 "+(idx+1)+" を削除しますか？")) {
-      appData.issues.splice(idx, 1); saveData(); renderIssues();
-    }
+  /* === Blueprints === */
+  function addBlueprint(){
+    if(appData.blueprints.length>=MAX_BLUEPRINTS){alert("図面は最大"+MAX_BLUEPRINTS+"枚です。");return;}
+    appData.blueprints.push({photo:null});
+    saveData();renderBlueprints();
+    // Trigger photo immediately
+    setTimeout(function(){takePhoto('blueprint',appData.blueprints.length-1);},200);
+  }
+  function deleteBlueprint(idx){
+    if(confirm("図面"+(idx+1)+"を削除しますか？")){appData.blueprints.splice(idx,1);saveData();renderBlueprints();}
   }
 
-  /* Photo */
-  var photoLock = false;
-  function takePhoto(type, idx) {
-    if (photoLock) return;
-    photoLock = true;
-    setTimeout(function() { photoLock = false; }, 1000);
-    currentPhotoTarget = { type:type, index:idx };
-    var old = document.getElementById('photoFileInput');
-    if (old) old.parentNode.removeChild(old);
-    var inp = document.createElement('input');
-    inp.type='file'; inp.accept='image/*'; inp.id='photoFileInput';
+  /* === Photo === */
+  var photoLock=false;
+  function takePhoto(type,idx){
+    if(photoLock) return;
+    photoLock=true; setTimeout(function(){photoLock=false;},1000);
+    currentPhotoTarget={type:type,index:idx};
+    var old=document.getElementById('photoFileInput');
+    if(old) old.parentNode.removeChild(old);
+    var inp=document.createElement('input');
+    inp.type='file';inp.accept='image/*';inp.id='photoFileInput';
     inp.style.cssText='position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;z-index:-1;';
-    inp.onchange = function(e) {
-      var file = e.target.files && e.target.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(ev) { cropAndPreview(ev.target.result); };
-      reader.onerror = function() { alert("読み込みエラー"); };
+    inp.onchange=function(e){
+      var file=e.target.files&&e.target.files[0];
+      if(!file)return;
+      var reader=new FileReader();
+      reader.onload=function(ev){
+        // Blueprint: no crop, just resize for compression
+        if(currentPhotoTarget && currentPhotoTarget.type==='blueprint'){
+          resizeNoCrop(ev.target.result);
+        } else {
+          cropAndPreview(ev.target.result);
+        }
+      };
+      reader.onerror=function(){alert("読み込みエラー");};
       reader.readAsDataURL(file);
     };
     document.body.appendChild(inp);
-    setTimeout(function() { inp.click(); }, 200);
+    setTimeout(function(){inp.click();},200);
   }
 
-  function cropAndPreview(dataUrl) {
-    var img = new Image();
-    img.onload = function() {
+  function cropAndPreview(dataUrl){
+    var img=new Image();
+    img.onload=function(){
       var canvas=document.getElementById('photoCanvas');
       var sw,sh;
-      if(img.width/img.height > 4/3){sh=img.height;sw=Math.round(sh*4/3);}
+      if(img.width/img.height>4/3){sh=img.height;sw=Math.round(sh*4/3);}
       else{sw=img.width;sh=Math.round(sw*3/4);}
       canvas.width=800;canvas.height=600;
-      canvas.getContext('2d').drawImage(img, Math.round((img.width-sw)/2), Math.round((img.height-sh)/2), sw, sh, 0, 0, 800, 600);
-      pendingImageData = canvas.toDataURL('image/jpeg', 0.82);
-      document.getElementById('previewImage').src = pendingImageData;
+      canvas.getContext('2d').drawImage(img,Math.round((img.width-sw)/2),Math.round((img.height-sh)/2),sw,sh,0,0,800,600);
+      pendingImageData=canvas.toDataURL('image/jpeg',0.82);
+      document.getElementById('previewImage').src=pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
     };
-    img.onerror = function() { alert("画像処理エラー"); };
-    img.src = dataUrl;
+    img.onerror=function(){alert("画像処理エラー");};
+    img.src=dataUrl;
   }
 
-  function savePhotoToTarget(data) {
-    var t = currentPhotoTarget; if(!t) return;
-    if (t.type==='exterior') { appData.exteriorPhoto=data; renderExteriorPhoto(); }
-    else if (t.type==='issue_far' && appData.issues[t.index]) { appData.issues[t.index].photoFar=data; renderIssues(); }
-    else if (t.type==='issue_close' && appData.issues[t.index]) { appData.issues[t.index].photoClose=data; renderIssues(); }
-    else if (t.type==='check_far' && appData.checkItems[t.index]) { appData.checkItems[t.index].photoFar=data; renderCheckItems(); }
-    else if (t.type==='check_close' && appData.checkItems[t.index]) { appData.checkItems[t.index].photoClose=data; renderCheckItems(); }
-    saveData(); currentPhotoTarget=null;
+  // Blueprint: resize to max 1600px width, no crop, JPEG compressed
+  function resizeNoCrop(dataUrl){
+    var img=new Image();
+    img.onload=function(){
+      var canvas=document.getElementById('photoCanvas');
+      var maxW=1600;
+      var w=img.width, h=img.height;
+      if(w>maxW){ h=Math.round(h*(maxW/w)); w=maxW; }
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      pendingImageData=canvas.toDataURL('image/jpeg',0.70);
+      document.getElementById('previewImage').src=pendingImageData;
+      document.getElementById('previewOverlay').classList.add('active');
+    };
+    img.onerror=function(){alert("画像処理エラー");};
+    img.src=dataUrl;
   }
 
-  /* PDF */
-  function generatePDF() {
+  function savePhotoToTarget(data){
+    var t=currentPhotoTarget;if(!t)return;
+    if(t.type==='exterior'){appData.exteriorPhoto=data;renderExteriorPhoto();}
+    else if(t.type==='issue_far'&&appData.issues[t.index]){appData.issues[t.index].photoFar=data;renderIssues();}
+    else if(t.type==='issue_close'&&appData.issues[t.index]){appData.issues[t.index].photoClose=data;renderIssues();}
+    else if(t.type==='check_far'&&appData.checkItems[t.index]){appData.checkItems[t.index].photoFar=data;renderCheckItems();}
+    else if(t.type==='check_close'&&appData.checkItems[t.index]){appData.checkItems[t.index].photoClose=data;renderCheckItems();}
+    else if(t.type==='blueprint'&&appData.blueprints[t.index]){appData.blueprints[t.index].photo=data;renderBlueprints();}
+    saveData();currentPhotoTarget=null;
+  }
+
+  /* === PDF === */
+  function generatePDF(){
     saveData();
-    if (!appData.staffName) { alert("担当者を入力してください。"); return; }
-    if (!appData.customerName) { alert("お客様名を入力してください。"); return; }
-    if (!appData.address) { alert("住所を入力してください。"); return; }
+    if(!appData.staffName){alert("担当者を入力してください。");return;}
+    if(!appData.customerName){alert("お客様名を入力してください。");return;}
+    if(!appData.address){alert("住所を入力してください。");return;}
     buildPrintArea();
-    setTimeout(function() { window.print(); }, 300);
+    setTimeout(function(){window.print();},300);
   }
 
-  function buildPrintArea() {
-    var pa = document.getElementById('printArea');
-    var today = new Date();
-    var dateStr = today.getFullYear()+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日';
-    var h = '';
+  function buildPrintArea(){
+    var pa=document.getElementById('printArea');
+    var today=new Date();
+    var dateStr=today.getFullYear()+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日';
+    var h='';
 
-    // === Page 1: Cover + Issue List ===
-    h += '<div class="pp">';
-    h += '<div class="pc-title">アフター点検報告書</div>';
-    h += '<div class="pc-header">';
-    // Exterior photo left
-    h += '<div class="pc-photo">';
-    h += appData.exteriorPhoto ? '<img src="'+appData.exteriorPhoto+'">' : '<div class="no-ph">外観写真なし</div>';
-    h += '</div>';
-    // Info right
-    h += '<div class="pc-info"><table>';
-    h += '<tr><th>支社名</th><td>'+appData.branchName+'</td><th>点検日</th><td>'+dateStr+'</td><th>担当者</th><td>'+appData.staffName+'</td></tr>';
-    h += '<tr><th>お客様名</th><td>'+esc(appData.customerName)+' 様</td><th>住所</th><td colspan="3">'+esc(appData.address)+'</td></tr>';
-    h += '<tr><th>点検種別</th><td colspan="5">'+appData.inspectionType+'点検</td></tr>';
-    h += '</table></div></div>';
-
-    // Issue list on same page
-    if (appData.issues.length > 0) {
-      h += '<div style="margin-top:10px;">';
-      h += '<div class="pi-title">指摘箇所一覧（全'+appData.issues.length+'件）</div>';
-      h += '<table class="pi-table"><tr><th style="width:28px;text-align:center;">No.</th><th style="width:100px;">場所</th><th>コメント</th></tr>';
-      appData.issues.forEach(function(issue, i) {
-        var loc = (issue.location||'')+(issue.locationFree?' '+issue.locationFree:'');
-        h += '<tr><td style="text-align:center;font-weight:700;color:#1a5276;">'+(i+1)+'</td><td>'+esc(loc)+'</td><td style="word-break:break-all;">'+esc(issue.comment)+'</td></tr>';
+    // Page 1: Cover + Issue List
+    h+='<div class="pp">';
+    h+='<div class="pc-title">アフター点検報告書</div>';
+    h+='<div class="pc-header">';
+    h+='<div class="pc-photo">';
+    h+=appData.exteriorPhoto?'<img src="'+appData.exteriorPhoto+'">':'<div class="no-ph">外観写真なし</div>';
+    h+='</div>';
+    h+='<div class="pc-info"><table>';
+    h+='<tr><th>支社名</th><td>'+appData.branchName+'</td><th>点検日</th><td>'+dateStr+'</td><th>担当者</th><td>'+appData.staffName+'</td></tr>';
+    h+='<tr><th>お客様名</th><td>'+esc(appData.customerName)+' 様</td><th>住所</th><td colspan="3">'+esc(appData.address)+'</td></tr>';
+    h+='<tr><th>点検種別</th><td colspan="5">'+appData.inspectionType+'点検</td></tr>';
+    h+='</table></div></div>';
+    if(appData.issues.length>0){
+      h+='<div style="margin-top:10px;">';
+      h+='<div class="pi-title">指摘箇所一覧（全'+appData.issues.length+'件）</div>';
+      h+='<table class="pi-table"><tr><th style="width:28px;text-align:center;">No.</th><th style="width:100px;">場所</th><th>コメント</th></tr>';
+      appData.issues.forEach(function(issue,i){
+        var loc=(issue.location||'')+(issue.locationFree?' '+issue.locationFree:'');
+        h+='<tr><td style="text-align:center;font-weight:700;color:#1a5276;">'+(i+1)+'</td><td>'+esc(loc)+'</td><td style="word-break:break-all;">'+esc(issue.comment)+'</td></tr>';
       });
-      h += '</table></div>';
+      h+='</table></div>';
     }
-    h += '</div>';
+    h+='</div>';
 
-    // === Issue Photo Pages (3 per page) ===
-    if (appData.issues.length > 0) {
-      for (var p = 0; p < Math.ceil(appData.issues.length / 3); p++) {
-        h += '<div class="pp">';
-        h += '<div class="pd-title">指摘箇所詳細</div>';
-        for (var s = 0; s < 3; s++) {
-          var idx = p*3+s;
-          if (idx < appData.issues.length) {
-            var iss = appData.issues[idx];
-            var loc2 = (iss.location||'')+(iss.locationFree?' '+iss.locationFree:'');
-            h += '<div class="pd-item">';
-            h += '<div class="pd-badge">'+(idx+1)+'</div>';
-            h += '<div class="pd-photos">';
-            h += '<div><div class="plabel">【遠景】</div>';
-            h += iss.photoFar ? '<img src="'+iss.photoFar+'">' : '<div class="no-photo">写真なし</div>';
-            h += '</div>';
-            h += '<div><div class="plabel">【接写】</div>';
-            h += iss.photoClose ? '<img src="'+iss.photoClose+'">' : '<div class="no-photo">写真なし</div>';
-            h += '</div></div>';
-            h += '<div class="pd-info"><span class="loc">場所: '+esc(loc2)+'</span><br>'+esc(iss.comment)+'</div>';
-            h += '</div>';
+    // Issue Photo Pages (3 per page)
+    if(appData.issues.length>0){
+      for(var p=0;p<Math.ceil(appData.issues.length/3);p++){
+        h+='<div class="pp">';
+        h+='<div class="pd-title">指摘箇所詳細</div>';
+        for(var s=0;s<3;s++){
+          var idx=p*3+s;
+          if(idx<appData.issues.length){
+            var iss=appData.issues[idx];
+            var loc2=(iss.location||'')+(iss.locationFree?' '+iss.locationFree:'');
+            h+='<div class="pd-item">';
+            h+='<div class="pd-badge">'+(idx+1)+'</div>';
+            h+='<div class="pd-photos">';
+            h+='<div><div class="plabel">【遠景】</div>';
+            h+=iss.photoFar?'<img src="'+iss.photoFar+'">':'<div class="no-photo">写真なし</div>';
+            h+='</div><div><div class="plabel">【接写】</div>';
+            h+=iss.photoClose?'<img src="'+iss.photoClose+'">':'<div class="no-photo">写真なし</div>';
+            h+='</div></div>';
+            h+='<div class="pd-info"><span class="loc">場所: '+esc(loc2)+'</span><br>'+esc(iss.comment)+'</div>';
+            h+='</div>';
           }
         }
-        h += '</div>';
+        h+='</div>';
       }
     }
 
-    // === Check Items Page ===
-    h += '<div class="pp">';
-    h += '<div class="pk-title">検査項目</div>';
-    appData.checkItems.forEach(function(item) {
-      h += '<div class="pk-item">';
-      h += '<div class="pk-item-title">■ '+item.name+'</div>';
-      h += '<div class="pk-photos">';
-      h += '<div><div class="plabel">【遠景】</div>';
-      h += item.photoFar ? '<img src="'+item.photoFar+'">' : '<div class="no-photo">写真なし</div>';
-      h += '</div>';
-      h += '<div><div class="plabel">【接写】</div>';
-      h += item.photoClose ? '<img src="'+item.photoClose+'">' : '<div class="no-photo">写真なし</div>';
-      h += '</div></div>';
-      h += '<div class="pk-comment"><div class="clabel">コメント:</div>'+esc(item.comment||'なし')+'</div>';
-      h += '</div>';
+    // Check Items Page
+    h+='<div class="pp">';
+    h+='<div class="pk-title">検査項目</div>';
+    appData.checkItems.forEach(function(item){
+      h+='<div class="pk-item">';
+      h+='<div class="pk-item-title">■ '+item.name+'</div>';
+      h+='<div class="pk-photos">';
+      h+='<div><div class="plabel">【写真①】</div>';
+      h+=item.photoFar?'<img src="'+item.photoFar+'">':'<div class="no-photo">写真なし</div>';
+      h+='</div><div><div class="plabel">【写真②】</div>';
+      h+=item.photoClose?'<img src="'+item.photoClose+'">':'<div class="no-photo">写真なし</div>';
+      h+='</div></div>';
+      h+='<div class="pk-comment"><div class="clabel">コメント:</div>'+esc(item.comment||'なし')+'</div>';
+      h+='</div>';
     });
-    h += '</div>';
+    h+='</div>';
 
-    pa.innerHTML = h;
+    // Blueprint Pages (1 per page, landscape)
+    var numLabels=['①','②','③','④','⑤','⑥'];
+    appData.blueprints.forEach(function(bp,i){
+      if(bp.photo){
+        h+='<div class="pp-land">';
+        h+='<div class="pb-bar">図面'+numLabels[i]+'</div>';
+        h+='<div class="pb-img"><img src="'+bp.photo+'"></div>';
+        h+='</div>';
+      }
+    });
+
+    pa.innerHTML=h;
 
     // Set document title for PDF filename
-    var m = String(today.getMonth()+1).padStart(2,'0');
-    var d = String(today.getDate()).padStart(2,'0');
-    document.title = m+d+'_'+appData.staffName+'_'+esc(appData.customerName)+'様';
+    var m=String(today.getMonth()+1).padStart(2,'0');
+    var d=String(today.getDate()).padStart(2,'0');
+    document.title=m+d+'_'+appData.staffName+'_'+appData.customerName+'様';
   }
 
-  function esc(s) {
-    if(!s) return '';
+  function esc(s){
+    if(!s)return '';
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
