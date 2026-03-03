@@ -180,12 +180,10 @@ body {
     page-break-after: always; width:100%; padding: 10mm 12mm 20mm 12mm; position:relative;
   }
   .pp:last-child { page-break-after: auto; }
-  /* Landscape page for blueprints */
+  /* Blueprint pages use normal portrait */
   .pp-land {
-    page-break-after: always; width: 100%; padding: 8mm 10mm 18mm 10mm;
-    page: landscape;
+    page-break-after: always; width: 100%; padding: 10mm 12mm 20mm 12mm; position:relative;
   }
-  @page landscape { size: A4 landscape; }
   .pp-land:last-child { page-break-after: auto; }
   /* Cover */
   .pc-title {
@@ -245,13 +243,26 @@ body {
   .pk-photos .plabel { font-size:8px; color:#666; margin-bottom:2px; }
   .pk-comment { font-size:10px; line-height:1.5; }
   .pk-comment .clabel { font-size:9px; color:#666; font-weight:600; margin-bottom:2px; }
-  /* Blueprint pages */
+  /* Blueprint pages - rotated 90deg to fill portrait A4 */
   .pb-bar {
     background: linear-gradient(135deg,#5b3e8a,#7b52b9) !important;
     color:white; padding:6px 12px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:8px;
   }
-  .pb-img { width:100%; }
-  .pb-img img { width:100%; border:1px solid #ddd; border-radius:3px; }
+  .pb-img-rotated {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .pb-img-rotated img {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    max-height: 170mm;
+    width: auto;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+  }
 }
 </style>
 </head>
@@ -762,13 +773,13 @@ body {
     });
     h+='</div>';
 
-    // Blueprint Pages (1 per page, landscape)
+    // Blueprint Pages (1 per page, image rotated 90deg for full size)
     var numLabels=['①','②','③','④','⑤','⑥'];
     appData.blueprints.forEach(function(bp,i){
       if(bp.photo){
         h+='<div class="pp-land">';
         h+='<div class="pb-bar">図面'+numLabels[i]+'</div>';
-        h+='<div class="pb-img"><img src="'+bp.photo+'"></div>';
+        h+='<div class="pb-img-rotated"><img src="'+bp.photo+'"></div>';
         h+='</div>';
       }
     });
@@ -778,7 +789,7 @@ body {
     // Set document title for PDF filename
     var m=String(today.getMonth()+1).padStart(2,'0');
     var d=String(today.getDate()).padStart(2,'0');
-    document.title=m+d+'_'+appData.staffName+'_'+appData.customerName+'様';
+    document.title=m+d+'_'+appData.inspectionType+'_'+appData.customerName+'様_'+appData.staffName;
   }
 
   function esc(s){
