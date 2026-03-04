@@ -70,7 +70,7 @@ body {
   border-radius: 8px; display: flex; flex-direction: column; align-items: center;
   justify-content: center; position: relative; overflow: hidden; touch-action: manipulation; cursor: pointer;
 }
-.photo-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+.photo-slot img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; background: #f0f3f6; }
 .photo-slot .placeholder { text-align: center; color: var(--text-light); pointer-events: none; }
 .photo-slot .placeholder .icon { font-size: 32px; margin-bottom: 4px; }
 .photo-slot .placeholder .text { font-size: 12px; }
@@ -172,10 +172,6 @@ body {
   body > *:not(#printArea) { display: none !important; }
   #printArea { display: block !important; }
   body { background:white; padding:0; margin:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  body::after {
-    content:''; position:fixed; bottom:0; left:0; right:0; height:14mm;
-    background:white; z-index:99999;
-  }
   .pp {
     page-break-after: always; width:100%; padding: 10mm 12mm 20mm 12mm; position:relative;
   }
@@ -192,9 +188,9 @@ body {
     letter-spacing: 2px; border-radius: 3px; margin-bottom: 12px;
   }
   .pc-header { display: flex; gap: 12px; margin-bottom: 12px; }
-  .pc-photo { width: 140px; flex-shrink: 0; }
+  .pc-photo { width: 110px; flex-shrink: 0; }
   .pc-photo img { width:100%; border:1px solid #ddd; border-radius:3px; }
-  .pc-photo .no-ph { width:100%; aspect-ratio:4/3; background:#f5f5f5; border:1px dashed #ccc; border-radius:3px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
+  .pc-photo .no-ph { width:100%; height:140px; background:#f5f5f5; border:1px dashed #ccc; border-radius:3px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
   .pc-info { flex:1; }
   .pc-info table { width:100%; border-collapse:collapse; font-size:10px; }
   .pc-info th { background:#f0f3f6 !important; padding:5px 8px; text-align:left; border:1px solid #dce1e6; font-weight:700; white-space:nowrap; }
@@ -308,7 +304,8 @@ body {
     </div>
     <div class="form-group">
       <label>外観写真</label>
-      <div class="photo-slot" id="exteriorPhotoSlot" data-photo-target="exterior">
+      <div style="font-size:11px;color:#7f8c8d;margin-bottom:4px;">※ スマホを縦向きで撮影してください</div>
+      <div class="photo-slot" id="exteriorPhotoSlot" data-photo-target="exterior" style="aspect-ratio:3/4;max-width:60%;">
         <div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>
       </div>
     </div>
@@ -630,8 +627,8 @@ body {
       if(!file)return;
       var reader=new FileReader();
       reader.onload=function(ev){
-        // Blueprint: no crop, just resize for compression
-        if(currentPhotoTarget && currentPhotoTarget.type==='blueprint'){
+        // Blueprint and exterior: no crop, just resize for compression
+        if(currentPhotoTarget && (currentPhotoTarget.type==='blueprint' || currentPhotoTarget.type==='exterior')){
           resizeNoCrop(ev.target.result);
         } else {
           cropAndPreview(ev.target.result);
@@ -661,17 +658,19 @@ body {
     img.src=dataUrl;
   }
 
-  // Blueprint: resize to max 1600px width, no crop, JPEG compressed
+  // No crop resize: exterior uses 800px width, blueprint uses 1600px
   function resizeNoCrop(dataUrl){
     var img=new Image();
     img.onload=function(){
       var canvas=document.getElementById('photoCanvas');
-      var maxW=1600;
+      var isExterior = currentPhotoTarget && currentPhotoTarget.type==='exterior';
+      var maxW = isExterior ? 800 : 1600;
+      var quality = isExterior ? 0.80 : 0.70;
       var w=img.width, h=img.height;
       if(w>maxW){ h=Math.round(h*(maxW/w)); w=maxW; }
       canvas.width=w; canvas.height=h;
       canvas.getContext('2d').drawImage(img,0,0,w,h);
-      pendingImageData=canvas.toDataURL('image/jpeg',0.70);
+      pendingImageData=canvas.toDataURL('image/jpeg',quality);
       document.getElementById('previewImage').src=pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
     };
