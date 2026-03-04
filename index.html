@@ -239,26 +239,13 @@ body {
   .pk-photos .plabel { font-size:8px; color:#666; margin-bottom:2px; }
   .pk-comment { font-size:10px; line-height:1.5; }
   .pk-comment .clabel { font-size:9px; color:#666; font-weight:600; margin-bottom:2px; }
-  /* Blueprint pages - rotated 90deg to fill portrait A4 */
+  /* Blueprint pages - full width, no rotation, matching orientation */
   .pb-bar {
     background: linear-gradient(135deg,#5b3e8a,#7b52b9) !important;
     color:white; padding:6px 12px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:8px;
   }
-  .pb-img-rotated {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .pb-img-rotated img {
-    transform: rotate(90deg);
-    transform-origin: center center;
-    max-height: 170mm;
-    width: auto;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-  }
+  .pb-img-full { width: 100%; }
+  .pb-img-full img { width: 100%; border: 1px solid #ddd; border-radius: 3px; }
 }
 </style>
 </head>
@@ -742,9 +729,9 @@ body {
             h+='<div class="pd-item">';
             h+='<div class="pd-badge">'+(idx+1)+'</div>';
             h+='<div class="pd-photos">';
-            h+='<div><div class="plabel">【遠景】</div>';
+            h+='<div>';
             h+=iss.photoFar?'<img src="'+iss.photoFar+'">':'<div class="no-photo">写真なし</div>';
-            h+='</div><div><div class="plabel">【接写】</div>';
+            h+='</div><div>';
             h+=iss.photoClose?'<img src="'+iss.photoClose+'">':'<div class="no-photo">写真なし</div>';
             h+='</div></div>';
             h+='<div class="pd-info"><span class="loc">場所: '+esc(loc2)+'</span><br>'+esc(iss.comment)+'</div>';
@@ -762,9 +749,9 @@ body {
       h+='<div class="pk-item">';
       h+='<div class="pk-item-title">■ '+item.name+'</div>';
       h+='<div class="pk-photos">';
-      h+='<div><div class="plabel">【写真①】</div>';
+      h+='<div>';
       h+=item.photoFar?'<img src="'+item.photoFar+'">':'<div class="no-photo">写真なし</div>';
-      h+='</div><div><div class="plabel">【写真②】</div>';
+      h+='</div><div>';
       h+=item.photoClose?'<img src="'+item.photoClose+'">':'<div class="no-photo">写真なし</div>';
       h+='</div></div>';
       h+='<div class="pk-comment"><div class="clabel">コメント:</div>'+esc(item.comment||'なし')+'</div>';
@@ -772,13 +759,13 @@ body {
     });
     h+='</div>';
 
-    // Blueprint Pages (1 per page, image rotated 90deg for full size)
+    // Blueprint Pages (1 per page, full width, no rotation)
     var numLabels=['①','②','③','④','⑤','⑥'];
     appData.blueprints.forEach(function(bp,i){
       if(bp.photo){
         h+='<div class="pp-land">';
         h+='<div class="pb-bar">図面'+numLabels[i]+'</div>';
-        h+='<div class="pb-img-rotated"><img src="'+bp.photo+'"></div>';
+        h+='<div class="pb-img-full"><img src="'+bp.photo+'"></div>';
         h+='</div>';
       }
     });
