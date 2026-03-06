@@ -173,14 +173,19 @@ body {
   #printArea { display: block !important; }
   body { background:white; padding:0; margin:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .pp {
-    page-break-after: always; width:100%; padding: 10mm 12mm 20mm 12mm; position:relative;
+    page-break-after: always; break-after: always;
+    width:100%; padding: 10mm 12mm 20mm 12mm; position:relative;
   }
-  .pp:last-child { page-break-after: auto; }
   /* Blueprint pages use normal portrait */
   .pp-land {
-    page-break-after: always; width: 100%; padding: 10mm 12mm 20mm 12mm; position:relative;
+    page-break-after: always; break-after: always;
+    width: 100%; padding: 10mm 12mm 20mm 12mm; position:relative;
   }
-  .pp-land:last-child { page-break-after: auto; }
+  /* Last page: suppress trailing blank page */
+  #printArea > *:last-child {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
   /* Cover */
   .pc-title {
     background: linear-gradient(135deg,#1a5276,#2980b9) !important;
@@ -775,12 +780,16 @@ body {
 
     pa.innerHTML=h;
 
-    // Fix trailing blank page: explicitly set last page to no page-break
+    // Fix trailing blank page: remove page-break from last page
     var allPages=pa.querySelectorAll('.pp,.pp-land');
+    allPages.forEach(function(p){
+      p.style.pageBreakAfter='always';
+      p.style.breakAfter='always';
+    });
     if(allPages.length>0){
       var last=allPages[allPages.length-1];
-      last.style.pageBreakAfter='auto';
-      last.style.breakAfter='auto';
+      last.style.pageBreakAfter='avoid';
+      last.style.breakAfter='avoid';
     }
 
     // Set document title for PDF filename
