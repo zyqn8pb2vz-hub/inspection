@@ -179,7 +179,8 @@ body {
   /* Blueprint pages use normal portrait */
   .pp-land {
     page-break-after: always; break-after: always;
-    width: 100%; padding: 10mm 12mm 20mm 12mm; position:relative;
+    width: 100%; padding: 8mm 12mm 8mm 12mm; position:relative;
+    height: 277mm; overflow: hidden;
   }
   /* Last page: suppress trailing blank page */
   #printArea > *:last-child {
@@ -250,7 +251,7 @@ body {
     color:white; padding:6px 12px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:8px;
   }
   .pb-img-full { width: 100%; }
-  .pb-img-full img { width: 100%; border: 1px solid #ddd; border-radius: 3px; }
+  .pb-img-full img { width: 100%; max-height: 245mm; object-fit: contain; border: 1px solid #ddd; border-radius: 3px; }
 }
 </style>
 </head>
