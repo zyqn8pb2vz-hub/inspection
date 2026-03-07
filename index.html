@@ -179,8 +179,7 @@ body {
   /* Blueprint pages use normal portrait */
   .pp-land {
     page-break-after: always; break-after: always;
-    width: 100%; padding: 8mm 12mm 8mm 12mm; position:relative;
-    height: 277mm; overflow: hidden;
+    width: 100%; padding: 8mm 12mm 6mm 12mm; position:relative;
   }
   /* Last page: suppress trailing blank page */
   #printArea > *:last-child {
@@ -251,7 +250,7 @@ body {
     color:white; padding:6px 12px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:8px;
   }
   .pb-img-full { width: 100%; }
-  .pb-img-full img { width: 100%; max-height: 245mm; object-fit: contain; border: 1px solid #ddd; border-radius: 3px; }
+  .pb-img-full img { width: 100%; max-height: 210mm; object-fit: contain; border: 1px solid #ddd; border-radius: 3px; display: block; }
 }
 </style>
 </head>
@@ -657,13 +656,32 @@ body {
     img.onload=function(){
       var canvas=document.getElementById('photoCanvas');
       var isExterior = currentPhotoTarget && currentPhotoTarget.type==='exterior';
-      var maxW = isExterior ? 600 : 1300;
-      var quality = isExterior ? 0.58 : 0.65;
-      var w=img.width, h=img.height;
-      if(w>maxW){ h=Math.round(h*(maxW/w)); w=maxW; }
-      canvas.width=w; canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      pendingImageData=canvas.toDataURL('image/jpeg',quality);
+      var isBluePrint = currentPhotoTarget && currentPhotoTarget.type==='blueprint';
+
+      if(isBluePrint){
+        // 図面はA4縦印刷に収まるよう縦横比を強制制限
+        // A4縦の印刷可能エリア比率(幅:高さ = 186mm:240mm ≒ 0.775)に合わせる
+        var maxW = 1300;
+        var maxRatio = 186/240; // 幅/高さの最大比率（これ以上縦長にしない）
+        var w=img.width, h=img.height;
+        // 縦長すぎる画像はトリミングせずキャンバスサイズで抑制
+        var canvasH = Math.round(maxW / maxRatio);
+        var drawW=w, drawH=h;
+        if(drawW>maxW){ drawH=Math.round(drawH*(maxW/drawW)); drawW=maxW; }
+        // 高さが上限を超えたらさらに縮小
+        if(drawH>canvasH){ drawW=Math.round(drawW*(canvasH/drawH)); drawH=canvasH; }
+        canvas.width=drawW; canvas.height=drawH;
+        canvas.getContext('2d').drawImage(img,0,0,drawW,drawH);
+        pendingImageData=canvas.toDataURL('image/jpeg',0.65);
+      } else {
+        var maxW2 = isExterior ? 600 : 1300;
+        var quality = isExterior ? 0.58 : 0.65;
+        var w2=img.width, h2=img.height;
+        if(w2>maxW2){ h2=Math.round(h2*(maxW2/w2)); w2=maxW2; }
+        canvas.width=w2; canvas.height=h2;
+        canvas.getContext('2d').drawImage(img,0,0,w2,h2);
+        pendingImageData=canvas.toDataURL('image/jpeg',quality);
+      }
       document.getElementById('previewImage').src=pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
     };
