@@ -168,18 +168,21 @@ body {
 
 /* ============ PRINT ============ */
 #printArea { display: none; }
+@page { margin: 6mm 7mm; }
 @media print {
   body > *:not(#printArea) { display: none !important; }
   #printArea { display: block !important; }
   body { background:white; padding:0; margin:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .pp {
     page-break-after: always; break-after: always;
-    width:100%; padding: 10mm 12mm 20mm 12mm; position:relative;
+    width:100%; padding: 4mm 5mm 4mm 5mm; position:relative;
+    box-sizing: border-box;
   }
-  /* Blueprint pages use normal portrait */
+  /* Blueprint pages */
   .pp-land {
     page-break-after: always; break-after: always;
-    width: 100%; padding: 8mm 12mm 6mm 12mm; position:relative;
+    width: 100%; padding: 4mm 5mm 4mm 5mm; position:relative;
+    box-sizing: border-box;
   }
   /* Last page: suppress trailing blank page */
   #printArea > *:last-child {
@@ -189,68 +192,69 @@ body {
   /* Cover */
   .pc-title {
     background: linear-gradient(135deg,#1a5276,#2980b9) !important;
-    color: white; text-align: center; padding: 10px 0; font-size: 20px; font-weight: 700;
-    letter-spacing: 2px; border-radius: 3px; margin-bottom: 12px;
+    color: white; text-align: center; padding: 10px 0; font-size: 22px; font-weight: 700;
+    letter-spacing: 2px; border-radius: 3px; margin-bottom: 10px;
   }
-  .pc-header { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; }
-  .pc-photo { width: 110px; flex-shrink: 0; }
+  .pc-header { display: flex; gap: 14px; margin-bottom: 10px; align-items: flex-start; }
+  .pc-photo { width: 130px; flex-shrink: 0; }
   .pc-photo img { width:100%; border:1px solid #ddd; border-radius:3px; }
-  .pc-photo .no-ph { width:100%; height:140px; background:#f5f5f5; border:1px dashed #ccc; border-radius:3px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
+  .pc-photo .no-ph { width:100%; height:160px; background:#f5f5f5; border:1px dashed #ccc; border-radius:3px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
   .pc-info { flex:1; }
-  .pc-info table { width:100%; border-collapse:collapse; font-size:10px; }
-  .pc-info th { background:#f0f3f6 !important; padding:5px 8px; text-align:left; border:1px solid #dce1e6; font-weight:700; white-space:nowrap; }
-  .pc-info td { padding:5px 8px; border:1px solid #dce1e6; }
+  .pc-info table { width:100%; border-collapse:collapse; font-size:11px; }
+  .pc-info th { background:#f0f3f6 !important; padding:6px 9px; text-align:left; border:1px solid #dce1e6; font-weight:700; white-space:nowrap; }
+  .pc-info td { padding:6px 9px; border:1px solid #dce1e6; }
   /* Issue list */
   .pi-title {
     background: linear-gradient(135deg,#1a5276,#2980b9) !important;
-    color: white; padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 3px 3px 0 0;
+    color: white; padding: 7px 13px; font-size: 13px; font-weight: 700; border-radius: 3px 3px 0 0;
   }
   .pi-table { width:100%; border-collapse:collapse; }
-  .pi-table th { background:#f0f3f6 !important; padding:4px 6px; font-size:9px; border:1px solid #dce1e6; text-align:left; }
-  .pi-table td { padding:4px 6px; font-size:9px; border:1px solid #dce1e6; vertical-align:top; line-height:1.4; word-break:break-all; }
+  .pi-table th { background:#f0f3f6 !important; padding:5px 7px; font-size:10px; border:1px solid #dce1e6; text-align:left; }
+  .pi-table td { padding:5px 7px; font-size:10px; border:1px solid #dce1e6; vertical-align:top; line-height:1.5; word-break:break-all; }
   /* Issue detail */
   .pd-title {
     background: linear-gradient(135deg,#1a5276,#2980b9) !important;
-    color:white; padding:6px 12px; font-size:11px; font-weight:700; border-radius:3px; margin-bottom:8px;
+    color:white; padding:7px 13px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:8px;
   }
-  .pd-item { border: 1.5px solid #1a5276; border-radius: 4px; padding: 8px; margin-bottom: 6px; }
+  .pd-item { border: 1.5px solid #1a5276; border-radius: 4px; padding: 8px; margin-bottom: 8px; }
   .pd-badge {
     display:inline-block; background:#1a5276 !important; color:white;
-    width:22px; height:22px; line-height:22px; text-align:center;
-    border-radius:50%; font-size:11px; font-weight:700; flex-shrink:0;
+    width:24px; height:24px; line-height:24px; text-align:center;
+    border-radius:50%; font-size:12px; font-weight:700; flex-shrink:0;
   }
-  .pd-photos { display:flex; gap:6px; margin-bottom:4px; }
+  .pd-photos { display:flex; gap:8px; margin-bottom:5px; }
   .pd-photos > div { flex:1; }
-  .pd-photos img { width:100%; max-height:145px; object-fit:cover; border:1px solid #ddd; border-radius:2px; }
-  .pd-photos .no-photo { width:100%; height:100px; background:#f5f5f5; border:1px dashed #ccc; border-radius:2px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
+  /* 接写写真は高解像度なので高さを大きめに */
+  .pd-photos img { width:100%; max-height:170px; object-fit:cover; border:1px solid #ddd; border-radius:2px; }
+  .pd-photos .no-photo { width:100%; height:110px; background:#f5f5f5; border:1px dashed #ccc; border-radius:2px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
   .pd-photos .plabel { font-size:8px; color:#666; margin-bottom:2px; }
-  .pd-info { font-size:11px; line-height:1.4; }
-  .pd-loc { font-size:11px; color:#1a5276; font-weight:700; }
+  .pd-info { font-size:12px; line-height:1.5; }
+  .pd-loc { font-size:12px; color:#1a5276; font-weight:700; }
   /* Check items */
   .pk-title {
     background: linear-gradient(135deg,#219a52,#27ae60) !important;
-    color:white; padding:6px 12px; font-size:12px; font-weight:700; border-radius:3px; margin-bottom:10px;
+    color:white; padding:7px 13px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:10px;
   }
-  .pk-item { margin-bottom:14px; padding-bottom:10px; border-bottom:1px dashed #ddd; }
-  .pk-item:last-child { border-bottom:none; }
+  .pk-item { margin-bottom:12px; padding-bottom:10px; border-bottom:1px dashed #ddd; }
+  .pk-item:last-child { border-bottom:none; margin-bottom:0; }
   .pk-item-title {
-    background:#f0faf4 !important; border:1px solid #b8e6cc; padding:5px 10px;
-    font-size:11px; font-weight:700; color:#27ae60; border-radius:3px; margin-bottom:6px;
+    background:#f0faf4 !important; border:1px solid #b8e6cc; padding:6px 11px;
+    font-size:12px; font-weight:700; color:#27ae60; border-radius:3px; margin-bottom:8px;
   }
-  .pk-photos { display:flex; gap:8px; margin-bottom:6px; }
+  .pk-photos { display:flex; gap:10px; margin-bottom:6px; }
   .pk-photos > div { flex:1; max-width:50%; }
-  .pk-photos img { width:100%; max-height:130px; object-fit:cover; border:1px solid #ddd; border-radius:2px; }
-  .pk-photos .no-photo { width:100%; height:90px; background:#f5f5f5; border:1px dashed #ccc; border-radius:2px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
-  .pk-photos .plabel { font-size:8px; color:#666; margin-bottom:2px; }
-  .pk-comment { font-size:10px; line-height:1.5; }
-  .pk-comment .clabel { font-size:9px; color:#666; font-weight:600; }
-  /* Blueprint pages - full width, no rotation, matching orientation */
+  .pk-photos img { width:100%; max-height:155px; object-fit:cover; border:1px solid #ddd; border-radius:2px; }
+  .pk-photos .no-photo { width:100%; height:100px; background:#f5f5f5; border:1px dashed #ccc; border-radius:2px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
+  .pk-photos .plabel { font-size:9px; color:#666; margin-bottom:2px; }
+  .pk-comment { font-size:11px; line-height:1.5; }
+  .pk-comment .clabel { font-size:10px; color:#666; font-weight:600; }
+  /* Blueprint pages */
   .pb-bar {
     background: linear-gradient(135deg,#5b3e8a,#7b52b9) !important;
-    color:white; padding:6px 12px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:8px;
+    color:white; padding:7px 13px; font-size:14px; font-weight:700; border-radius:3px; margin-bottom:8px;
   }
   .pb-img-full { width: 100%; }
-  .pb-img-full img { width: 100%; max-height: 210mm; object-fit: contain; border: 1px solid #ddd; border-radius: 3px; display: block; }
+  .pb-img-full img { width: 100%; max-height: 260mm; object-fit: contain; border: 1px solid #ddd; border-radius: 3px; }
 }
 </style>
 </head>
@@ -371,8 +375,8 @@ body {
     "トイレ（A）","トイレ(B)","和室","洋室(A)","洋室(B)","洋室(C)",
     "洋室(D)","洋室(E)","小屋裏収納","バルコニー","青空リビング","極楽加湿","Z空調"
   ];
-  var CHECK_ITEMS = ["ココチＥ排気フード","給湯器","床下","天井裏"];
-  var STORAGE_KEY = "afterInspection_v5";
+  var CHECK_ITEMS = ["ココチＥ換気フード","ココチＥ室内フィルター","給湯器","天井裏","床下"];
+  var STORAGE_KEY = "afterInspection_v6";
   var STAFF_KEY = "afterInspection_staff";
   var MAX_ISSUES = 30;
   var MAX_BLUEPRINTS = 6;
@@ -640,9 +644,15 @@ body {
       var sw,sh;
       if(img.width/img.height>4/3){sh=img.height;sw=Math.round(sh*4/3);}
       else{sw=img.width;sh=Math.round(sw*3/4);}
-      canvas.width=720;canvas.height=540;
-      canvas.getContext('2d').drawImage(img,Math.round((img.width-sw)/2),Math.round((img.height-sh)/2),sw,sh,0,0,720,540);
-      pendingImageData=canvas.toDataURL('image/jpeg',0.76);
+      // 接写写真（issue_close / check_close）は高解像度で保存
+      var isClose = currentPhotoTarget &&
+        (currentPhotoTarget.type==='issue_close' || currentPhotoTarget.type==='check_close');
+      var outW = isClose ? 1080 : 720;
+      var outH = isClose ? 810  : 540;
+      var qual = isClose ? 0.85 : 0.76;
+      canvas.width=outW; canvas.height=outH;
+      canvas.getContext('2d').drawImage(img,Math.round((img.width-sw)/2),Math.round((img.height-sh)/2),sw,sh,0,0,outW,outH);
+      pendingImageData=canvas.toDataURL('image/jpeg',qual);
       document.getElementById('previewImage').src=pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
     };
@@ -656,32 +666,13 @@ body {
     img.onload=function(){
       var canvas=document.getElementById('photoCanvas');
       var isExterior = currentPhotoTarget && currentPhotoTarget.type==='exterior';
-      var isBluePrint = currentPhotoTarget && currentPhotoTarget.type==='blueprint';
-
-      if(isBluePrint){
-        // 図面はA4縦印刷に収まるよう縦横比を強制制限
-        // A4縦の印刷可能エリア比率(幅:高さ = 186mm:240mm ≒ 0.775)に合わせる
-        var maxW = 1300;
-        var maxRatio = 186/240; // 幅/高さの最大比率（これ以上縦長にしない）
-        var w=img.width, h=img.height;
-        // 縦長すぎる画像はトリミングせずキャンバスサイズで抑制
-        var canvasH = Math.round(maxW / maxRatio);
-        var drawW=w, drawH=h;
-        if(drawW>maxW){ drawH=Math.round(drawH*(maxW/drawW)); drawW=maxW; }
-        // 高さが上限を超えたらさらに縮小
-        if(drawH>canvasH){ drawW=Math.round(drawW*(canvasH/drawH)); drawH=canvasH; }
-        canvas.width=drawW; canvas.height=drawH;
-        canvas.getContext('2d').drawImage(img,0,0,drawW,drawH);
-        pendingImageData=canvas.toDataURL('image/jpeg',0.65);
-      } else {
-        var maxW2 = isExterior ? 600 : 1300;
-        var quality = isExterior ? 0.58 : 0.65;
-        var w2=img.width, h2=img.height;
-        if(w2>maxW2){ h2=Math.round(h2*(maxW2/w2)); w2=maxW2; }
-        canvas.width=w2; canvas.height=h2;
-        canvas.getContext('2d').drawImage(img,0,0,w2,h2);
-        pendingImageData=canvas.toDataURL('image/jpeg',quality);
-      }
+      var maxW = isExterior ? 600 : 1300;
+      var quality = isExterior ? 0.58 : 0.65;
+      var w=img.width, h=img.height;
+      if(w>maxW){ h=Math.round(h*(maxW/w)); w=maxW; }
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      pendingImageData=canvas.toDataURL('image/jpeg',quality);
       document.getElementById('previewImage').src=pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
     };
@@ -769,22 +760,32 @@ body {
       }
     }
 
-    // Check Items Page
-    h+='<div class="pp">';
-    h+='<div class="pk-title">検査項目</div>';
-    appData.checkItems.forEach(function(item){
-      h+='<div class="pk-item">';
-      h+='<div class="pk-item-title">■ '+item.name+'</div>';
-      h+='<div class="pk-photos">';
-      h+='<div>';
-      h+=item.photoFar?'<img src="'+item.photoFar+'">':'<div class="no-photo">写真なし</div>';
-      h+='</div><div>';
-      h+=item.photoClose?'<img src="'+item.photoClose+'">':'<div class="no-photo">写真なし</div>';
-      h+='</div></div>';
-      h+='<div class="pk-comment"><span class="clabel">コメント：</span>'+esc(item.comment||'なし')+'</div>';
-      h+='</div>';
-    });
-    h+='</div>';
+    // Check Items Page 1: インデックス0〜2（ококチＥ換気フード・室内フィルター・給湯器）
+    function renderCheckPage(items, subtitle) {
+      var s = '<div class="pp">';
+      s += '<div class="pk-title">検査項目　' + subtitle + '</div>';
+      items.forEach(function(item) {
+        s += '<div class="pk-item">';
+        s += '<div class="pk-item-title">■ ' + item.name + '</div>';
+        s += '<div class="pk-photos">';
+        s += '<div>';
+        s += item.photoFar ? '<img src="' + item.photoFar + '">' : '<div class="no-photo">写真なし</div>';
+        s += '</div><div>';
+        s += item.photoClose ? '<img src="' + item.photoClose + '">' : '<div class="no-photo">写真なし</div>';
+        s += '</div></div>';
+        s += '<div class="pk-comment"><span class="clabel">コメント：</span>' + esc(item.comment || 'なし') + '</div>';
+        s += '</div>';
+      });
+      s += '</div>';
+      return s;
+    }
+    var ci = appData.checkItems;
+    // ページ1：最初の3項目（ококチＥ×2 ＋ 給湯器）
+    h += renderCheckPage(ci.slice(0, 3), '①');
+    // ページ2：残り（天井裏・床下）
+    if (ci.length > 3) {
+      h += renderCheckPage(ci.slice(3), '②');
+    }
 
     // Blueprint Pages (1 per page, full width, no rotation)
     var numLabels=['①','②','③','④','⑤','⑥'];
@@ -799,11 +800,12 @@ body {
 
     pa.innerHTML=h;
 
-    // Fix trailing blank page: remove page-break from last page
+    // 空白ページ対策: DOMに挿入後に最後のページのbreak-afterをavoidに設定
+    // CSS側の :last-child ルールはSafariで効きにくいためJSでも明示的に制御する
     var allPages=pa.querySelectorAll('.pp,.pp-land');
     allPages.forEach(function(p){
       p.style.pageBreakAfter='always';
-      p.style.breakAfter='always';
+      p.style.breakAfter='page';
     });
     if(allPages.length>0){
       var last=allPages[allPages.length-1];
