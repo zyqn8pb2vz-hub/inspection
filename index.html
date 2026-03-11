@@ -426,6 +426,7 @@ body {
 <canvas id="photoCanvas" style="display:none;"></canvas>
 <div id="printArea"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
 (function() {
   'use strict';
@@ -445,7 +446,7 @@ body {
   var appData = getDefaultData();
   var currentPhotoTarget = null;
   var pendingImageData = null;
-  var qrScanState = { stream:null, active:false, detector:null, rafId:0, lastScanAt:0, lastPayload:null, lastRawValue:'' };
+  var qrScanState = { stream:null, active:false, rafId:0, lastScanAt:0, lastPayload:null, lastRawValue:'', canvas:null, ctx:null };
 
   function getDefaultData() {
     return {
@@ -606,10 +607,29 @@ body {
     if(modal) modal.classList.remove('active');
   }
 
+  function ensureQRCanvas(){
+    if(qrScanState.canvas && qrScanState.ctx) return qrScanState.canvas;
+    var canvas=document.createElement('canvas');
+    canvas.width=640;
+    canvas.height=480;
+    qrScanState.canvas=canvas;
+    qrScanState.ctx=canvas.getContext('2d', { willReadFrequently:true }) || canvas.getContext('2d');
+    return canvas;
+  }
+
+  function isJsQRReady(){
+    return typeof window.jsQR === 'function';
+  }
+
   function startQRScanCamera(){
     var video=document.getElementById('qrVideo');
     if(!video){
       setQRStatus('qrScanStatus','読取用UIの初期化に失敗しました。','error');
+      return;
+    }
+    if(!isJsQRReady()){
+      setQRStatus('qrScanStatus','QR読取ライブラリの読込に失敗しました。通信状況を確認して再度お試しください。','error');
+      setQRStatus('qrResultStatus','QR読取ライブラリの読込に失敗しました。','error');
       return;
     }
     if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
@@ -617,31 +637,24 @@ body {
       return;
     }
     stopQRScanCamera();
+    ensureQRCanvas();
     navigator.mediaDevices.getUserMedia({
       video:{ facingMode:{ ideal:'environment' }, width:{ ideal:1280 }, height:{ ideal:720 } },
       audio:false
     }).then(function(stream){
       qrScanState.stream=stream;
       qrScanState.active=true;
+      video.setAttribute('playsinline','true');
+      video.muted=true;
       video.srcObject=stream;
       return video.play();
     }).then(function(){
-      if('BarcodeDetector' in window){
-        try{
-          qrScanState.detector=new BarcodeDetector({ formats:['qr_code'] });
-          setQRStatus('qrScanStatus','QRコードを読み取っています。枠内に合わせてください。','info');
-          scanQRLoop();
-        }catch(e){
-          qrScanState.detector=null;
-          setQRStatus('qrScanStatus','読取エンジンの初期化に失敗しました。「画像から読む」を試してください。','error');
-        }
-      }else{
-        qrScanState.detector=null;
-        setQRStatus('qrScanStatus','このブラウザでは自動読取エンジンが使えません。第4段階で追加ライブラリ接続予定です。必要なら「画像から読む」を試してください。','error');
-      }
+      setQRStatus('qrScanStatus','QRコードを読み取っています。枠内に合わせてください。','info');
+      scanQRLoop();
     }).catch(function(err){
       console.error(err);
       setQRStatus('qrScanStatus','カメラを起動できませんでした','error');
+      setQRStatus('qrResultStatus','カメラを起動できませんでした','error');
     });
   }
 
@@ -659,30 +672,57 @@ body {
     }
   }
 
+  function getRawTextFromJsQRResult(code){
+    if(!code) return '';
+    if(code.binaryData && code.binaryData.length){
+      try{
+        return new TextDecoder('utf-8').decode(new Uint8Array(code.binaryData));
+      }catch(e){}
+      try{
+        return Array.prototype.map.call(code.binaryData, function(n){ return String.fromCharCode(n); }).join('');
+      }catch(e){}
+    }
+    return code.data || '';
+  }
+
   function scanQRLoop(){
-    if(!qrScanState.active || !qrScanState.detector) return;
+    if(!qrScanState.active) return;
     var video=document.getElementById('qrVideo');
-    if(!video || video.readyState < 2){
+    if(!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight){
       qrScanState.rafId=requestAnimationFrame(scanQRLoop);
       return;
     }
     var now=Date.now();
-    if(now - qrScanState.lastScanAt < 450){
+    if(now - qrScanState.lastScanAt < 180){
       qrScanState.rafId=requestAnimationFrame(scanQRLoop);
       return;
     }
     qrScanState.lastScanAt=now;
-    qrScanState.detector.detect(video).then(function(codes){
-      if(codes && codes.length){
-        handleQRReadResult(codes[0].rawValue || '');
+    try{
+      var canvas=ensureQRCanvas();
+      var ctx=qrScanState.ctx;
+      var sourceW=video.videoWidth;
+      var sourceH=video.videoHeight;
+      var maxSide=960;
+      var scale=Math.min(1, maxSide / Math.max(sourceW, sourceH));
+      var drawW=Math.max(240, Math.round(sourceW * scale));
+      var drawH=Math.max(240, Math.round(sourceH * scale));
+      if(canvas.width!==drawW || canvas.height!==drawH){
+        canvas.width=drawW;
+        canvas.height=drawH;
+      }
+      ctx.drawImage(video, 0, 0, drawW, drawH);
+      var imageData=ctx.getImageData(0, 0, drawW, drawH);
+      var code=window.jsQR(imageData.data, drawW, drawH, { inversionAttempts:'attemptBoth' });
+      if(code){
+        handleQRReadResult(getRawTextFromJsQRResult(code), code);
         return;
       }
-      if(qrScanState.active) qrScanState.rafId=requestAnimationFrame(scanQRLoop);
-    }).catch(function(err){
+    }catch(err){
       console.error(err);
       setQRStatus('qrScanStatus','QRコード読取中にエラーが発生しました。','error');
-      if(qrScanState.active) qrScanState.rafId=requestAnimationFrame(scanQRLoop);
-    });
+    }
+    if(qrScanState.active) qrScanState.rafId=requestAnimationFrame(scanQRLoop);
   }
 
   function openQRImageInput(){
@@ -703,24 +743,52 @@ body {
     setTimeout(function(){ inp.click(); }, 150);
   }
 
+  function loadImageFromFile(file){
+    return new Promise(function(resolve, reject){
+      var reader=new FileReader();
+      reader.onload=function(){
+        var img=new Image();
+        img.onload=function(){ resolve(img); };
+        img.onerror=function(){ reject(new Error('image load failed')); };
+        img.src=reader.result;
+      };
+      reader.onerror=function(){ reject(new Error('file read failed')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
   function detectQRFromImageFile(file){
-    if(!('BarcodeDetector' in window)){
-      setQRStatus('qrScanStatus','画像からの自動読取も未対応です。第4段階で読取ライブラリを接続予定です。','error');
+    if(!isJsQRReady()){
+      setQRStatus('qrScanStatus','QR読取ライブラリの読込に失敗しました。通信状況を確認して再度お試しください。','error');
       return;
     }
     setQRStatus('qrScanStatus','画像からQRコードを確認しています…','info');
-    createImageBitmap(file).then(function(bitmap){
-      var detector=qrScanState.detector || new BarcodeDetector({ formats:['qr_code'] });
-      return detector.detect(bitmap);
-    }).then(function(codes){
-      if(codes && codes.length){
-        handleQRReadResult(codes[0].rawValue || '');
+    loadImageFromFile(file).then(function(img){
+      var canvas=ensureQRCanvas();
+      var ctx=qrScanState.ctx;
+      var sourceW=img.naturalWidth || img.width;
+      var sourceH=img.naturalHeight || img.height;
+      var maxSide=1400;
+      var scale=Math.min(1, maxSide / Math.max(sourceW, sourceH));
+      var drawW=Math.max(240, Math.round(sourceW * scale));
+      var drawH=Math.max(240, Math.round(sourceH * scale));
+      if(canvas.width!==drawW || canvas.height!==drawH){
+        canvas.width=drawW;
+        canvas.height=drawH;
+      }
+      ctx.drawImage(img, 0, 0, drawW, drawH);
+      var imageData=ctx.getImageData(0, 0, drawW, drawH);
+      var code=window.jsQR(imageData.data, drawW, drawH, { inversionAttempts:'attemptBoth' });
+      if(code){
+        handleQRReadResult(getRawTextFromJsQRResult(code), code);
       }else{
         setQRStatus('qrScanStatus','QRコードを読み取れませんでした。明るい場所で、QR全体が入る画像を使ってください。','error');
+        setQRStatus('qrResultStatus','QRコードを読み取れませんでした。','error');
       }
     }).catch(function(err){
       console.error(err);
       setQRStatus('qrScanStatus','画像からの読取に失敗しました。','error');
+      setQRStatus('qrResultStatus','画像からの読取に失敗しました。','error');
     });
   }
 
