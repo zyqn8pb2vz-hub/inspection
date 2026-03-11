@@ -672,6 +672,25 @@ body {
     }
   }
 
+  function repairMojibakeText(text){
+    var s=String(text||'');
+    if(!s) return '';
+    try{
+      var bytes=new Uint8Array(Array.prototype.map.call(s, function(ch){ return ch.charCodeAt(0) & 0xff; }));
+      var repaired=new TextDecoder('utf-8', { fatal:false }).decode(bytes);
+      if(repaired && repaired.indexOf('�')===-1){
+        return repaired;
+      }
+    }catch(e){}
+    try{
+      var repaired2=decodeURIComponent(escape(s));
+      if(repaired2 && repaired2.indexOf('�')===-1){
+        return repaired2;
+      }
+    }catch(e){}
+    return s;
+  }
+
   function getRawTextFromJsQRResult(code){
     if(!code) return '';
     if(code.binaryData && code.binaryData.length){
@@ -679,10 +698,10 @@ body {
         return new TextDecoder('utf-8').decode(new Uint8Array(code.binaryData));
       }catch(e){}
       try{
-        return Array.prototype.map.call(code.binaryData, function(n){ return String.fromCharCode(n); }).join('');
+        return repairMojibakeText(Array.prototype.map.call(code.binaryData, function(n){ return String.fromCharCode(n); }).join(''));
       }catch(e){}
     }
-    return code.data || '';
+    return repairMojibakeText(code.data || '');
   }
 
   function scanQRLoop(){
@@ -803,7 +822,12 @@ body {
     try{
       data=JSON.parse(text);
     }catch(e){
-      return { ok:false, message:'QRコードの内容が正しくありません。' };
+      try{
+        text=repairMojibakeText(text);
+        data=JSON.parse(text);
+      }catch(e2){
+        return { ok:false, message:'QRコードの内容が正しくありません。' };
+      }
     }
     if(data.version===undefined || data.version===null || String(data.version).trim()===''){
       return { ok:false, message:'QRコードに必要な項目が不足しています。' };
