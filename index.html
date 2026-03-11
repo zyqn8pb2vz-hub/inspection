@@ -166,6 +166,37 @@ body {
 .status-bar .save-status { display:flex; align-items:center; gap:4px; }
 .status-bar .save-dot { width:8px; height:8px; border-radius:50%; background:var(--success); }
 
+.qr-scan-wrap { display:flex; flex-direction:column; gap:8px; }
+.qr-scan-btn { width:100%; min-height:52px; font-size:16px; }
+.qr-scan-hint { font-size:12px; color:var(--text-light); line-height:1.5; }
+.qr-status {
+  display:none; padding:10px 12px; border-radius:8px; font-size:12px; line-height:1.5;
+  border:1px solid var(--border); background:#f8f9fb; color:var(--text);
+}
+.qr-status.show { display:block; }
+.qr-status.success { background:#eefaf3; border-color:#b8e6cc; color:#1f7a45; }
+.qr-status.error { background:#fff2f0; border-color:#f3b3aa; color:#b03a2e; }
+.qr-status.info { background:#eef5fb; border-color:#c8daea; color:#1a5276; }
+.qr-scan-box { max-width:420px; text-align:left; }
+.qr-scan-box h3 { margin-bottom:8px; }
+.qr-scan-box p { margin-bottom:12px; }
+.qr-video-wrap {
+  position:relative; width:100%; aspect-ratio:3/4; background:#111; border-radius:12px;
+  overflow:hidden; margin-bottom:12px;
+}
+.qr-video-wrap video {
+  width:100%; height:100%; object-fit:cover; display:block; background:#111;
+}
+.qr-scan-guide {
+  position:absolute; inset:50% auto auto 50%; width:68%; aspect-ratio:1/1;
+  transform:translate(-50%,-50%); border:3px solid rgba(255,255,255,0.92);
+  border-radius:18px; box-shadow:0 0 0 9999px rgba(0,0,0,0.22);
+}
+.qr-manual-note { font-size:12px; color:var(--text-light); margin-bottom:10px; line-height:1.5; }
+.qr-scan-actions { display:flex; gap:10px; }
+.qr-scan-actions .btn { flex:1; min-height:46px; }
+
+
 /* ============ PRINT ============ */
 #printArea { display: none; }
 @page { margin: 6mm 7mm; }
@@ -282,6 +313,18 @@ body {
       </select>
     </div>
     <div class="form-group">
+      <label>顧客コード</label>
+      <input type="text" id="customerCode" inputmode="numeric" pattern="[0-9]*" placeholder="顧客コードを入力（数字）">
+    </div>
+    <div class="form-group">
+      <label>QRコード読取</label>
+      <div class="qr-scan-wrap">
+        <button type="button" class="btn btn-success btn-lg qr-scan-btn" id="btnScanQR">📷 QRコードスキャン</button>
+        <div class="qr-scan-hint">案内図のQRコードを読み取って、顧客コード・お客様名・住所の入力開始に使います。</div>
+        <div class="qr-status" id="qrResultStatus" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="form-group">
       <label>支社名</label>
       <select id="branchName"><option value="埼玉支社" selected>埼玉支社</option></select>
     </div>
@@ -357,6 +400,24 @@ body {
   </div>
 </div>
 
+
+<div class="modal-overlay" id="qrScanModal">
+  <div class="modal-box qr-scan-box">
+    <h3>QRコード読取</h3>
+    <p id="qrScanMessage">案内図のQRコードを枠内に合わせてください。うまく読めない場合は画像からの読取も使えます。</p>
+    <div class="qr-video-wrap">
+      <video id="qrVideo" playsinline autoplay muted></video>
+      <div class="qr-scan-guide"></div>
+    </div>
+    <div class="qr-manual-note" id="qrFallbackHint">読取後に顧客コード・お客様名・住所へ自動反映します。既存入力がある場合は上書き確認を表示します。</div>
+    <div class="qr-status" id="qrScanStatus" aria-live="polite"></div>
+    <div class="modal-buttons qr-scan-actions">
+      <button class="btn btn-outline" id="btnScanFromImage">画像から読む</button>
+      <button class="btn btn-danger" id="btnCloseQRScan">閉じる</button>
+    </div>
+  </div>
+</div>
+
 <div class="status-bar">
   <div class="save-status"><div class="save-dot"></div> 自動保存済</div>
   <div id="dateDisplay"></div>
@@ -384,11 +445,12 @@ body {
   var appData = getDefaultData();
   var currentPhotoTarget = null;
   var pendingImageData = null;
+  var qrScanState = { stream:null, active:false, detector:null, rafId:0, lastScanAt:0, lastPayload:null, lastRawValue:'' };
 
   function getDefaultData() {
     return {
       inspectionType:"6ヶ月", branchName:"埼玉支社", staffName:"",
-      customerName:"", address:"", exteriorPhoto:null, issues:[],
+      customerCode:"", customerName:"", address:"", exteriorPhoto:null, issues:[],
       checkItems: CHECK_ITEMS.map(function(n){ return {name:n,photoFar:null,photoClose:null,comment:""}; }),
       blueprints: []
     };
@@ -417,6 +479,9 @@ body {
     addClick('btnAddIssue', addIssue);
     addClick('btnAddBP', addBlueprint);
     addClick('btnPDF', generatePDF);
+    addClick('btnScanQR', startQRScanFlow);
+    addClick('btnCloseQRScan', closeQRScanModal);
+    addClick('btnScanFromImage', openQRImageInput);
     addClick('exteriorPhotoSlot', function(e){
       if(e.target.closest('.remove-photo')) return;
       takePhoto('exterior',0);
@@ -431,7 +496,7 @@ body {
       if(pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData);
       pendingImageData=null;
     });
-    ['inspectionType','branchName','staffName','customerName','address'].forEach(function(id){
+    ['inspectionType','branchName','staffName','customerCode','customerName','address'].forEach(function(id){
       var el=document.getElementById(id);
       if(el){el.addEventListener('input',saveData);el.addEventListener('change',saveData);}
     });
@@ -455,6 +520,9 @@ body {
     document.addEventListener('change', function(e){
       if(e.target.id && e.target.id.indexOf('issue_loc_')===0) saveData();
     });
+    document.addEventListener('visibilitychange', function(){
+      if(document.hidden) stopQRScanCamera();
+    });
   }
 
   function addClick(id,fn){var el=document.getElementById(id);if(el)el.addEventListener('click',fn);}
@@ -475,7 +543,7 @@ body {
     appData.inspectionType=gv('inspectionType'); appData.branchName=gv('branchName');
     appData.staffName=gv('staffName');
     if(appData.staffName){try{localStorage.setItem(STAFF_KEY,appData.staffName);}catch(e){}}
-    appData.customerName=gv('customerName'); appData.address=gv('address');
+    appData.customerCode=gv('customerCode'); appData.customerName=gv('customerName'); appData.address=gv('address');
     appData.issues.forEach(function(issue,i){
       var ls=document.getElementById('issue_loc_'+i),lf=document.getElementById('issue_locfree_'+i),cm=document.getElementById('issue_comment_'+i);
       if(ls)issue.location=ls.value;if(lf)issue.locationFree=lf.value;if(cm)issue.comment=cm.value;
@@ -507,10 +575,232 @@ body {
   function gv(id){var el=document.getElementById(id);return el?el.value:"";}
   function sv(id,val){var el=document.getElementById(id);if(el)el.value=val||"";}
 
+
+  function setQRStatus(id, message, kind){
+    var el=document.getElementById(id);
+    if(!el) return;
+    if(!message){
+      el.textContent='';
+      el.className='qr-status';
+      return;
+    }
+    el.textContent=message;
+    el.className='qr-status show'+(kind?' '+kind:'');
+  }
+
+  function startQRScanFlow(){
+    openQRScanModal();
+    setQRStatus('qrScanStatus','カメラを起動しています…','info');
+    setQRStatus('qrResultStatus','QRコード読取を開始しました。','info');
+    startQRScanCamera();
+  }
+
+  function openQRScanModal(){
+    var modal=document.getElementById('qrScanModal');
+    if(modal) modal.classList.add('active');
+  }
+
+  function closeQRScanModal(){
+    stopQRScanCamera();
+    var modal=document.getElementById('qrScanModal');
+    if(modal) modal.classList.remove('active');
+  }
+
+  function startQRScanCamera(){
+    var video=document.getElementById('qrVideo');
+    if(!video){
+      setQRStatus('qrScanStatus','読取用UIの初期化に失敗しました。','error');
+      return;
+    }
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      setQRStatus('qrScanStatus','カメラを起動できませんでした','error');
+      return;
+    }
+    stopQRScanCamera();
+    navigator.mediaDevices.getUserMedia({
+      video:{ facingMode:{ ideal:'environment' }, width:{ ideal:1280 }, height:{ ideal:720 } },
+      audio:false
+    }).then(function(stream){
+      qrScanState.stream=stream;
+      qrScanState.active=true;
+      video.srcObject=stream;
+      return video.play();
+    }).then(function(){
+      if('BarcodeDetector' in window){
+        try{
+          qrScanState.detector=new BarcodeDetector({ formats:['qr_code'] });
+          setQRStatus('qrScanStatus','QRコードを読み取っています。枠内に合わせてください。','info');
+          scanQRLoop();
+        }catch(e){
+          qrScanState.detector=null;
+          setQRStatus('qrScanStatus','読取エンジンの初期化に失敗しました。「画像から読む」を試してください。','error');
+        }
+      }else{
+        qrScanState.detector=null;
+        setQRStatus('qrScanStatus','このブラウザでは自動読取エンジンが使えません。第4段階で追加ライブラリ接続予定です。必要なら「画像から読む」を試してください。','error');
+      }
+    }).catch(function(err){
+      console.error(err);
+      setQRStatus('qrScanStatus','カメラを起動できませんでした','error');
+    });
+  }
+
+  function stopQRScanCamera(){
+    qrScanState.active=false;
+    if(qrScanState.rafId){ cancelAnimationFrame(qrScanState.rafId); qrScanState.rafId=0; }
+    if(qrScanState.stream){
+      qrScanState.stream.getTracks().forEach(function(track){ track.stop(); });
+      qrScanState.stream=null;
+    }
+    var video=document.getElementById('qrVideo');
+    if(video){
+      try{ video.pause(); }catch(e){}
+      video.srcObject=null;
+    }
+  }
+
+  function scanQRLoop(){
+    if(!qrScanState.active || !qrScanState.detector) return;
+    var video=document.getElementById('qrVideo');
+    if(!video || video.readyState < 2){
+      qrScanState.rafId=requestAnimationFrame(scanQRLoop);
+      return;
+    }
+    var now=Date.now();
+    if(now - qrScanState.lastScanAt < 450){
+      qrScanState.rafId=requestAnimationFrame(scanQRLoop);
+      return;
+    }
+    qrScanState.lastScanAt=now;
+    qrScanState.detector.detect(video).then(function(codes){
+      if(codes && codes.length){
+        handleQRReadResult(codes[0].rawValue || '');
+        return;
+      }
+      if(qrScanState.active) qrScanState.rafId=requestAnimationFrame(scanQRLoop);
+    }).catch(function(err){
+      console.error(err);
+      setQRStatus('qrScanStatus','QRコード読取中にエラーが発生しました。','error');
+      if(qrScanState.active) qrScanState.rafId=requestAnimationFrame(scanQRLoop);
+    });
+  }
+
+  function openQRImageInput(){
+    var old=document.getElementById('qrImageInput');
+    if(old) old.parentNode.removeChild(old);
+    var inp=document.createElement('input');
+    inp.type='file';
+    inp.accept='image/*';
+    inp.setAttribute('capture','environment');
+    inp.id='qrImageInput';
+    inp.style.cssText='position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;z-index:-1;';
+    inp.onchange=function(e){
+      var file=e.target.files&&e.target.files[0];
+      if(!file) return;
+      detectQRFromImageFile(file);
+    };
+    document.body.appendChild(inp);
+    setTimeout(function(){ inp.click(); }, 150);
+  }
+
+  function detectQRFromImageFile(file){
+    if(!('BarcodeDetector' in window)){
+      setQRStatus('qrScanStatus','画像からの自動読取も未対応です。第4段階で読取ライブラリを接続予定です。','error');
+      return;
+    }
+    setQRStatus('qrScanStatus','画像からQRコードを確認しています…','info');
+    createImageBitmap(file).then(function(bitmap){
+      var detector=qrScanState.detector || new BarcodeDetector({ formats:['qr_code'] });
+      return detector.detect(bitmap);
+    }).then(function(codes){
+      if(codes && codes.length){
+        handleQRReadResult(codes[0].rawValue || '');
+      }else{
+        setQRStatus('qrScanStatus','QRコードを読み取れませんでした。明るい場所で、QR全体が入る画像を使ってください。','error');
+      }
+    }).catch(function(err){
+      console.error(err);
+      setQRStatus('qrScanStatus','画像からの読取に失敗しました。','error');
+    });
+  }
+
+  function normalizeQRText(value){
+    return String(value||'').replace(/\r?\n/g,' ').replace(/[ \t\u3000]+/g,' ').trim();
+  }
+
+  function parseQRPayload(rawText){
+    var text=String(rawText||'').trim();
+    if(!text) return { ok:false, message:'QRコードを読み取れませんでした。' };
+    var data;
+    try{
+      data=JSON.parse(text);
+    }catch(e){
+      return { ok:false, message:'QRコードの内容が正しくありません。' };
+    }
+    if(data.version===undefined || data.version===null || String(data.version).trim()===''){
+      return { ok:false, message:'QRコードに必要な項目が不足しています。' };
+    }
+    if(Number(data.version)!==1){
+      return { ok:false, message:'対応していないQRコード形式です。' };
+    }
+    var payload={
+      version:1,
+      customerCode: normalizeQRText(data.customerCode),
+      customerName: normalizeQRText(data.customerName).replace(/\s*様$/,'').trim(),
+      address: normalizeQRText(data.address)
+    };
+    if(!payload.customerCode || !payload.customerName || !payload.address){
+      return { ok:false, message:'QRコードに必要な項目が不足しています。' };
+    }
+    return { ok:true, data:payload };
+  }
+
+  function handleQRReadResult(rawText){
+    var parsed=parseQRPayload(rawText);
+    if(!parsed.ok){
+      setQRStatus('qrScanStatus', parsed.message, 'error');
+      setQRStatus('qrResultStatus', parsed.message, 'error');
+      return;
+    }
+    qrScanState.lastRawValue=rawText;
+    qrScanState.lastPayload=parsed.data;
+    stopQRScanCamera();
+    var applied=applyScannedCustomerData(parsed.data);
+    if(applied){
+      setQRStatus('qrScanStatus','QRコードを読み取りました。顧客情報を反映しました。','success');
+      setQRStatus('qrResultStatus','QRコードを読み取りました。顧客情報を反映しました。','success');
+      closeQRScanModal();
+    }
+  }
+
+  function applyScannedCustomerData(payload){
+    if(!payload) return false;
+    var hasExisting=!!(gv('customerCode')||gv('customerName')||gv('address'));
+    if(hasExisting){
+      var ok=confirm('すでに入力済みの顧客情報があります。QRコードの内容で上書きしますか？');
+      if(!ok){
+        setQRStatus('qrScanStatus','上書きをキャンセルしました。','info');
+        setQRStatus('qrResultStatus','上書きをキャンセルしました。既存入力値は変更していません。','info');
+        return false;
+      }
+    }
+    sv('customerCode', payload.customerCode);
+    sv('customerName', payload.customerName);
+    sv('address', payload.address);
+    ['customerCode','customerName','address'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(!el) return;
+      try{ el.dispatchEvent(new Event('input', { bubbles:true })); }catch(e){}
+      try{ el.dispatchEvent(new Event('change', { bubbles:true })); }catch(e){}
+    });
+    saveData();
+    return true;
+  }
+
   /* === Render === */
   function renderAll(){
     sv('inspectionType',appData.inspectionType);sv('branchName',appData.branchName);
-    sv('staffName',appData.staffName);sv('customerName',appData.customerName);sv('address',appData.address);
+    sv('staffName',appData.staffName);sv('customerCode',appData.customerCode||'');sv('customerName',appData.customerName);sv('address',appData.address);
     renderExteriorPhoto();renderIssues();renderCheckItems();renderBlueprints();
   }
 
@@ -715,9 +1005,9 @@ body {
     h+=appData.exteriorPhoto?'<img src="'+appData.exteriorPhoto+'">':'<div class="no-ph">外観写真なし</div>';
     h+='</div>';
     h+='<div class="pc-info"><table>';
+    h+='<tr><th>顧客コード</th><td>'+esc(appData.customerCode||'')+'</td><th>点検種別</th><td colspan="3">'+appData.inspectionType+'点検</td></tr>';
     h+='<tr><th>支社名</th><td>'+appData.branchName+'</td><th>点検日</th><td>'+dateStr+'</td><th>担当者</th><td>'+appData.staffName+'</td></tr>';
     h+='<tr><th>お客様名</th><td>'+esc(appData.customerName)+' 様</td><th>住所</th><td colspan="3">'+esc(appData.address)+'</td></tr>';
-    h+='<tr><th>点検種別</th><td colspan="5">'+appData.inspectionType+'点検</td></tr>';
     h+='</table></div></div>';
     if(appData.issues.length>0){
       h+='<div style="margin-top:10px;">';
