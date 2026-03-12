@@ -163,7 +163,18 @@ body {
 .photo-label { font-size: 11px; text-align: center; color: var(--text-light); margin-bottom: 4px; }
 .status-group { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
 .status-option { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--text); }
-.status-option input { width:auto; margin:0; }
+.status-option input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  -webkit-appearance: radio;
+  appearance: auto;
+  accent-color: var(--primary);
+  background: white;
+  flex: 0 0 auto;
+}
 .issue-card {
   background: #f8f9fb;
   border: 1px solid var(--border);
@@ -423,7 +434,7 @@ body {
       <label>外観写真</label>
       <div class="form-note">スマートフォンを縦向きにして撮影してください。</div>
       <div class="photo-slot" id="exteriorPhotoSlot" data-photo-target="exterior" style="max-width: 60%;">
-        <div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>
+        <div class="placeholder"><div class="icon">&#128247;</div><div class="text">タップして外観写真を撮影</div></div>
       </div>
     </div>
   </div>
@@ -581,7 +592,10 @@ body {
       }
     });
     document.addEventListener('input', function(e) { if (e.target.id && (e.target.id.indexOf('issue_') === 0 || e.target.id.indexOf('check_') === 0)) saveData(); });
-    document.addEventListener('change', function(e) { if (e.target.id && e.target.id.indexOf('issue_loc_') === 0) saveData(); });
+    document.addEventListener('change', function(e) {
+      if (!e.target.id && !e.target.name) return;
+      if ((e.target.id && e.target.id.indexOf('issue_loc_') === 0) || (e.target.name && e.target.name.indexOf('issue_status_') === 0)) saveData();
+    });
   }
   function addClick(id, fn) { var el = document.getElementById(id); if (el) el.addEventListener('click', fn); }
   function setQrStatus(msg, isError) {
@@ -777,7 +791,7 @@ body {
   function renderExteriorPhoto() {
     var slot = document.getElementById('exteriorPhotoSlot');
     if (!slot) return;
-    slot.innerHTML = appData.exteriorPhoto ? '<img src="' + appData.exteriorPhoto + '"><button class="remove-photo" data-rm-type="exterior" data-rm-idx="0">×</button>' : '<div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>';
+    slot.innerHTML = appData.exteriorPhoto ? '<img src="' + appData.exteriorPhoto + '"><button class="remove-photo" data-rm-type="exterior" data-rm-idx="0">×</button>' : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">タップして外観写真を撮影</div></div>';
   }
   function renderIssues() {
     var container = document.getElementById('issuesContainer');
@@ -795,10 +809,10 @@ body {
       }).join('');
       var farHtml = issue.photoFar
         ? '<img src="' + issue.photoFar + '"><button class="remove-photo" data-rm-type="issue_far" data-rm-idx="' + i + '">\xd7</button>'
-        : '<div class="placeholder"><div class="icon">\U0001f4f7</div><div class="text">' + labels.primary + '</div></div>';
+        : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">' + labels.primary + '</div></div>';
       var closeHtml = issue.photoClose
         ? '<img src="' + issue.photoClose + '"><button class="remove-photo" data-rm-type="issue_close" data-rm-idx="' + i + '">\xd7</button>'
-        : '<div class="placeholder"><div class="icon">\U0001f4f7</div><div class="text">' + labels.secondary + '</div></div>';
+        : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">' + labels.secondary + '</div></div>';
       html += '<div class="issue-card" id="issueCard_' + i + '">';
       html += '<div class="issue-number">' + (i + 1) + '</div>';
       html += '<button class="delete-issue" data-idx="' + i + '">\u524a\u9664</button>';
@@ -819,8 +833,8 @@ body {
     if (!container) return;
     var html = '';
     appData.checkItems.forEach(function(item, i) {
-      var farHtml = item.photoFar ? '<img src="' + item.photoFar + '"><button class="remove-photo" data-rm-type="check_far" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">📷</div><div class="text">写真1</div></div>';
-      var closeHtml = item.photoClose ? '<img src="' + item.photoClose + '"><button class="remove-photo" data-rm-type="check_close" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">📷</div><div class="text">写真2</div></div>';
+      var farHtml = item.photoFar ? '<img src="' + item.photoFar + '"><button class="remove-photo" data-rm-type="check_far" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">写真1</div></div>';
+      var closeHtml = item.photoClose ? '<img src="' + item.photoClose + '"><button class="remove-photo" data-rm-type="check_close" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">写真2</div></div>';
       html += '<div class="check-item-card"><div class="item-title">' + item.name + '</div><div class="photo-pair"><div><div class="photo-label">写真1</div><div class="photo-slot" data-photo-target="check_far" data-photo-idx="' + i + '">' + farHtml + '</div></div><div><div class="photo-label">写真2</div><div class="photo-slot" data-photo-target="check_close" data-photo-idx="' + i + '">' + closeHtml + '</div></div></div><div class="form-group" style="margin-bottom:0;"><label>コメント</label><textarea id="check_comment_' + i + '" placeholder="コメントを入力">' + esc(item.comment) + '</textarea></div></div>';
     });
     container.innerHTML = html;
