@@ -280,6 +280,27 @@ body {
 .preview-image-container { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; }
 .preview-image-container img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
 .preview-controls { background: rgba(0,0,0,0.85); padding: 20px 30px; display: flex; align-items: center; justify-content: center; gap: 20px; }
+.camera-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 2100;
+  flex-direction: column;
+}
+.camera-overlay.active { display: flex; }
+.camera-topbar { padding: 14px 16px 10px; color: white; }
+.camera-title { font-size: 16px; font-weight: 700; }
+.camera-sub { font-size: 12px; opacity: 0.85; margin-top: 4px; line-height: 1.5; }
+.camera-stage { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.camera-stage video { width: 100%; height: 100%; object-fit: cover; }
+.camera-guide { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.camera-guide::before { content: ''; width: min(84vw, 520px); border: 2px solid rgba(255,255,255,0.95); border-radius: 18px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.38); }
+.camera-guide.guide-detail::before { aspect-ratio: 5 / 4; }
+.camera-guide.guide-exterior::before { aspect-ratio: 3 / 4; width: min(68vw, 360px); }
+.camera-guide-label { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
+.camera-actions { padding: 14px 16px 24px; display: flex; gap: 12px; justify-content: center; background: rgba(0,0,0,0.9); }
+.camera-actions .btn { min-width: 120px; }
 .status-bar {
   position: fixed;
   bottom: 0;
@@ -442,6 +463,23 @@ body {
     <button class="btn btn-success btn-lg" id="btnConfirm">OK</button>
   </div>
 </div>
+<div class="camera-overlay" id="photoCameraOverlay">
+  <div class="camera-topbar">
+    <div class="camera-title" id="photoCameraTitle">?????</div>
+    <div class="camera-sub" id="photoCameraSub">??????????????????????</div>
+  </div>
+  <div class="camera-stage">
+    <video id="photoCameraVideo" playsinline muted autoplay></video>
+    <div class="camera-guide guide-detail" id="photoCameraGuide">
+      <div class="camera-guide-label" id="photoCameraGuideLabel">???????????????????</div>
+    </div>
+  </div>
+  <div class="camera-actions">
+    <button class="btn btn-outline" id="btnClosePhotoCamera" type="button">???</button>
+    <button class="btn btn-success btn-lg" id="btnCapturePhoto" type="button">????</button>
+  </div>
+</div>
+
 <div class="status-bar">
   <div class="save-status"><div class="save-dot"></div> 自動保存中</div>
   <div id="dateDisplay"></div>
@@ -465,6 +503,8 @@ body {
   var qrStream = null;
   var qrScanTimer = null;
   var qrBusy = false;
+  var photoStream = null;
+  var photoCaptureMode = 'detail';
   function getDefaultData() {
     return { inspectionType: '6ヶ月', branchName: '埼玉支社', staffName: '', customerCode: '', customerName: '', address: '', exteriorPhoto: null, issues: [], checkItems: CHECK_ITEMS.map(function(name) { return { name: name, photoFar: null, photoClose: null, comment: '' }; }), blueprints: [] };
   }
@@ -497,6 +537,8 @@ body {
     addClick('exteriorPhotoSlot', function(e) { if (e.target.closest('.remove-photo')) return; takePhoto('exterior', 0); });
     addClick('btnRetake', function() { document.getElementById('previewOverlay').classList.remove('active'); pendingImageData = null; if (currentPhotoTarget) takePhoto(currentPhotoTarget.type, currentPhotoTarget.index); });
     addClick('btnConfirm', function() { document.getElementById('previewOverlay').classList.remove('active'); if (pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData); pendingImageData = null; });
+    addClick('btnClosePhotoCamera', function() { stopPhotoCamera(); });
+    addClick('btnCapturePhoto', function() { capturePhotoFrame(); });
     ['branchName', 'staffName', 'inspectionType', 'customerCode', 'customerName', 'address'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) { el.addEventListener('input', saveData); el.addEventListener('change', saveData); }
@@ -759,6 +801,13 @@ body {
     photoLock = true;
     setTimeout(function() { photoLock = false; }, 1000);
     currentPhotoTarget = { type: type, index: idx };
+    if (type === 'blueprint') {
+      openFilePickerForPhoto();
+      return;
+    }
+    openPhotoCamera(type);
+  }
+  function openFilePickerForPhoto() {
     var old = document.getElementById('photoFileInput');
     if (old) old.parentNode.removeChild(old);
     var inp = document.createElement('input');
@@ -771,15 +820,74 @@ body {
       var file = e.target.files && e.target.files[0];
       if (!file) return;
       var reader = new FileReader();
-      reader.onload = function(ev) {
-        if (currentPhotoTarget && (currentPhotoTarget.type === 'blueprint' || currentPhotoTarget.type === 'exterior')) resizeNoCrop(ev.target.result);
-        else cropAndPreview(ev.target.result);
-      };
-      reader.onerror = function() { alert('読み込みエラー'); };
+      reader.onload = function(ev) { resizeNoCrop(ev.target.result); };
+      reader.onerror = function() { alert('???????'); };
       reader.readAsDataURL(file);
     };
     document.body.appendChild(inp);
     setTimeout(function() { inp.click(); }, 200);
+  }
+  function openPhotoCamera(type) {
+    stopQrScan();
+    var overlay = document.getElementById('photoCameraOverlay');
+    var video = document.getElementById('photoCameraVideo');
+    var guide = document.getElementById('photoCameraGuide');
+    var title = document.getElementById('photoCameraTitle');
+    var sub = document.getElementById('photoCameraSub');
+    var label = document.getElementById('photoCameraGuideLabel');
+    photoCaptureMode = type === 'exterior' ? 'exterior' : 'detail';
+    guide.className = 'camera-guide ' + (photoCaptureMode === 'exterior' ? 'guide-exterior' : 'guide-detail');
+    if (type === 'exterior') {
+      title.textContent = '???????';
+      sub.textContent = '???????????????????????';
+      label.textContent = '????????????????????';
+    } else if (type === 'issue_far' || type === 'issue_close') {
+      title.textContent = '??????????';
+      sub.textContent = '????????????????????????????';
+      label.textContent = type === 'issue_close' ? '???????????????????' : '?????????????????';
+    } else {
+      title.textContent = '??????????';
+      sub.textContent = '??????????????????????????';
+      label.textContent = '??????????????????????';
+    }
+    overlay.classList.add('active');
+    navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } } }).then(function(stream) {
+      photoStream = stream;
+      video.srcObject = stream;
+      return video.play();
+    }).catch(function(err) {
+      stopPhotoCamera();
+      alert('??????????????: ' + (err && err.name ? err.name : 'unknown'));
+    });
+  }
+  function stopPhotoCamera() {
+    var overlay = document.getElementById('photoCameraOverlay');
+    var video = document.getElementById('photoCameraVideo');
+    if (video) {
+      try { video.pause(); } catch (e) {}
+      try { video.srcObject = null; } catch (e) {}
+    }
+    if (photoStream) {
+      try { photoStream.getTracks().forEach(function(track) { try { track.stop(); } catch (e) {} }); } catch (e) {}
+      photoStream = null;
+    }
+    if (overlay) overlay.classList.remove('active');
+  }
+  function capturePhotoFrame() {
+    if (!currentPhotoTarget) return;
+    var video = document.getElementById('photoCameraVideo');
+    if (!video || video.readyState < 2) return;
+    var captureCanvas = document.getElementById('photoCanvas');
+    var width = video.videoWidth || 0;
+    var height = video.videoHeight || 0;
+    if (!width || !height) return;
+    captureCanvas.width = width;
+    captureCanvas.height = height;
+    captureCanvas.getContext('2d').drawImage(video, 0, 0, width, height);
+    var rawDataUrl = captureCanvas.toDataURL('image/jpeg', 0.92);
+    stopPhotoCamera();
+    if (currentPhotoTarget.type === 'exterior') resizeNoCrop(rawDataUrl);
+    else cropAndPreview(rawDataUrl);
   }
   function cropAndPreview(dataUrl) {
     var img = new Image();
