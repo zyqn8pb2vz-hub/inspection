@@ -19,35 +19,62 @@
   --radius: 12px;
   --blueprint: #5b3e8a;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
-  background: var(--bg); color: var(--text); padding-bottom: 100px;
-  -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 100px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 .app-header {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: white; padding: 16px 20px; text-align: center;
-  position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  color: white;
+  padding: 16px 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 .app-header h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
-.app-header .sub { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+.app-header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
 .section {
-  background: var(--card); margin: 12px; border-radius: var(--radius);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden;
+  background: var(--card);
+  margin: 12px;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  overflow: hidden;
 }
 .section-title {
-  background: var(--primary); color: white; padding: 10px 16px;
-  font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+  background: var(--primary);
+  color: white;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .section-title.green-bg { background: var(--success); }
 .section-title.blueprint-bg { background: var(--blueprint); }
 .section-body { padding: 16px; }
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
-.form-group select, .form-group input, .form-group textarea {
-  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px;
-  font-size: 16px; background: #fafbfc; color: var(--text); -webkit-appearance: none; appearance: none;
+.form-note { font-size: 11px; color: var(--text-light); margin-top: 4px; line-height: 1.5; }
+.form-group select,
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  background: #fafbfc;
+  color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
 }
 .form-group select {
   background: #fafbfc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237f8c8d' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;
@@ -55,9 +82,19 @@ body {
 }
 .form-group textarea { resize: vertical; min-height: 60px; }
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 10px 18px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
-  cursor: pointer; -webkit-user-select: none; user-select: none; touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
 }
 .btn:active { opacity: 0.85; transform: scale(0.98); }
 .btn-danger { background: var(--danger); color: white; }
@@ -66,272 +103,289 @@ body {
 .btn-block { width: 100%; }
 .btn-lg { padding: 14px 24px; font-size: 16px; border-radius: 10px; }
 .photo-slot {
-  width: 100%; aspect-ratio: 4/3; background: #eef1f5; border: 2px dashed var(--border);
-  border-radius: 8px; display: flex; flex-direction: column; align-items: center;
-  justify-content: center; position: relative; overflow: hidden; touch-action: manipulation; cursor: pointer;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  background: #eef1f5;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  touch-action: manipulation;
+  cursor: pointer;
 }
 .photo-slot img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; background: #f0f3f6; }
 .photo-slot .placeholder { text-align: center; color: var(--text-light); pointer-events: none; }
 .photo-slot .placeholder .icon { font-size: 32px; margin-bottom: 4px; }
 .photo-slot .placeholder .text { font-size: 12px; }
-.photo-slot .remove-photo {
-  position: absolute; top: 6px; right: 6px; width: 30px; height: 30px;
-  background: rgba(231,76,60,0.9); color: white; border: none; border-radius: 50%;
-  font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  z-index: 2; touch-action: manipulation;
+.photo-slot .remove-photo,
+.photo-slot-free .remove-photo {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  background: rgba(231,76,60,0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  touch-action: manipulation;
 }
-/* Blueprint photo slot - no fixed aspect ratio */
 .photo-slot-free {
-  width: 100%; min-height: 100px; background: #f3eef8; border: 2px dashed #c4b5d6;
-  border-radius: 8px; display: flex; flex-direction: column; align-items: center;
-  justify-content: center; position: relative; overflow: hidden; touch-action: manipulation; cursor: pointer;
+  width: 100%;
+  min-height: 100px;
+  background: #f3eef8;
+  border: 2px dashed #c4b5d6;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  touch-action: manipulation;
+  cursor: pointer;
 }
 .photo-slot-free img { width: 100%; border-radius: 6px; }
 .photo-slot-free .placeholder { text-align: center; color: var(--blueprint); pointer-events: none; }
 .photo-slot-free .placeholder .icon { font-size: 32px; margin-bottom: 4px; }
 .photo-slot-free .placeholder .text { font-size: 12px; }
-.photo-slot-free .remove-photo {
-  position: absolute; top: 6px; right: 6px; width: 30px; height: 30px;
-  background: rgba(231,76,60,0.9); color: white; border: none; border-radius: 50%;
-  font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  z-index: 2; touch-action: manipulation;
-}
 .photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
 .photo-label { font-size: 11px; text-align: center; color: var(--text-light); margin-bottom: 4px; }
 .issue-card {
-  background: #f8f9fb; border: 1px solid var(--border); border-radius: 10px;
-  padding: 12px; margin-bottom: 12px; position: relative;
+  background: #f8f9fb;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  position: relative;
 }
 .issue-card .issue-number {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; background: var(--primary); color: white;
-  border-radius: 50%; font-size: 13px; font-weight: 700; margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
-.issue-card .delete-issue {
-  position: absolute; top: 10px; right: 10px; background: none; border: none;
-  color: var(--danger); font-size: 20px; cursor: pointer; padding: 4px; touch-action: manipulation;
+.issue-card .delete-issue,
+.blueprint-card .delete-bp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  touch-action: manipulation;
 }
 .check-item-card {
-  background: #f0faf4; border: 1px solid #b8e6cc; border-radius: 10px;
-  padding: 12px; margin-bottom: 12px;
+  background: #f0faf4;
+  border: 1px solid #b8e6cc;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
 }
 .check-item-card .item-title { font-size: 14px; font-weight: 700; color: var(--success); margin-bottom: 8px; }
 .blueprint-card {
-  background: #f5f0fa; border: 1px solid #c4b5d6; border-radius: 10px;
-  padding: 12px; margin-bottom: 12px; position: relative;
+  background: #f5f0fa;
+  border: 1px solid #c4b5d6;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  position: relative;
 }
 .blueprint-card .bp-title { font-size: 14px; font-weight: 700; color: var(--blueprint); margin-bottom: 8px; }
-.blueprint-card .delete-bp {
-  position: absolute; top: 10px; right: 10px; background: none; border: none;
-  color: var(--danger); font-size: 20px; cursor: pointer; padding: 4px; touch-action: manipulation;
-}
-.new-issue-btn {
-  background: white; border: 2px dashed var(--primary-light); border-radius: 10px;
-  padding: 16px; width: 100%; text-align: center; color: var(--primary-light);
-  font-size: 14px; font-weight: 600; cursor: pointer; touch-action: manipulation;
-}
-.new-issue-btn:active { background: #eaf2f8; }
+.new-issue-btn,
 .new-bp-btn {
-  background: white; border: 2px dashed var(--blueprint); border-radius: 10px;
-  padding: 16px; width: 100%; text-align: center; color: var(--blueprint);
-  font-size: 14px; font-weight: 600; cursor: pointer; touch-action: manipulation;
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
 }
+.new-issue-btn { border: 2px dashed var(--primary-light); color: var(--primary-light); }
+.new-issue-btn:active { background: #eaf2f8; }
+.new-bp-btn { border: 2px dashed var(--blueprint); color: var(--blueprint); }
 .new-bp-btn:active { background: #f5f0fa; }
+.qr-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.qr-video-wrap {
+  display: none;
+  margin-top: 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+}
+.qr-video-wrap video { width: 100%; height: auto; display: block; }
 .pdf-section { padding: 20px 12px; text-align: center; }
 .modal-overlay {
-  display: none; position: fixed; top:0;left:0;right:0;bottom:0;
-  background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 .modal-overlay.active { display: flex; }
 .modal-box {
-  background: white; border-radius: 16px; padding: 24px; max-width: 340px; width: 100%; text-align: center;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
 }
 .modal-box h3 { margin-bottom: 12px; font-size: 16px; }
-.modal-box p { font-size: 14px; color: var(--text-light); margin-bottom: 20px; }
+.modal-box p { font-size: 14px; color: var(--text-light); margin-bottom: 20px; line-height: 1.6; }
 .modal-buttons { display: flex; gap: 10px; }
 .modal-buttons .btn { flex: 1; }
 .preview-overlay {
-  display: none; position: fixed; top:0;left:0;right:0;bottom:0;
-  background: black; z-index: 2000; flex-direction: column;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  z-index: 2000;
+  flex-direction: column;
 }
 .preview-overlay.active { display: flex; }
-.preview-image-container { flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:10px; }
-.preview-image-container img { max-width:100%; max-height:100%; object-fit:contain; border-radius:8px; }
-.preview-controls { background:rgba(0,0,0,0.85); padding:20px 30px; display:flex; align-items:center; justify-content:center; gap:20px; }
+.preview-image-container { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; }
+.preview-image-container img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.preview-controls { background: rgba(0,0,0,0.85); padding: 20px 30px; display: flex; align-items: center; justify-content: center; gap: 20px; }
 .status-bar {
-  position: fixed; bottom:0;left:0;right:0; background:white; border-top:1px solid var(--border);
-  padding:8px 16px; display:flex; align-items:center; justify-content:space-between;
-  z-index:50; font-size:12px; color:var(--text-light);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid var(--border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+  font-size: 12px;
+  color: var(--text-light);
 }
-.status-bar .save-status { display:flex; align-items:center; gap:4px; }
-.status-bar .save-dot { width:8px; height:8px; border-radius:50%; background:var(--success); }
-
-.qr-scan-wrap { display:flex; flex-direction:column; gap:8px; }
-.qr-scan-btn { width:100%; min-height:52px; font-size:16px; }
-.qr-scan-hint { font-size:12px; color:var(--text-light); line-height:1.5; }
-.qr-status {
-  display:none; padding:10px 12px; border-radius:8px; font-size:12px; line-height:1.5;
-  border:1px solid var(--border); background:#f8f9fb; color:var(--text);
-}
-.qr-status.show { display:block; }
-.qr-status.success { background:#eefaf3; border-color:#b8e6cc; color:#1f7a45; }
-.qr-status.error { background:#fff2f0; border-color:#f3b3aa; color:#b03a2e; }
-.qr-status.info { background:#eef5fb; border-color:#c8daea; color:#1a5276; }
-.qr-scan-box { max-width:420px; text-align:left; }
-.qr-scan-box h3 { margin-bottom:8px; }
-.qr-scan-box p { margin-bottom:12px; }
-.qr-video-wrap {
-  position:relative; width:100%; aspect-ratio:3/4; background:#111; border-radius:12px;
-  overflow:hidden; margin-bottom:12px;
-}
-.qr-video-wrap video {
-  width:100%; height:100%; object-fit:cover; display:block; background:#111;
-}
-.qr-scan-guide {
-  position:absolute; inset:50% auto auto 50%; width:68%; aspect-ratio:1/1;
-  transform:translate(-50%,-50%); border:3px solid rgba(255,255,255,0.92);
-  border-radius:18px; box-shadow:0 0 0 9999px rgba(0,0,0,0.22);
-}
-.qr-manual-note { font-size:12px; color:var(--text-light); margin-bottom:10px; line-height:1.5; }
-.qr-scan-actions { display:flex; gap:10px; }
-.qr-scan-actions .btn { flex:1; min-height:46px; }
-
-
-/* ============ PRINT ============ */
+.status-bar .save-status { display: flex; align-items: center; gap: 4px; }
+.status-bar .save-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
 #printArea { display: none; }
 @page { margin: 6mm 7mm; }
 @media print {
   body > *:not(#printArea) { display: none !important; }
   #printArea { display: block !important; }
-  body { background:white; padding:0; margin:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  .pp {
-    page-break-after: always; break-after: always;
-    width:100%; padding: 4mm 5mm 4mm 5mm; position:relative;
-    box-sizing: border-box;
-  }
-  /* Blueprint pages */
-  .pp-land {
-    page-break-after: always; break-after: always;
-    width: 100%; padding: 4mm 5mm 4mm 5mm; position:relative;
-    box-sizing: border-box;
-  }
-  /* Last page: suppress trailing blank page */
-  #printArea > *:last-child {
-    page-break-after: avoid !important;
-    break-after: avoid !important;
-  }
-  /* Cover */
-  .pc-title {
-    background: linear-gradient(135deg,#1a5276,#2980b9) !important;
-    color: white; text-align: center; padding: 10px 0; font-size: 22px; font-weight: 700;
-    letter-spacing: 2px; border-radius: 3px; margin-bottom: 10px;
-  }
+  body { background: white; padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pp, .pp-land { page-break-after: always; break-after: always; width: 100%; padding: 4mm 5mm; position: relative; box-sizing: border-box; }
+  #printArea > *:last-child { page-break-after: avoid !important; break-after: avoid !important; }
+  .pc-title { background: linear-gradient(135deg,#1a5276,#2980b9) !important; color: white; text-align: center; padding: 10px 0; font-size: 22px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 10px; }
   .pc-header { display: flex; gap: 14px; margin-bottom: 10px; align-items: flex-start; }
   .pc-photo { width: 130px; flex-shrink: 0; }
-  .pc-photo img { width:100%; border:1px solid #ddd; border-radius:3px; }
-  .pc-photo .no-ph { width:100%; height:160px; background:#f5f5f5; border:1px dashed #ccc; border-radius:3px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
-  .pc-info { flex:1; }
-  .pc-info table { width:100%; border-collapse:collapse; font-size:11px; }
-  .pc-info th { background:#f0f3f6 !important; padding:6px 9px; text-align:left; border:1px solid #dce1e6; font-weight:700; white-space:nowrap; }
-  .pc-info td { padding:6px 9px; border:1px solid #dce1e6; }
-  /* Issue list */
-  .pi-title {
-    background: linear-gradient(135deg,#1a5276,#2980b9) !important;
-    color: white; padding: 7px 13px; font-size: 13px; font-weight: 700; border-radius: 3px 3px 0 0;
-  }
-  .pi-table { width:100%; border-collapse:collapse; }
-  .pi-table th { background:#f0f3f6 !important; padding:5px 7px; font-size:10px; border:1px solid #dce1e6; text-align:left; }
-  .pi-table td { padding:5px 7px; font-size:10px; border:1px solid #dce1e6; vertical-align:top; line-height:1.5; word-break:break-all; }
-  /* Issue detail */
-  .pd-title {
-    background: linear-gradient(135deg,#1a5276,#2980b9) !important;
-    color:white; padding:7px 13px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:8px;
-  }
+  .pc-photo img { width: 100%; border: 1px solid #ddd; border-radius: 3px; }
+  .pc-photo .no-ph { width: 100%; height: 160px; background: #f5f5f5; border: 1px dashed #ccc; border-radius: 3px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 9px; }
+  .pc-info { flex: 1; }
+  .pc-info table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .pc-info th { background: #f0f3f6 !important; padding: 6px 9px; text-align: left; border: 1px solid #dce1e6; font-weight: 700; white-space: nowrap; }
+  .pc-info td { padding: 6px 9px; border: 1px solid #dce1e6; }
+  .pi-title, .pd-title { background: linear-gradient(135deg,#1a5276,#2980b9) !important; color: white; padding: 7px 13px; font-size: 13px; font-weight: 700; border-radius: 3px; margin-bottom: 8px; }
+  .pi-table { width: 100%; border-collapse: collapse; }
+  .pi-table th { background: #f0f3f6 !important; padding: 5px 7px; font-size: 10px; border: 1px solid #dce1e6; text-align: left; }
+  .pi-table td { padding: 5px 7px; font-size: 10px; border: 1px solid #dce1e6; vertical-align: top; line-height: 1.5; word-break: break-all; }
   .pd-item { border: 1.5px solid #1a5276; border-radius: 4px; padding: 8px; margin-bottom: 8px; }
-  .pd-badge {
-    display:inline-block; background:#1a5276 !important; color:white;
-    width:24px; height:24px; line-height:24px; text-align:center;
-    border-radius:50%; font-size:12px; font-weight:700; flex-shrink:0;
-  }
-  .pd-photos { display:flex; gap:8px; margin-bottom:5px; }
-  .pd-photos > div { flex:1; }
-  /* 接写写真は高解像度なので高さを大きめに */
-  .pd-photos img { width:100%; max-height:170px; object-fit:cover; border:1px solid #ddd; border-radius:2px; }
-  .pd-photos .no-photo { width:100%; height:110px; background:#f5f5f5; border:1px dashed #ccc; border-radius:2px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
-  .pd-photos .plabel { font-size:8px; color:#666; margin-bottom:2px; }
-  .pd-info { font-size:12px; line-height:1.5; }
-  .pd-loc { font-size:12px; color:#1a5276; font-weight:700; }
-  /* Check items */
-  .pk-title {
-    background: linear-gradient(135deg,#219a52,#27ae60) !important;
-    color:white; padding:7px 13px; font-size:13px; font-weight:700; border-radius:3px; margin-bottom:10px;
-  }
-  .pk-item { margin-bottom:12px; padding-bottom:10px; border-bottom:1px dashed #ddd; }
-  .pk-item:last-child { border-bottom:none; margin-bottom:0; }
-  .pk-item-title {
-    background:#f0faf4 !important; border:1px solid #b8e6cc; padding:6px 11px;
-    font-size:12px; font-weight:700; color:#27ae60; border-radius:3px; margin-bottom:8px;
-  }
-  .pk-photos { display:flex; gap:10px; margin-bottom:6px; }
-  .pk-photos > div { flex:1; max-width:50%; }
-  .pk-photos img { width:100%; max-height:155px; object-fit:cover; border:1px solid #ddd; border-radius:2px; }
-  .pk-photos .no-photo { width:100%; height:100px; background:#f5f5f5; border:1px dashed #ccc; border-radius:2px; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:9px; }
-  .pk-photos .plabel { font-size:9px; color:#666; margin-bottom:2px; }
-  .pk-comment { font-size:11px; line-height:1.5; }
-  .pk-comment .clabel { font-size:10px; color:#666; font-weight:600; }
-  /* Blueprint pages */
-  .pb-bar {
-    background: linear-gradient(135deg,#5b3e8a,#7b52b9) !important;
-    color:white; padding:7px 13px; font-size:14px; font-weight:700; border-radius:3px; margin-bottom:8px;
-  }
+  .pd-badge { display: inline-block; background: #1a5276 !important; color: white; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .pd-photos { display: flex; gap: 8px; margin-bottom: 5px; }
+  .pd-photos > div { flex: 1; }
+  .pd-photos img { width: 100%; max-height: 170px; object-fit: cover; border: 1px solid #ddd; border-radius: 2px; }
+  .pd-photos .no-photo, .pk-photos .no-photo { width: 100%; height: 110px; background: #f5f5f5; border: 1px dashed #ccc; border-radius: 2px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 9px; }
+  .pd-loc { font-size: 12px; color: #1a5276; font-weight: 700; }
+  .pd-info { font-size: 12px; line-height: 1.5; }
+  .pk-title { background: linear-gradient(135deg,#219a52,#27ae60) !important; color: white; padding: 7px 13px; font-size: 13px; font-weight: 700; border-radius: 3px; margin-bottom: 10px; }
+  .pk-item { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #ddd; }
+  .pk-item:last-child { border-bottom: none; margin-bottom: 0; }
+  .pk-item-title { background: #f0faf4 !important; border: 1px solid #b8e6cc; padding: 6px 11px; font-size: 12px; font-weight: 700; color: #27ae60; border-radius: 3px; margin-bottom: 8px; }
+  .pk-photos { display: flex; gap: 10px; margin-bottom: 6px; }
+  .pk-photos > div { flex: 1; max-width: 50%; }
+  .pk-photos img { width: 100%; max-height: 155px; object-fit: cover; border: 1px solid #ddd; border-radius: 2px; }
+  .pk-comment { font-size: 11px; line-height: 1.5; }
+  .pk-comment .clabel { font-size: 10px; color: #666; font-weight: 600; }
+  .pb-bar { background: linear-gradient(135deg,#5b3e8a,#7b52b9) !important; color: white; padding: 7px 13px; font-size: 14px; font-weight: 700; border-radius: 3px; margin-bottom: 8px; }
   .pb-img-full { width: 100%; }
   .pb-img-full img { width: 100%; max-height: 260mm; object-fit: contain; border: 1px solid #ddd; border-radius: 3px; }
 }
 </style>
 </head>
 <body>
-
 <header class="app-header">
   <h1>アフター点検報告書</h1>
-  <div class="sub">住宅アフター点検システム</div>
+  <div class="sub">アフター点検入力システム</div>
 </header>
-
-<div style="padding:12px 12px 0;">
-  <button class="btn btn-danger btn-block" id="btnReset">✦ 新規入力を開始する</button>
+<div style="padding: 12px 12px 0;">
+  <button class="btn btn-danger btn-block" id="btnReset">新規入力を開始する</button>
 </div>
-
-<!-- Basic Info -->
 <div class="section">
-  <div class="section-title">📋 基本情報</div>
+  <div class="section-title">基本情報</div>
   <div class="section-body">
+    <div class="form-group">
+      <label>支社名</label>
+      <select id="branchName">
+        <option value="埼玉支社" selected>埼玉支社</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>担当者</label>
+      <input type="text" id="staffName" placeholder="担当者名を入力（初回のみ）">
+      <div class="form-note">一度入力すると次回以降も自動で記憶されます。</div>
+    </div>
     <div class="form-group">
       <label>点検種別</label>
       <select id="inspectionType">
         <option value="6ヶ月">6ヶ月</option>
         <option value="2年">2年</option>
-        <option value="臨時">臨時</option>
+        <option value="随時">随時</option>
       </select>
+    </div>
+    <div class="form-group">
+      <label>QRコードスキャン</label>
+      <div class="qr-actions">
+        <button class="btn btn-outline" id="btnScanQR" type="button">QRコードを読み取る</button>
+        <button class="btn btn-outline" id="btnStopScanQR" type="button" style="display:none;">停止</button>
+      </div>
+      <div id="qrScanStatus" class="form-note">QRコードを読み取ると、顧客コード・お客様名・住所を自動入力します。</div>
+      <div id="qrScannerWrap" class="qr-video-wrap">
+        <video id="qrVideo" playsinline muted></video>
+      </div>
+      <div class="form-note">うまく読めない場合は、QRコードを画面中央に大きく映してください。</div>
     </div>
     <div class="form-group">
       <label>顧客コード</label>
       <input type="text" id="customerCode" inputmode="numeric" pattern="[0-9]*" placeholder="顧客コードを入力（数字）">
-    </div>
-    <div class="form-group">
-      <label>QRコード読取</label>
-      <div class="qr-scan-wrap">
-        <button type="button" class="btn btn-success btn-lg qr-scan-btn" id="btnScanQR">📷 QRコードスキャン</button>
-        <div class="qr-scan-hint">案内図のQRコードを読み取って、顧客コード・お客様名・住所の入力開始に使います。</div>
-        <div class="qr-status" id="qrResultStatus" aria-live="polite"></div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>支社名</label>
-      <select id="branchName"><option value="埼玉支社" selected>埼玉支社</option></select>
-    </div>
-    <div class="form-group">
-      <label>担当者</label>
-      <input type="text" id="staffName" placeholder="担当者名を入力（初回のみ）">
-      <div style="font-size:11px;color:#7f8c8d;margin-top:3px;">※ 初回入力後は自動で記憶されます</div>
     </div>
     <div class="form-group">
       <label>お客様名</label>
@@ -343,55 +397,44 @@ body {
     </div>
     <div class="form-group">
       <label>外観写真</label>
-      <div style="font-size:11px;color:#7f8c8d;margin-bottom:4px;">※ スマホを縦向きで撮影してください</div>
-      <div class="photo-slot" id="exteriorPhotoSlot" data-photo-target="exterior" style="aspect-ratio:3/4;max-width:60%;">
+      <div class="form-note">スマートフォンを縦向きにして撮影してください。</div>
+      <div class="photo-slot" id="exteriorPhotoSlot" data-photo-target="exterior" style="max-width: 60%;">
         <div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- Issues -->
 <div class="section">
-  <div class="section-title">🔍 指摘箇所 <span id="issueCount" style="margin-left:auto;font-size:12px;opacity:0.8">0件</span></div>
+  <div class="section-title">指摘事項 <span id="issueCount" style="margin-left:auto;font-size:12px;opacity:0.8">0件</span></div>
   <div class="section-body">
     <div id="issuesContainer"></div>
-    <button class="new-issue-btn" id="btnAddIssue">＋ 指摘箇所を追加</button>
+    <button class="new-issue-btn" id="btnAddIssue">指摘事項を追加</button>
   </div>
 </div>
-
-<!-- Check Items -->
 <div class="section">
-  <div class="section-title green-bg">✅ 検査項目</div>
+  <div class="section-title green-bg">点検項目</div>
   <div class="section-body" id="checkItemsContainer"></div>
 </div>
-
-<!-- Blueprints -->
 <div class="section">
-  <div class="section-title blueprint-bg">📐 図面 <span id="bpCount" style="margin-left:auto;font-size:12px;opacity:0.8">0枚</span></div>
+  <div class="section-title blueprint-bg">図面 <span id="bpCount" style="margin-left:auto;font-size:12px;opacity:0.8">0枚</span></div>
   <div class="section-body">
     <div id="blueprintsContainer"></div>
-    <button class="new-bp-btn" id="btnAddBP">＋ 図面を撮影</button>
+    <button class="new-bp-btn" id="btnAddBP">図面を追加</button>
   </div>
 </div>
-
-<!-- PDF -->
 <div class="pdf-section">
-  <button class="btn btn-success btn-lg btn-block" id="btnPDF">📄 ＰＤＦ出力</button>
+  <button class="btn btn-success btn-lg btn-block" id="btnPDF">PDF出力</button>
 </div>
-
-<!-- Modals -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal-box">
     <h3>新規入力を開始しますか？</h3>
-    <p>入力中のデータはすべてリセットされます。この操作は取り消せません。</p>
+    <p>現在の入力内容はリセットされます。支社名と担当者は保持したまま、新しい案件の入力を開始します。</p>
     <div class="modal-buttons">
       <button class="btn btn-outline" id="btnResetNo">いいえ</button>
       <button class="btn btn-danger" id="btnResetYes">はい</button>
     </div>
   </div>
 </div>
-
 <div class="preview-overlay" id="previewOverlay">
   <div class="preview-image-container"><img id="previewImage" src="" alt="プレビュー"></div>
   <div class="preview-controls">
@@ -399,899 +442,465 @@ body {
     <button class="btn btn-success btn-lg" id="btnConfirm">OK</button>
   </div>
 </div>
-
-
-<div class="modal-overlay" id="qrScanModal">
-  <div class="modal-box qr-scan-box">
-    <h3>QRコード読取</h3>
-    <p id="qrScanMessage">案内図のQRコードを枠内に合わせてください。うまく読めない場合は画像からの読取も使えます。</p>
-    <div class="qr-video-wrap">
-      <video id="qrVideo" playsinline autoplay muted></video>
-      <div class="qr-scan-guide"></div>
-    </div>
-    <div class="qr-manual-note" id="qrFallbackHint">読取後に顧客コード・お客様名・住所へ自動反映します。既存入力がある場合は上書き確認を表示します。</div>
-    <div class="qr-status" id="qrScanStatus" aria-live="polite"></div>
-    <div class="modal-buttons qr-scan-actions">
-      <button class="btn btn-outline" id="btnScanFromImage">画像から読む</button>
-      <button class="btn btn-danger" id="btnCloseQRScan">閉じる</button>
-    </div>
-  </div>
-</div>
-
 <div class="status-bar">
-  <div class="save-status"><div class="save-dot"></div> 自動保存済</div>
+  <div class="save-status"><div class="save-dot"></div> 自動保存中</div>
   <div id="dateDisplay"></div>
 </div>
-
 <canvas id="photoCanvas" style="display:none;"></canvas>
+<canvas id="qrScanCanvas" style="display:none;"></canvas>
 <div id="printArea"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="./jsQR.js"></script>
 <script>
 (function() {
   'use strict';
-
-  var LOCATIONS = [
-    "外構","屋根","雨樋","外壁","床下","玄関外ポーチ","玄関内ポーチ",
-    "ホール（A）","ホール(B)","階段","LDK","キッチン","洗面所","UB",
-    "トイレ（A）","トイレ(B)","和室","洋室(A)","洋室(B)","洋室(C)",
-    "洋室(D)","洋室(E)","小屋裏収納","バルコニー","青空リビング","極楽加湿","Z空調"
-  ];
-  var CHECK_ITEMS = ["ココチＥ換気フード","ココチＥ室内フィルター","給湯器","天井裏","床下"];
-  var STORAGE_KEY = "afterInspection_v6";
-  var STAFF_KEY = "afterInspection_staff";
+  var LOCATIONS = ['玄関', '廊下', '洗面', '洋室', '和室', '北側バルコニー', '南側バルコニー', 'ホール(A)', 'ホール(B)', '浴室', 'LDK', 'キッチン', '物入', 'UB', 'トイレ(A)', 'トイレ(B)', '階段', '洋室(A)', '洋室(B)', '洋室(C)', '洋室(D)', '洋室(E)', '床下収納庫', 'バルコニー', '設備・リビング', '網戸', 'その他'];
+  var CHECK_ITEMS = ['点検項目1', '点検項目2', '点検項目3', '点検項目4', '点検項目5'];
+  var STORAGE_KEY = 'afterInspection_v6';
+  var STAFF_KEY = 'afterInspection_staff';
   var MAX_ISSUES = 30;
   var MAX_BLUEPRINTS = 6;
-
   var appData = getDefaultData();
   var currentPhotoTarget = null;
   var pendingImageData = null;
-  var qrScanState = { stream:null, active:false, rafId:0, lastScanAt:0, lastPayload:null, lastRawValue:'', canvas:null, ctx:null };
-
+  var qrStream = null;
+  var qrScanTimer = null;
+  var qrBusy = false;
   function getDefaultData() {
-    return {
-      inspectionType:"6ヶ月", branchName:"埼玉支社", staffName:"",
-      customerCode:"", customerName:"", address:"", exteriorPhoto:null, issues:[],
-      checkItems: CHECK_ITEMS.map(function(n){ return {name:n,photoFar:null,photoClose:null,comment:""}; }),
-      blueprints: []
-    };
+    return { inspectionType: '6ヶ月', branchName: '埼玉支社', staffName: '', customerCode: '', customerName: '', address: '', exteriorPhoto: null, issues: [], checkItems: CHECK_ITEMS.map(function(name) { return { name: name, photoFar: null, photoClose: null, comment: '' }; }), blueprints: [] };
   }
-
   function init() { loadData(); renderAll(); updateDateDisplay(); bindEvents(); }
-  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
-  else init();
-
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   function updateDateDisplay() {
-    var n=new Date(), el=document.getElementById("dateDisplay");
-    if(el) el.textContent=n.getFullYear()+'/'+String(n.getMonth()+1).padStart(2,'0')+'/'+String(n.getDate()).padStart(2,'0');
+    var now = new Date();
+    var el = document.getElementById('dateDisplay');
+    if (el) el.textContent = now.getFullYear() + '/' + String(now.getMonth() + 1).padStart(2, '0') + '/' + String(now.getDate()).padStart(2, '0');
   }
-
-  /* === Events === */
   function bindEvents() {
-    addClick('btnReset', function(){ document.getElementById('resetModal').classList.add('active'); });
-    addClick('btnResetNo', function(){ document.getElementById('resetModal').classList.remove('active'); });
-    addClick('btnResetYes', function(){
-      var staff=appData.staffName;
-      try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
-      appData=getDefaultData(); appData.staffName=staff;
-      renderAll(); saveData();
+    addClick('btnReset', function() { document.getElementById('resetModal').classList.add('active'); });
+    addClick('btnResetNo', function() { document.getElementById('resetModal').classList.remove('active'); });
+    addClick('btnResetYes', function() {
+      var branch = appData.branchName;
+      var staff = appData.staffName;
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      appData = getDefaultData();
+      appData.branchName = branch || appData.branchName;
+      appData.staffName = staff || '';
+      renderAll();
+      saveData();
       document.getElementById('resetModal').classList.remove('active');
     });
     addClick('btnAddIssue', addIssue);
     addClick('btnAddBP', addBlueprint);
     addClick('btnPDF', generatePDF);
-    addClick('btnScanQR', startQRScanFlow);
-    addClick('btnCloseQRScan', closeQRScanModal);
-    addClick('btnScanFromImage', openQRImageInput);
-    addClick('exteriorPhotoSlot', function(e){
-      if(e.target.closest('.remove-photo')) return;
-      takePhoto('exterior',0);
+    addClick('btnScanQR', startQrScan);
+    addClick('btnStopScanQR', stopQrScan);
+    addClick('exteriorPhotoSlot', function(e) { if (e.target.closest('.remove-photo')) return; takePhoto('exterior', 0); });
+    addClick('btnRetake', function() { document.getElementById('previewOverlay').classList.remove('active'); pendingImageData = null; if (currentPhotoTarget) takePhoto(currentPhotoTarget.type, currentPhotoTarget.index); });
+    addClick('btnConfirm', function() { document.getElementById('previewOverlay').classList.remove('active'); if (pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData); pendingImageData = null; });
+    ['branchName', 'staffName', 'inspectionType', 'customerCode', 'customerName', 'address'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.addEventListener('input', saveData); el.addEventListener('change', saveData); }
     });
-    addClick('btnRetake', function(){
-      document.getElementById('previewOverlay').classList.remove('active');
-      pendingImageData=null;
-      if(currentPhotoTarget) takePhoto(currentPhotoTarget.type, currentPhotoTarget.index);
-    });
-    addClick('btnConfirm', function(){
-      document.getElementById('previewOverlay').classList.remove('active');
-      if(pendingImageData && currentPhotoTarget) savePhotoToTarget(pendingImageData);
-      pendingImageData=null;
-    });
-    ['inspectionType','branchName','staffName','customerCode','customerName','address'].forEach(function(id){
-      var el=document.getElementById(id);
-      if(el){el.addEventListener('input',saveData);el.addEventListener('change',saveData);}
-    });
-    document.addEventListener('click', function(e){
-      var delBtn=e.target.closest('.delete-issue');
-      if(delBtn){deleteIssue(parseInt(delBtn.getAttribute('data-idx')));return;}
-      var delBP=e.target.closest('.delete-bp');
-      if(delBP){deleteBlueprint(parseInt(delBP.getAttribute('data-idx')));return;}
-      var rmBtn=e.target.closest('.remove-photo');
-      if(rmBtn){e.stopPropagation();handleRemovePhoto(rmBtn);return;}
-      var slot=e.target.closest('.photo-slot, .photo-slot-free');
-      if(slot && !e.target.closest('.remove-photo')){
-        var pt=slot.getAttribute('data-photo-target');
-        var pi=parseInt(slot.getAttribute('data-photo-idx')||'0');
-        if(pt) takePhoto(pt,pi);
+    document.addEventListener('click', function(e) {
+      var delBtn = e.target.closest('.delete-issue');
+      if (delBtn) { deleteIssue(parseInt(delBtn.getAttribute('data-idx'), 10)); return; }
+      var delBP = e.target.closest('.delete-bp');
+      if (delBP) { deleteBlueprint(parseInt(delBP.getAttribute('data-idx'), 10)); return; }
+      var rmBtn = e.target.closest('.remove-photo');
+      if (rmBtn) { e.stopPropagation(); handleRemovePhoto(rmBtn); return; }
+      var slot = e.target.closest('.photo-slot, .photo-slot-free');
+      if (slot && !e.target.closest('.remove-photo')) {
+        var pt = slot.getAttribute('data-photo-target');
+        var pi = parseInt(slot.getAttribute('data-photo-idx') || '0', 10);
+        if (pt) takePhoto(pt, pi);
       }
     });
-    document.addEventListener('input', function(e){
-      if(e.target.id && (e.target.id.indexOf('issue_')===0||e.target.id.indexOf('check_')===0)) saveData();
-    });
-    document.addEventListener('change', function(e){
-      if(e.target.id && e.target.id.indexOf('issue_loc_')===0) saveData();
-    });
-    document.addEventListener('visibilitychange', function(){
-      if(document.hidden) stopQRScanCamera();
-    });
+    document.addEventListener('input', function(e) { if (e.target.id && (e.target.id.indexOf('issue_') === 0 || e.target.id.indexOf('check_') === 0)) saveData(); });
+    document.addEventListener('change', function(e) { if (e.target.id && e.target.id.indexOf('issue_loc_') === 0) saveData(); });
   }
-
-  function addClick(id,fn){var el=document.getElementById(id);if(el)el.addEventListener('click',fn);}
-
-  function handleRemovePhoto(btn){
-    var type=btn.getAttribute('data-rm-type'), idx=parseInt(btn.getAttribute('data-rm-idx'));
-    if(type==='exterior'){appData.exteriorPhoto=null;renderExteriorPhoto();}
-    else if(type==='issue_far'&&appData.issues[idx]){appData.issues[idx].photoFar=null;renderIssues();}
-    else if(type==='issue_close'&&appData.issues[idx]){appData.issues[idx].photoClose=null;renderIssues();}
-    else if(type==='check_far'&&appData.checkItems[idx]){appData.checkItems[idx].photoFar=null;renderCheckItems();}
-    else if(type==='check_close'&&appData.checkItems[idx]){appData.checkItems[idx].photoClose=null;renderCheckItems();}
-    else if(type==='blueprint'&&appData.blueprints[idx]){appData.blueprints[idx].photo=null;renderBlueprints();}
-    saveData();
+  function addClick(id, fn) { var el = document.getElementById(id); if (el) el.addEventListener('click', fn); }
+  function setQrStatus(msg, isError) {
+    var el = document.getElementById('qrScanStatus');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = isError ? '#e74c3c' : '#7f8c8d';
   }
-
-  /* === Persistence === */
-  function saveData(){
-    appData.inspectionType=gv('inspectionType'); appData.branchName=gv('branchName');
-    appData.staffName=gv('staffName');
-    if(appData.staffName){try{localStorage.setItem(STAFF_KEY,appData.staffName);}catch(e){}}
-    appData.customerCode=gv('customerCode'); appData.customerName=gv('customerName'); appData.address=gv('address');
-    appData.issues.forEach(function(issue,i){
-      var ls=document.getElementById('issue_loc_'+i),lf=document.getElementById('issue_locfree_'+i),cm=document.getElementById('issue_comment_'+i);
-      if(ls)issue.location=ls.value;if(lf)issue.locationFree=lf.value;if(cm)issue.comment=cm.value;
-    });
-    appData.checkItems.forEach(function(item,i){
-      var cm=document.getElementById('check_comment_'+i);if(cm)item.comment=cm.value;
-    });
-    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(appData));}catch(e){}
-  }
-
-  function loadData(){
-    try{
-      var saved=localStorage.getItem(STORAGE_KEY);
-      if(saved){
-        appData=Object.assign(getDefaultData(),JSON.parse(saved));
-        CHECK_ITEMS.forEach(function(name,i){
-          if(!appData.checkItems[i]||appData.checkItems[i].name!==name)
-            appData.checkItems[i]={name:name,photoFar:null,photoClose:null,comment:""};
-          if(appData.checkItems[i].photo&&!appData.checkItems[i].photoFar){
-            appData.checkItems[i].photoFar=appData.checkItems[i].photo;delete appData.checkItems[i].photo;
-          }
-        });
-        if(!appData.blueprints) appData.blueprints=[];
+  function parseQrPayloadFromText(rawText) {
+    if (!rawText) return null;
+    rawText = String(rawText).replace(/^\uFEFF/, '').trim();
+    try {
+      var prefix = 'GUIDEMAPQR2:';
+      if (rawText.indexOf(prefix) === 0) {
+        var encoded = rawText.slice(prefix.length);
+        var normalized = encoded.replace(/-/g, '+').replace(/_/g, '/');
+        while (normalized.length % 4) normalized += '=';
+        var binary = atob(normalized);
+        var bytes = new Uint8Array(binary.length);
+        for (var j = 0; j < binary.length; j++) bytes[j] = binary.charCodeAt(j);
+        var decodedText = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+        var compact = JSON.parse(decodedText);
+        if (compact && typeof compact === 'object') return { version: compact.v || 2, customerCode: compact.c || '', customerName: compact.n || '', address: compact.a || '' };
       }
-      if(!appData.staffName){var ss=localStorage.getItem(STAFF_KEY);if(ss)appData.staffName=ss;}
-    }catch(e){}
+    } catch (e) {}
+    try { var obj = JSON.parse(rawText); if (obj && typeof obj === 'object') return obj; } catch (e) {}
+    try {
+      var legacyBytes = new Uint8Array(rawText.length);
+      for (var i = 0; i < rawText.length; i++) legacyBytes[i] = rawText.charCodeAt(i) & 0xFF;
+      var decoded = new TextDecoder('utf-8', { fatal: false }).decode(legacyBytes);
+      var obj2 = JSON.parse(decoded);
+      if (obj2 && typeof obj2 === 'object') return obj2;
+    } catch (e) {}
+    return null;
   }
-
-  function gv(id){var el=document.getElementById(id);return el?el.value:"";}
-  function sv(id,val){var el=document.getElementById(id);if(el)el.value=val||"";}
-
-
-  function setQRStatus(id, message, kind){
-    var el=document.getElementById(id);
-    if(!el) return;
-    if(!message){
-      el.textContent='';
-      el.className='qr-status';
-      return;
-    }
-    el.textContent=message;
-    el.className='qr-status show'+(kind?' '+kind:'');
-  }
-
-  function startQRScanFlow(){
-    openQRScanModal();
-    setQRStatus('qrScanStatus','カメラを起動しています…','info');
-    setQRStatus('qrResultStatus','QRコード読取を開始しました。','info');
-    startQRScanCamera();
-  }
-
-  function openQRScanModal(){
-    var modal=document.getElementById('qrScanModal');
-    if(modal) modal.classList.add('active');
-  }
-
-  function closeQRScanModal(){
-    stopQRScanCamera();
-    var modal=document.getElementById('qrScanModal');
-    if(modal) modal.classList.remove('active');
-  }
-
-  function ensureQRCanvas(){
-    if(qrScanState.canvas && qrScanState.ctx) return qrScanState.canvas;
-    var canvas=document.createElement('canvas');
-    canvas.width=640;
-    canvas.height=480;
-    qrScanState.canvas=canvas;
-    qrScanState.ctx=canvas.getContext('2d', { willReadFrequently:true }) || canvas.getContext('2d');
-    return canvas;
-  }
-
-  function isJsQRReady(){
-    return typeof window.jsQR === 'function';
-  }
-
-  function startQRScanCamera(){
-    var video=document.getElementById('qrVideo');
-    if(!video){
-      setQRStatus('qrScanStatus','読取用UIの初期化に失敗しました。','error');
-      return;
-    }
-    if(!isJsQRReady()){
-      setQRStatus('qrScanStatus','QR読取ライブラリの読込に失敗しました。通信状況を確認して再度お試しください。','error');
-      setQRStatus('qrResultStatus','QR読取ライブラリの読込に失敗しました。','error');
-      return;
-    }
-    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-      setQRStatus('qrScanStatus','カメラを起動できませんでした','error');
-      return;
-    }
-    stopQRScanCamera();
-    ensureQRCanvas();
-    navigator.mediaDevices.getUserMedia({
-      video:{ facingMode:{ ideal:'environment' }, width:{ ideal:1280 }, height:{ ideal:720 } },
-      audio:false
-    }).then(function(stream){
-      qrScanState.stream=stream;
-      qrScanState.active=true;
-      video.setAttribute('playsinline','true');
-      video.muted=true;
-      video.srcObject=stream;
-      return video.play();
-    }).then(function(){
-      setQRStatus('qrScanStatus','QRコードを読み取っています。枠内に合わせてください。','info');
-      scanQRLoop();
-    }).catch(function(err){
-      console.error(err);
-      setQRStatus('qrScanStatus','カメラを起動できませんでした','error');
-      setQRStatus('qrResultStatus','カメラを起動できませんでした','error');
-    });
-  }
-
-  function stopQRScanCamera(){
-    qrScanState.active=false;
-    if(qrScanState.rafId){ cancelAnimationFrame(qrScanState.rafId); qrScanState.rafId=0; }
-    if(qrScanState.stream){
-      qrScanState.stream.getTracks().forEach(function(track){ track.stop(); });
-      qrScanState.stream=null;
-    }
-    var video=document.getElementById('qrVideo');
-    if(video){
-      try{ video.pause(); }catch(e){}
-      video.srcObject=null;
-    }
-  }
-
-  function repairMojibakeText(text){
-    var s=String(text||'');
-    if(!s) return '';
-    try{
-      var bytes=new Uint8Array(Array.prototype.map.call(s, function(ch){ return ch.charCodeAt(0) & 0xff; }));
-      var repaired=new TextDecoder('utf-8', { fatal:false }).decode(bytes);
-      if(repaired && repaired.indexOf('�')===-1){
-        return repaired;
-      }
-    }catch(e){}
-    try{
-      var repaired2=decodeURIComponent(escape(s));
-      if(repaired2 && repaired2.indexOf('�')===-1){
-        return repaired2;
-      }
-    }catch(e){}
-    return s;
-  }
-
-  function getRawTextFromJsQRResult(code){
-    if(!code) return '';
-    if(code.binaryData && code.binaryData.length){
-      try{
-        return new TextDecoder('utf-8').decode(new Uint8Array(code.binaryData));
-      }catch(e){}
-      try{
-        return repairMojibakeText(Array.prototype.map.call(code.binaryData, function(n){ return String.fromCharCode(n); }).join(''));
-      }catch(e){}
-    }
-    return repairMojibakeText(code.data || '');
-  }
-
-  function scanQRLoop(){
-    if(!qrScanState.active) return;
-    var video=document.getElementById('qrVideo');
-    if(!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight){
-      qrScanState.rafId=requestAnimationFrame(scanQRLoop);
-      return;
-    }
-    var now=Date.now();
-    if(now - qrScanState.lastScanAt < 180){
-      qrScanState.rafId=requestAnimationFrame(scanQRLoop);
-      return;
-    }
-    qrScanState.lastScanAt=now;
-    try{
-      var canvas=ensureQRCanvas();
-      var ctx=qrScanState.ctx;
-      var sourceW=video.videoWidth;
-      var sourceH=video.videoHeight;
-      var maxSide=960;
-      var scale=Math.min(1, maxSide / Math.max(sourceW, sourceH));
-      var drawW=Math.max(240, Math.round(sourceW * scale));
-      var drawH=Math.max(240, Math.round(sourceH * scale));
-      if(canvas.width!==drawW || canvas.height!==drawH){
-        canvas.width=drawW;
-        canvas.height=drawH;
-      }
-      ctx.drawImage(video, 0, 0, drawW, drawH);
-      var imageData=ctx.getImageData(0, 0, drawW, drawH);
-      var code=window.jsQR(imageData.data, drawW, drawH, { inversionAttempts:'attemptBoth' });
-      if(code){
-        handleQRReadResult(getRawTextFromJsQRResult(code), code);
-        return;
-      }
-    }catch(err){
-      console.error(err);
-      setQRStatus('qrScanStatus','QRコード読取中にエラーが発生しました。','error');
-    }
-    if(qrScanState.active) qrScanState.rafId=requestAnimationFrame(scanQRLoop);
-  }
-
-  function openQRImageInput(){
-    var old=document.getElementById('qrImageInput');
-    if(old) old.parentNode.removeChild(old);
-    var inp=document.createElement('input');
-    inp.type='file';
-    inp.accept='image/*';
-    inp.setAttribute('capture','environment');
-    inp.id='qrImageInput';
-    inp.style.cssText='position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;z-index:-1;';
-    inp.onchange=function(e){
-      var file=e.target.files&&e.target.files[0];
-      if(!file) return;
-      detectQRFromImageFile(file);
-    };
-    document.body.appendChild(inp);
-    setTimeout(function(){ inp.click(); }, 150);
-  }
-
-  function loadImageFromFile(file){
-    return new Promise(function(resolve, reject){
-      var reader=new FileReader();
-      reader.onload=function(){
-        var img=new Image();
-        img.onload=function(){ resolve(img); };
-        img.onerror=function(){ reject(new Error('image load failed')); };
-        img.src=reader.result;
-      };
-      reader.onerror=function(){ reject(new Error('file read failed')); };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function detectQRFromImageFile(file){
-    if(!isJsQRReady()){
-      setQRStatus('qrScanStatus','QR読取ライブラリの読込に失敗しました。通信状況を確認して再度お試しください。','error');
-      return;
-    }
-    setQRStatus('qrScanStatus','画像からQRコードを確認しています…','info');
-    loadImageFromFile(file).then(function(img){
-      var canvas=ensureQRCanvas();
-      var ctx=qrScanState.ctx;
-      var sourceW=img.naturalWidth || img.width;
-      var sourceH=img.naturalHeight || img.height;
-      var maxSide=1400;
-      var scale=Math.min(1, maxSide / Math.max(sourceW, sourceH));
-      var drawW=Math.max(240, Math.round(sourceW * scale));
-      var drawH=Math.max(240, Math.round(sourceH * scale));
-      if(canvas.width!==drawW || canvas.height!==drawH){
-        canvas.width=drawW;
-        canvas.height=drawH;
-      }
-      ctx.drawImage(img, 0, 0, drawW, drawH);
-      var imageData=ctx.getImageData(0, 0, drawW, drawH);
-      var code=window.jsQR(imageData.data, drawW, drawH, { inversionAttempts:'attemptBoth' });
-      if(code){
-        handleQRReadResult(getRawTextFromJsQRResult(code), code);
-      }else{
-        setQRStatus('qrScanStatus','QRコードを読み取れませんでした。明るい場所で、QR全体が入る画像を使ってください。','error');
-        setQRStatus('qrResultStatus','QRコードを読み取れませんでした。','error');
-      }
-    }).catch(function(err){
-      console.error(err);
-      setQRStatus('qrScanStatus','画像からの読取に失敗しました。','error');
-      setQRStatus('qrResultStatus','画像からの読取に失敗しました。','error');
-    });
-  }
-
-  function normalizeQRText(value){
-    return String(value||'').replace(/\r?\n/g,' ').replace(/[ \t\u3000]+/g,' ').trim();
-  }
-
-  function stripUTF8BOM(text){
-    var s=String(text||'');
-    return s.charCodeAt(0)===0xFEFF ? s.slice(1) : s;
-  }
-
-  function decodeBase64UTF8(text){
-    var normalized=String(text||'').replace(/-/g,'+').replace(/_/g,'/').replace(/\s+/g,'');
-    if(!normalized || normalized.length % 4===1 || !/^[A-Za-z0-9+/=]+$/.test(normalized)) return '';
-    try{
-      var binary=atob(normalized);
-      var bytes=new Uint8Array(binary.length);
-      for(var i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
-      return new TextDecoder('utf-8', { fatal:true }).decode(bytes);
-    }catch(e){
-      return '';
-    }
-  }
-
-  function collectQRJsonCandidates(rawText){
-    var text=stripUTF8BOM(String(rawText||'').trim());
-    var candidates=[];
-    function add(v){
-      var x=stripUTF8BOM(String(v||'').trim());
-      if(!x) return;
-      if(candidates.indexOf(x)===-1) candidates.push(x);
-    }
-    add(text);
-    add(repairMojibakeText(text));
-
-    if(/[?&=]/.test(text)){
-      try{
-        var query=text;
-        var qIndex=text.indexOf('?');
-        if(qIndex>=0) query=text.slice(qIndex+1);
-        var params=new URLSearchParams(query);
-        ['payload','data','q','qr'].forEach(function(key){
-          var v=params.get(key);
-          if(v){
-            add(v);
-            add(repairMojibakeText(v));
-            add(decodeBase64UTF8(v));
-          }
-        });
-      }catch(e){}
-    }
-
-    if(/%[0-9A-Fa-f]{2}/.test(text)){
-      try{ add(decodeURIComponent(text)); }catch(e){}
-      try{ add(decodeURIComponent(text.replace(/\+/g,'%20'))); }catch(e){}
-    }
-
-    add(decodeBase64UTF8(text));
-    return candidates;
-  }
-
-  function parseQRPayload(rawText){
-    var candidates=collectQRJsonCandidates(rawText);
-    if(!candidates.length) return { ok:false, message:'QRコードを読み取れませんでした。' };
-    var data;
-    for(var i=0;i<candidates.length;i++){
-      try{
-        data=JSON.parse(candidates[i]);
-        break;
-      }catch(e){}
-    }
-    if(!data){
-      return { ok:false, message:'QRコードの内容が正しくありません。' };
-    }
-    if(data.version===undefined || data.version===null || String(data.version).trim()===''){
-      return { ok:false, message:'QRコードに必要な項目が不足しています。' };
-    }
-    if(Number(data.version)!==1){
-      return { ok:false, message:'対応していないQRコード形式です。' };
-    }
-    var payload={
-      version:1,
-      customerCode: normalizeQRText(repairMojibakeText(data.customerCode)),
-      customerName: normalizeQRText(repairMojibakeText(data.customerName)).replace(/\s*様$/,'').trim(),
-      address: normalizeQRText(repairMojibakeText(data.address))
-    };
-    if(!payload.customerCode || !payload.customerName || !payload.address){
-      return { ok:false, message:'QRコードに必要な項目が不足しています。' };
-    }
-    return { ok:true, data:payload };
-  }
-
-  function parseQRPayload(rawText){
-    var text=String(rawText||'').trim();
-    if(!text) return { ok:false, message:'QRコードを読み取れませんでした。' };
-    var data;
-    try{
-      data=JSON.parse(text);
-    }catch(e){
-      try{
-        text=repairMojibakeText(text);
-        data=JSON.parse(text);
-      }catch(e2){
-        return { ok:false, message:'QRコードの内容が正しくありません。' };
-      }
-    }
-    if(data.version===undefined || data.version===null || String(data.version).trim()===''){
-      return { ok:false, message:'QRコードに必要な項目が不足しています。' };
-    }
-    if(Number(data.version)!==1){
-      return { ok:false, message:'対応していないQRコード形式です。' };
-    }
-    var payload={
-      version:1,
-      customerCode: normalizeQRText(data.customerCode),
-      customerName: normalizeQRText(data.customerName).replace(/\s*様$/,'').trim(),
-      address: normalizeQRText(data.address)
-    };
-    if(!payload.customerCode || !payload.customerName || !payload.address){
-      return { ok:false, message:'QRコードに必要な項目が不足しています。' };
-    }
-    return { ok:true, data:payload };
-  }
-
-  function handleQRReadResult(rawText){
-    var parsed=parseQRPayload(rawText);
-    if(!parsed.ok){
-      setQRStatus('qrScanStatus', parsed.message, 'error');
-      setQRStatus('qrResultStatus', parsed.message, 'error');
-      return;
-    }
-    qrScanState.lastRawValue=rawText;
-    qrScanState.lastPayload=parsed.data;
-    stopQRScanCamera();
-    var applied=applyScannedCustomerData(parsed.data);
-    if(applied){
-      setQRStatus('qrScanStatus','QRコードを読み取りました。顧客情報を反映しました。','success');
-      setQRStatus('qrResultStatus','QRコードを読み取りました。顧客情報を反映しました。','success');
-      closeQRScanModal();
-    }
-  }
-
-  function applyScannedCustomerData(payload){
-    if(!payload) return false;
-    var hasExisting=!!(gv('customerCode')||gv('customerName')||gv('address'));
-    if(hasExisting){
-      var ok=confirm('すでに入力済みの顧客情報があります。QRコードの内容で上書きしますか？');
-      if(!ok){
-        setQRStatus('qrScanStatus','上書きをキャンセルしました。','info');
-        setQRStatus('qrResultStatus','上書きをキャンセルしました。既存入力値は変更していません。','info');
-        return false;
-      }
-    }
-    sv('customerCode', payload.customerCode);
-    sv('customerName', payload.customerName);
-    sv('address', payload.address);
-    ['customerCode','customerName','address'].forEach(function(id){
-      var el=document.getElementById(id);
-      if(!el) return;
-      try{ el.dispatchEvent(new Event('input', { bubbles:true })); }catch(e){}
-      try{ el.dispatchEvent(new Event('change', { bubbles:true })); }catch(e){}
-    });
-    saveData();
+  function applyCustomerFromQrPayload(payload) {
+    if (!payload) return false;
+    var code = (payload.customerCode || payload.code || '').toString().trim();
+    var name = (payload.customerName || payload.name || '').toString().trim();
+    var addr = (payload.address || payload.addr || payload.customerAddr || '').toString().trim();
+    if (!code && !name && !addr) return false;
+    sv('customerCode', code); sv('customerName', name); sv('address', addr);
+    appData.customerCode = code; appData.customerName = name; appData.address = addr; saveData();
     return true;
-  }
-
-  /* === Render === */
-  function renderAll(){
-    sv('inspectionType',appData.inspectionType);sv('branchName',appData.branchName);
-    sv('staffName',appData.staffName);sv('customerCode',appData.customerCode||'');sv('customerName',appData.customerName);sv('address',appData.address);
-    renderExteriorPhoto();renderIssues();renderCheckItems();renderBlueprints();
-  }
-
-  function renderExteriorPhoto(){
-    var s=document.getElementById('exteriorPhotoSlot');if(!s)return;
-    s.innerHTML=appData.exteriorPhoto
-      ?'<img src="'+appData.exteriorPhoto+'"><button class="remove-photo" data-rm-type="exterior" data-rm-idx="0">✕</button>'
-      :'<div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>';
-  }
-
-  function renderIssues(){
-    var c=document.getElementById('issuesContainer');if(!c)return;
-    var cnt=document.getElementById('issueCount');if(cnt)cnt.textContent=appData.issues.length+'件';
-    var h='';
-    appData.issues.forEach(function(issue,i){
-      var opts=LOCATIONS.map(function(l){return '<option value="'+l+'"'+(issue.location===l?' selected':'')+'>'+l+'</option>';}).join('');
-      var pf=issue.photoFar?'<img src="'+issue.photoFar+'"><button class="remove-photo" data-rm-type="issue_far" data-rm-idx="'+i+'">✕</button>':'<div class="placeholder"><div class="icon">📷</div><div class="text">遠景</div></div>';
-      var pc=issue.photoClose?'<img src="'+issue.photoClose+'"><button class="remove-photo" data-rm-type="issue_close" data-rm-idx="'+i+'">✕</button>':'<div class="placeholder"><div class="icon">📷</div><div class="text">接写</div></div>';
-      h+='<div class="issue-card" id="issueCard_'+i+'">'+
-        '<div class="issue-number">'+(i+1)+'</div>'+
-        '<button class="delete-issue" data-idx="'+i+'">🗑️</button>'+
-        '<div class="photo-pair">'+
-          '<div><div class="photo-label">遠景</div><div class="photo-slot" data-photo-target="issue_far" data-photo-idx="'+i+'">'+pf+'</div></div>'+
-          '<div><div class="photo-label">接写</div><div class="photo-slot" data-photo-target="issue_close" data-photo-idx="'+i+'">'+pc+'</div></div>'+
-        '</div>'+
-        '<div class="form-group" style="margin-bottom:8px;"><label>場所</label>'+
-          '<select id="issue_loc_'+i+'"><option value="">選択してください</option>'+opts+'</select></div>'+
-        '<div class="form-group" style="margin-bottom:8px;">'+
-          '<input type="text" id="issue_locfree_'+i+'" value="'+esc(issue.locationFree)+'" placeholder="場所の補足（自由記述）"></div>'+
-        '<div class="form-group" style="margin-bottom:0;"><label>コメント</label>'+
-          '<textarea id="issue_comment_'+i+'" placeholder="指摘内容を入力">'+esc(issue.comment)+'</textarea></div></div>';
+  }  function startQrScan() {
+    if (qrStream) return;
+    if (typeof jsQR !== 'function') { setQrStatus('QR読み取りライブラリが見つかりません。jsQR.js を確認してください。', true); return; }
+    var video = document.getElementById('qrVideo');
+    var wrap = document.getElementById('qrScannerWrap');
+    var btnStart = document.getElementById('btnScanQR');
+    var btnStop = document.getElementById('btnStopScanQR');
+    setQrStatus('カメラを起動中です...', false);
+    if (wrap) wrap.style.display = 'block';
+    if (btnStart) btnStart.style.display = 'none';
+    if (btnStop) btnStop.style.display = 'inline-flex';
+    navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } }).then(function(stream) {
+      qrStream = stream;
+      video.srcObject = stream;
+      return video.play();
+    }).then(function() {
+      setQrStatus('QRコードをカメラに映してください。', false);
+      if (qrScanTimer) clearInterval(qrScanTimer);
+      qrScanTimer = setInterval(function() { scanQrOnce().catch(function() {}); }, 250);
+    }).catch(function(err) {
+      stopQrScan();
+      setQrStatus('カメラの起動に失敗しました: ' + (err && err.name ? err.name : 'unknown'), true);
     });
-    c.innerHTML=h;
   }
-
-  function renderCheckItems(){
-    var c=document.getElementById('checkItemsContainer');if(!c)return;
-    var h='';
-    appData.checkItems.forEach(function(item,i){
-      var pf=item.photoFar?'<img src="'+item.photoFar+'"><button class="remove-photo" data-rm-type="check_far" data-rm-idx="'+i+'">✕</button>':'<div class="placeholder"><div class="icon">📷</div><div class="text">写真①</div></div>';
-      var pc=item.photoClose?'<img src="'+item.photoClose+'"><button class="remove-photo" data-rm-type="check_close" data-rm-idx="'+i+'">✕</button>':'<div class="placeholder"><div class="icon">📷</div><div class="text">写真②</div></div>';
-      h+='<div class="check-item-card">'+
-        '<div class="item-title">📌 '+item.name+'</div>'+
-        '<div class="photo-pair">'+
-          '<div><div class="photo-label">写真①</div><div class="photo-slot" data-photo-target="check_far" data-photo-idx="'+i+'">'+pf+'</div></div>'+
-          '<div><div class="photo-label">写真②</div><div class="photo-slot" data-photo-target="check_close" data-photo-idx="'+i+'">'+pc+'</div></div>'+
-        '</div>'+
-        '<div class="form-group" style="margin-bottom:0;"><label>コメント</label>'+
-          '<textarea id="check_comment_'+i+'" placeholder="コメントを入力">'+esc(item.comment)+'</textarea></div></div>';
-    });
-    c.innerHTML=h;
+  function stopQrScan() {
+    if (qrScanTimer) { clearInterval(qrScanTimer); qrScanTimer = null; }
+    qrBusy = false;
+    var video = document.getElementById('qrVideo');
+    var wrap = document.getElementById('qrScannerWrap');
+    var btnStart = document.getElementById('btnScanQR');
+    var btnStop = document.getElementById('btnStopScanQR');
+    if (video) { try { video.pause(); } catch (e) {} try { video.srcObject = null; } catch (e) {} }
+    if (qrStream) {
+      try { qrStream.getTracks().forEach(function(track) { try { track.stop(); } catch (e) {} }); } catch (e) {}
+      qrStream = null;
+    }
+    if (wrap) wrap.style.display = 'none';
+    if (btnStart) btnStart.style.display = 'inline-flex';
+    if (btnStop) btnStop.style.display = 'none';
   }
-
-  function renderBlueprints(){
-    var c=document.getElementById('blueprintsContainer');if(!c)return;
-    var cnt=document.getElementById('bpCount');if(cnt)cnt.textContent=appData.blueprints.length+'枚';
-    var h='';
-    appData.blueprints.forEach(function(bp,i){
-      var ph=bp.photo
-        ?'<img src="'+bp.photo+'"><button class="remove-photo" data-rm-type="blueprint" data-rm-idx="'+i+'">✕</button>'
-        :'<div class="placeholder"><div class="icon">📐</div><div class="text">タップして図面を撮影</div></div>';
-      h+='<div class="blueprint-card">'+
-        '<div class="bp-title">📐 図面'+(i+1<10?'⓪①②③④⑤⑥'.charAt(i+1):'('+(i+1)+')')+'</div>'+
-        '<button class="delete-bp" data-idx="'+i+'">🗑️</button>'+
-        '<div class="photo-slot-free" data-photo-target="blueprint" data-photo-idx="'+i+'">'+ph+'</div>'+
-      '</div>';
-    });
-    c.innerHTML=h;
-    // Show/hide add button
-    var addBtn=document.getElementById('btnAddBP');
-    if(addBtn) addBtn.style.display=appData.blueprints.length>=MAX_BLUEPRINTS?'none':'block';
-  }
-
-  /* === Issues === */
-  function addIssue(){
-    if(appData.issues.length>=MAX_ISSUES){alert("最大"+MAX_ISSUES+"件です。");return;}
-    appData.issues.push({location:"",locationFree:"",comment:"",photoFar:null,photoClose:null});
-    saveData();renderIssues();
-    setTimeout(function(){var el=document.getElementById('issueCard_'+(appData.issues.length-1));if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
-  }
-  function deleteIssue(idx){
-    if(confirm("指摘箇所 "+(idx+1)+" を削除しますか？")){appData.issues.splice(idx,1);saveData();renderIssues();}
-  }
-
-  /* === Blueprints === */
-  function addBlueprint(){
-    if(appData.blueprints.length>=MAX_BLUEPRINTS){alert("図面は最大"+MAX_BLUEPRINTS+"枚です。");return;}
-    appData.blueprints.push({photo:null});
-    saveData();renderBlueprints();
-    // Trigger photo immediately
-    setTimeout(function(){takePhoto('blueprint',appData.blueprints.length-1);},200);
-  }
-  function deleteBlueprint(idx){
-    if(confirm("図面"+(idx+1)+"を削除しますか？")){appData.blueprints.splice(idx,1);saveData();renderBlueprints();}
-  }
-
-  /* === Photo === */
-  var photoLock=false;
-  function takePhoto(type,idx){
-    if(photoLock) return;
-    photoLock=true; setTimeout(function(){photoLock=false;},1000);
-    currentPhotoTarget={type:type,index:idx};
-    var old=document.getElementById('photoFileInput');
-    if(old) old.parentNode.removeChild(old);
-    var inp=document.createElement('input');
-    inp.type='file';inp.accept='image/*';inp.id='photoFileInput';
-    inp.style.cssText='position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;z-index:-1;';
-    inp.onchange=function(e){
-      var file=e.target.files&&e.target.files[0];
-      if(!file)return;
-      var reader=new FileReader();
-      reader.onload=function(ev){
-        // Blueprint and exterior: no crop, just resize for compression
-        if(currentPhotoTarget && (currentPhotoTarget.type==='blueprint' || currentPhotoTarget.type==='exterior')){
-          resizeNoCrop(ev.target.result);
-        } else {
-          cropAndPreview(ev.target.result);
+  function scanQrOnce() {
+    return new Promise(function(resolve) {
+      if (qrBusy) return resolve();
+      var video = document.getElementById('qrVideo');
+      var canvas = document.getElementById('qrScanCanvas');
+      if (!video || !canvas || video.readyState < 2) return resolve();
+      qrBusy = true;
+      try {
+        var width = video.videoWidth || 0;
+        var height = video.videoHeight || 0;
+        if (!width || !height) { qrBusy = false; return resolve(); }
+        canvas.width = width; canvas.height = height;
+        var ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(video, 0, 0, width, height);
+        var imageData = ctx.getImageData(0, 0, width, height);
+        var code = jsQR(imageData.data, width, height, { inversionAttempts: 'dontInvert' });
+        if (!code || !code.data) { qrBusy = false; return resolve(); }
+        var payload = parseQrPayloadFromText(code.data);
+        if (payload && applyCustomerFromQrPayload(payload)) {
+          setQrStatus('QRコードを読み取り、顧客情報を入力しました。', false);
+          stopQrScan();
+          qrBusy = false;
+          return resolve();
         }
+        setQrStatus('QRコードは読み取れましたが、案内図ツールの形式ではありません。', true);
+      } catch (e) {}
+      qrBusy = false;
+      resolve();
+    });
+  }
+  function handleRemovePhoto(btn) {
+    var type = btn.getAttribute('data-rm-type');
+    var idx = parseInt(btn.getAttribute('data-rm-idx'), 10);
+    if (type === 'exterior') { appData.exteriorPhoto = null; renderExteriorPhoto(); }
+    else if (type === 'issue_far' && appData.issues[idx]) { appData.issues[idx].photoFar = null; renderIssues(); }
+    else if (type === 'issue_close' && appData.issues[idx]) { appData.issues[idx].photoClose = null; renderIssues(); }
+    else if (type === 'check_far' && appData.checkItems[idx]) { appData.checkItems[idx].photoFar = null; renderCheckItems(); }
+    else if (type === 'check_close' && appData.checkItems[idx]) { appData.checkItems[idx].photoClose = null; renderCheckItems(); }
+    else if (type === 'blueprint' && appData.blueprints[idx]) { appData.blueprints[idx].photo = null; renderBlueprints(); }
+    saveData();
+  }
+  function saveData() {
+    appData.branchName = gv('branchName');
+    appData.staffName = gv('staffName');
+    appData.inspectionType = gv('inspectionType');
+    appData.customerCode = gv('customerCode');
+    appData.customerName = gv('customerName');
+    appData.address = gv('address');
+    if (appData.staffName) { try { localStorage.setItem(STAFF_KEY, appData.staffName); } catch (e) {} }
+    appData.issues.forEach(function(issue, i) {
+      var ls = document.getElementById('issue_loc_' + i);
+      var lf = document.getElementById('issue_locfree_' + i);
+      var cm = document.getElementById('issue_comment_' + i);
+      if (ls) issue.location = ls.value;
+      if (lf) issue.locationFree = lf.value;
+      if (cm) issue.comment = cm.value;
+    });
+    appData.checkItems.forEach(function(item, i) {
+      var cm = document.getElementById('check_comment_' + i);
+      if (cm) item.comment = cm.value;
+    });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); } catch (e) {}
+  }
+  function loadData() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        appData = Object.assign(getDefaultData(), JSON.parse(saved));
+        if (!Array.isArray(appData.checkItems)) appData.checkItems = getDefaultData().checkItems;
+        while (appData.checkItems.length < CHECK_ITEMS.length) appData.checkItems.push({ name: CHECK_ITEMS[appData.checkItems.length], photoFar: null, photoClose: null, comment: '' });
+        appData.checkItems = appData.checkItems.slice(0, CHECK_ITEMS.length).map(function(item, i) {
+          return { name: item && item.name ? item.name : CHECK_ITEMS[i], photoFar: item ? (item.photoFar || item.photo || null) : null, photoClose: item ? (item.photoClose || null) : null, comment: item ? (item.comment || '') : '' };
+        });
+        if (!Array.isArray(appData.blueprints)) appData.blueprints = [];
+        if (!Array.isArray(appData.issues)) appData.issues = [];
+      }
+      if (!appData.staffName) {
+        var ss = localStorage.getItem(STAFF_KEY);
+        if (ss) appData.staffName = ss;
+      }
+    } catch (e) {}
+  }
+  function gv(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+  function sv(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; }
+  function renderAll() {
+    sv('branchName', appData.branchName);
+    sv('staffName', appData.staffName);
+    sv('inspectionType', appData.inspectionType);
+    sv('customerCode', appData.customerCode || '');
+    sv('customerName', appData.customerName);
+    sv('address', appData.address);
+    renderExteriorPhoto();
+    renderIssues();
+    renderCheckItems();
+    renderBlueprints();
+  }
+  function renderExteriorPhoto() {
+    var slot = document.getElementById('exteriorPhotoSlot');
+    if (!slot) return;
+    slot.innerHTML = appData.exteriorPhoto ? '<img src="' + appData.exteriorPhoto + '"><button class="remove-photo" data-rm-type="exterior" data-rm-idx="0">×</button>' : '<div class="placeholder"><div class="icon">📷</div><div class="text">タップして外観写真を撮影</div></div>';
+  }
+  function renderIssues() {
+    var container = document.getElementById('issuesContainer');
+    if (!container) return;
+    var cnt = document.getElementById('issueCount');
+    if (cnt) cnt.textContent = appData.issues.length + '件';
+    var html = '';
+    appData.issues.forEach(function(issue, i) {
+      var opts = LOCATIONS.map(function(loc) { return '<option value="' + loc + '"' + (issue.location === loc ? ' selected' : '') + '>' + loc + '</option>'; }).join('');
+      var farHtml = issue.photoFar ? '<img src="' + issue.photoFar + '"><button class="remove-photo" data-rm-type="issue_far" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">📷</div><div class="text">遠景</div></div>';
+      var closeHtml = issue.photoClose ? '<img src="' + issue.photoClose + '"><button class="remove-photo" data-rm-type="issue_close" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">📷</div><div class="text">接写</div></div>';
+      html += '<div class="issue-card" id="issueCard_' + i + '"><div class="issue-number">' + (i + 1) + '</div><button class="delete-issue" data-idx="' + i + '">削除</button><div class="photo-pair"><div><div class="photo-label">遠景</div><div class="photo-slot" data-photo-target="issue_far" data-photo-idx="' + i + '">' + farHtml + '</div></div><div><div class="photo-label">接写</div><div class="photo-slot" data-photo-target="issue_close" data-photo-idx="' + i + '">' + closeHtml + '</div></div></div><div class="form-group" style="margin-bottom:8px;"><label>場所</label><select id="issue_loc_' + i + '"><option value="">選択してください</option>' + opts + '</select></div><div class="form-group" style="margin-bottom:8px;"><input type="text" id="issue_locfree_' + i + '" value="' + esc(issue.locationFree) + '" placeholder="場所の補足（任意）"></div><div class="form-group" style="margin-bottom:0;"><label>コメント</label><textarea id="issue_comment_' + i + '" placeholder="指摘内容を入力">' + esc(issue.comment) + '</textarea></div></div>';
+    });
+    container.innerHTML = html;
+  }
+  function renderCheckItems() {
+    var container = document.getElementById('checkItemsContainer');
+    if (!container) return;
+    var html = '';
+    appData.checkItems.forEach(function(item, i) {
+      var farHtml = item.photoFar ? '<img src="' + item.photoFar + '"><button class="remove-photo" data-rm-type="check_far" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">📷</div><div class="text">写真1</div></div>';
+      var closeHtml = item.photoClose ? '<img src="' + item.photoClose + '"><button class="remove-photo" data-rm-type="check_close" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">📷</div><div class="text">写真2</div></div>';
+      html += '<div class="check-item-card"><div class="item-title">' + item.name + '</div><div class="photo-pair"><div><div class="photo-label">写真1</div><div class="photo-slot" data-photo-target="check_far" data-photo-idx="' + i + '">' + farHtml + '</div></div><div><div class="photo-label">写真2</div><div class="photo-slot" data-photo-target="check_close" data-photo-idx="' + i + '">' + closeHtml + '</div></div></div><div class="form-group" style="margin-bottom:0;"><label>コメント</label><textarea id="check_comment_' + i + '" placeholder="コメントを入力">' + esc(item.comment) + '</textarea></div></div>';
+    });
+    container.innerHTML = html;
+  }
+  function renderBlueprints() {
+    var container = document.getElementById('blueprintsContainer');
+    if (!container) return;
+    var cnt = document.getElementById('bpCount');
+    if (cnt) cnt.textContent = appData.blueprints.length + '枚';
+    var html = '';
+    appData.blueprints.forEach(function(bp, i) {
+      var ph = bp.photo ? '<img src="' + bp.photo + '"><button class="remove-photo" data-rm-type="blueprint" data-rm-idx="' + i + '">×</button>' : '<div class="placeholder"><div class="icon">🗺</div><div class="text">タップして図面を追加</div></div>';
+      html += '<div class="blueprint-card"><div class="bp-title">図面' + (i + 1) + '</div><button class="delete-bp" data-idx="' + i + '">削除</button><div class="photo-slot-free" data-photo-target="blueprint" data-photo-idx="' + i + '">' + ph + '</div></div>';
+    });
+    container.innerHTML = html;
+    var addBtn = document.getElementById('btnAddBP');
+    if (addBtn) addBtn.style.display = appData.blueprints.length >= MAX_BLUEPRINTS ? 'none' : 'block';
+  }
+  function addIssue() {
+    if (appData.issues.length >= MAX_ISSUES) { alert('最大' + MAX_ISSUES + '件までです。'); return; }
+    appData.issues.push({ location: '', locationFree: '', comment: '', photoFar: null, photoClose: null });
+    saveData(); renderIssues();
+    setTimeout(function() { var el = document.getElementById('issueCard_' + (appData.issues.length - 1)); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+  }
+  function deleteIssue(idx) { if (confirm('指摘事項 ' + (idx + 1) + ' を削除しますか？')) { appData.issues.splice(idx, 1); saveData(); renderIssues(); } }
+  function addBlueprint() {
+    if (appData.blueprints.length >= MAX_BLUEPRINTS) { alert('図面は最大' + MAX_BLUEPRINTS + '枚までです。'); return; }
+    appData.blueprints.push({ photo: null }); saveData(); renderBlueprints();
+    setTimeout(function() { takePhoto('blueprint', appData.blueprints.length - 1); }, 200);
+  }
+  function deleteBlueprint(idx) { if (confirm('図面 ' + (idx + 1) + ' を削除しますか？')) { appData.blueprints.splice(idx, 1); saveData(); renderBlueprints(); } }
+  var photoLock = false;  function takePhoto(type, idx) {
+    if (photoLock) return;
+    photoLock = true;
+    setTimeout(function() { photoLock = false; }, 1000);
+    currentPhotoTarget = { type: type, index: idx };
+    var old = document.getElementById('photoFileInput');
+    if (old) old.parentNode.removeChild(old);
+    var inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/*';
+    inp.capture = 'environment';
+    inp.id = 'photoFileInput';
+    inp.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;z-index:-1;';
+    inp.onchange = function(e) {
+      var file = e.target.files && e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        if (currentPhotoTarget && (currentPhotoTarget.type === 'blueprint' || currentPhotoTarget.type === 'exterior')) resizeNoCrop(ev.target.result);
+        else cropAndPreview(ev.target.result);
       };
-      reader.onerror=function(){alert("読み込みエラー");};
+      reader.onerror = function() { alert('読み込みエラー'); };
       reader.readAsDataURL(file);
     };
     document.body.appendChild(inp);
-    setTimeout(function(){inp.click();},200);
+    setTimeout(function() { inp.click(); }, 200);
   }
-
-  function cropAndPreview(dataUrl){
-    var img=new Image();
-    img.onload=function(){
-      var canvas=document.getElementById('photoCanvas');
-      var sw,sh;
-      if(img.width/img.height>4/3){sh=img.height;sw=Math.round(sh*4/3);}
-      else{sw=img.width;sh=Math.round(sw*3/4);}
-      // 接写写真（issue_close / check_close）は高解像度で保存
-      var isClose = currentPhotoTarget &&
-        (currentPhotoTarget.type==='issue_close' || currentPhotoTarget.type==='check_close');
-      var outW = isClose ? 1080 : 720;
-      var outH = isClose ? 810  : 540;
-      var qual = isClose ? 0.85 : 0.76;
-      canvas.width=outW; canvas.height=outH;
-      canvas.getContext('2d').drawImage(img,Math.round((img.width-sw)/2),Math.round((img.height-sh)/2),sw,sh,0,0,outW,outH);
-      pendingImageData=canvas.toDataURL('image/jpeg',qual);
-      document.getElementById('previewImage').src=pendingImageData;
+  function cropAndPreview(dataUrl) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.getElementById('photoCanvas');
+      var targetRatio = 5 / 4;
+      var sw;
+      var sh;
+      if (img.width / img.height > targetRatio) { sh = img.height; sw = Math.round(sh * targetRatio); }
+      else { sw = img.width; sh = Math.round(sw / targetRatio); }
+      var isClose = currentPhotoTarget && (currentPhotoTarget.type === 'issue_close' || currentPhotoTarget.type === 'check_close');
+      var outW = isClose ? 1000 : 750;
+      var outH = isClose ? 800 : 600;
+      var quality = isClose ? 0.85 : 0.78;
+      canvas.width = outW; canvas.height = outH;
+      canvas.getContext('2d').drawImage(img, Math.round((img.width - sw) / 2), Math.round((img.height - sh) / 2), sw, sh, 0, 0, outW, outH);
+      pendingImageData = canvas.toDataURL('image/jpeg', quality);
+      document.getElementById('previewImage').src = pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
     };
-    img.onerror=function(){alert("画像処理エラー");};
-    img.src=dataUrl;
+    img.onerror = function() { alert('画像読み込みエラー'); };
+    img.src = dataUrl;
   }
-
-  // No crop resize: exterior uses 800px width, blueprint uses 1600px
-  function resizeNoCrop(dataUrl){
-    var img=new Image();
-    img.onload=function(){
-      var canvas=document.getElementById('photoCanvas');
-      var isExterior = currentPhotoTarget && currentPhotoTarget.type==='exterior';
+  function resizeNoCrop(dataUrl) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.getElementById('photoCanvas');
+      var isExterior = currentPhotoTarget && currentPhotoTarget.type === 'exterior';
       var maxW = isExterior ? 600 : 1300;
       var quality = isExterior ? 0.58 : 0.65;
-      var w=img.width, h=img.height;
-      if(w>maxW){ h=Math.round(h*(maxW/w)); w=maxW; }
-      canvas.width=w; canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      pendingImageData=canvas.toDataURL('image/jpeg',quality);
-      document.getElementById('previewImage').src=pendingImageData;
+      var w = img.width;
+      var h = img.height;
+      if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      pendingImageData = canvas.toDataURL('image/jpeg', quality);
+      document.getElementById('previewImage').src = pendingImageData;
       document.getElementById('previewOverlay').classList.add('active');
     };
-    img.onerror=function(){alert("画像処理エラー");};
-    img.src=dataUrl;
+    img.onerror = function() { alert('画像読み込みエラー'); };
+    img.src = dataUrl;
   }
-
-  function savePhotoToTarget(data){
-    var t=currentPhotoTarget;if(!t)return;
-    if(t.type==='exterior'){appData.exteriorPhoto=data;renderExteriorPhoto();}
-    else if(t.type==='issue_far'&&appData.issues[t.index]){appData.issues[t.index].photoFar=data;renderIssues();}
-    else if(t.type==='issue_close'&&appData.issues[t.index]){appData.issues[t.index].photoClose=data;renderIssues();}
-    else if(t.type==='check_far'&&appData.checkItems[t.index]){appData.checkItems[t.index].photoFar=data;renderCheckItems();}
-    else if(t.type==='check_close'&&appData.checkItems[t.index]){appData.checkItems[t.index].photoClose=data;renderCheckItems();}
-    else if(t.type==='blueprint'&&appData.blueprints[t.index]){appData.blueprints[t.index].photo=data;renderBlueprints();}
-    saveData();currentPhotoTarget=null;
-  }
-
-  /* === PDF === */
-  function generatePDF(){
+  function savePhotoToTarget(data) {
+    var target = currentPhotoTarget;
+    if (!target) return;
+    if (target.type === 'exterior') { appData.exteriorPhoto = data; renderExteriorPhoto(); }
+    else if (target.type === 'issue_far' && appData.issues[target.index]) { appData.issues[target.index].photoFar = data; renderIssues(); }
+    else if (target.type === 'issue_close' && appData.issues[target.index]) { appData.issues[target.index].photoClose = data; renderIssues(); }
+    else if (target.type === 'check_far' && appData.checkItems[target.index]) { appData.checkItems[target.index].photoFar = data; renderCheckItems(); }
+    else if (target.type === 'check_close' && appData.checkItems[target.index]) { appData.checkItems[target.index].photoClose = data; renderCheckItems(); }
+    else if (target.type === 'blueprint' && appData.blueprints[target.index]) { appData.blueprints[target.index].photo = data; renderBlueprints(); }
     saveData();
-    if(!appData.staffName){alert("担当者を入力してください。");return;}
-    if(!appData.customerName){alert("お客様名を入力してください。");return;}
-    if(!appData.address){alert("住所を入力してください。");return;}
-    buildPrintArea();
-    setTimeout(function(){window.print();},300);
+    currentPhotoTarget = null;
   }
-
-  function buildPrintArea(){
-    var pa=document.getElementById('printArea');
-    var today=new Date();
-    var dateStr=today.getFullYear()+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日';
-    var h='';
-
-    // Page 1: Cover + Issue List
-    h+='<div class="pp">';
-    h+='<div class="pc-title">アフター点検報告書</div>';
-    h+='<div class="pc-header">';
-    h+='<div class="pc-photo">';
-    h+=appData.exteriorPhoto?'<img src="'+appData.exteriorPhoto+'">':'<div class="no-ph">外観写真なし</div>';
-    h+='</div>';
-    h+='<div class="pc-info"><table>';
-    h+='<tr><th>顧客コード</th><td>'+esc(appData.customerCode||'')+'</td><th>点検種別</th><td colspan="3">'+appData.inspectionType+'点検</td></tr>';
-    h+='<tr><th>支社名</th><td>'+appData.branchName+'</td><th>点検日</th><td>'+dateStr+'</td><th>担当者</th><td>'+appData.staffName+'</td></tr>';
-    h+='<tr><th>お客様名</th><td>'+esc(appData.customerName)+' 様</td><th>住所</th><td colspan="3">'+esc(appData.address)+'</td></tr>';
-    h+='</table></div></div>';
-    if(appData.issues.length>0){
-      h+='<div style="margin-top:10px;">';
-      h+='<div class="pi-title">指摘箇所一覧（全'+appData.issues.length+'件）</div>';
-      h+='<table class="pi-table"><tr><th style="width:28px;text-align:center;">No.</th><th style="width:100px;">場所</th><th>コメント</th></tr>';
-      appData.issues.forEach(function(issue,i){
-        var loc=(issue.location||'')+(issue.locationFree?' '+issue.locationFree:'');
-        h+='<tr><td style="text-align:center;font-weight:700;color:#1a5276;">'+(i+1)+'</td><td>'+esc(loc)+'</td><td style="word-break:break-all;">'+esc(issue.comment)+'</td></tr>';
+  function generatePDF() {
+    saveData();
+    if (!appData.staffName) { alert('担当者を入力してください。'); return; }
+    if (!appData.customerName) { alert('お客様名を入力してください。'); return; }
+    if (!appData.address) { alert('住所を入力してください。'); return; }
+    buildPrintArea();
+    setTimeout(function() { window.print(); }, 300);
+  }
+  function buildPrintArea() {
+    var pa = document.getElementById('printArea');
+    var today = new Date();
+    var dateStr = today.getFullYear() + '年' + (today.getMonth() + 1) + '月' + today.getDate() + '日';
+    var h = '';
+    h += '<div class="pp"><div class="pc-title">アフター点検報告書</div><div class="pc-header"><div class="pc-photo">';
+    h += appData.exteriorPhoto ? '<img src="' + appData.exteriorPhoto + '">' : '<div class="no-ph">外観写真なし</div>';
+    h += '</div><div class="pc-info"><table>';
+    h += '<tr><th>支社名</th><td>' + esc(appData.branchName) + '</td><th>担当者</th><td>' + esc(appData.staffName) + '</td></tr>';
+    h += '<tr><th>点検種別</th><td>' + esc(appData.inspectionType) + '点検</td><th>点検日</th><td>' + dateStr + '</td></tr>';
+    h += '<tr><th>お客様名</th><td>' + esc(appData.customerName) + ' 様</td><th>顧客コード</th><td>' + esc(appData.customerCode || '') + '</td></tr>';
+    h += '<tr><th>住所</th><td colspan="3">' + esc(appData.address) + '</td></tr>';
+    h += '</table></div></div>';
+    if (appData.issues.length > 0) {
+      h += '<div style="margin-top:10px;"><div class="pi-title">指摘事項一覧（全' + appData.issues.length + '件）</div><table class="pi-table"><tr><th style="width:28px;text-align:center;">No.</th><th style="width:100px;">場所</th><th>コメント</th></tr>';
+      appData.issues.forEach(function(issue, i) {
+        var loc = (issue.location || '') + (issue.locationFree ? ' ' + issue.locationFree : '');
+        h += '<tr><td style="text-align:center;font-weight:700;color:#1a5276;">' + (i + 1) + '</td><td>' + esc(loc) + '</td><td style="word-break:break-all;">' + esc(issue.comment) + '</td></tr>';
       });
-      h+='</table></div>';
+      h += '</table></div>';
     }
-    h+='</div>';
-
-    // Issue Photo Pages (3 per page)
-    if(appData.issues.length>0){
-      for(var p=0;p<Math.ceil(appData.issues.length/3);p++){
-        h+='<div class="pp">';
-        h+='<div class="pd-title">指摘箇所詳細</div>';
-        for(var s=0;s<3;s++){
-          var idx=p*3+s;
-          if(idx<appData.issues.length){
-            var iss=appData.issues[idx];
-            var loc2=(iss.location||'')+(iss.locationFree?' '+iss.locationFree:'');
-            h+='<div class="pd-item">';
-            h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
-            h+='<div class="pd-badge">'+(idx+1)+'</div>';
-            h+='<span class="pd-loc">場所：'+esc(loc2)+'</span>';
-            h+='</div>';
-            h+='<div class="pd-photos">';
-            h+='<div>';
-            h+=iss.photoFar?'<img src="'+iss.photoFar+'">':'<div class="no-photo">写真なし</div>';
-            h+='</div><div>';
-            h+=iss.photoClose?'<img src="'+iss.photoClose+'">':'<div class="no-photo">写真なし</div>';
-            h+='</div></div>';
-            h+='<div class="pd-info">指摘事項：'+esc(iss.comment)+'</div>';
-            h+='</div>';
+    h += '</div>';
+    if (appData.issues.length > 0) {
+      for (var p = 0; p < Math.ceil(appData.issues.length / 3); p++) {
+        h += '<div class="pp"><div class="pd-title">指摘事項詳細</div>';
+        for (var s = 0; s < 3; s++) {
+          var idx = p * 3 + s;
+          if (idx < appData.issues.length) {
+            var iss = appData.issues[idx];
+            var loc2 = (iss.location || '') + (iss.locationFree ? ' ' + iss.locationFree : '');
+            h += '<div class="pd-item"><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div class="pd-badge">' + (idx + 1) + '</div><span class="pd-loc">場所: ' + esc(loc2) + '</span></div><div class="pd-photos"><div>' + (iss.photoFar ? '<img src="' + iss.photoFar + '">' : '<div class="no-photo">写真なし</div>') + '</div><div>' + (iss.photoClose ? '<img src="' + iss.photoClose + '">' : '<div class="no-photo">写真なし</div>') + '</div></div><div class="pd-info">指摘内容: ' + esc(iss.comment) + '</div></div>';
           }
         }
-        h+='</div>';
+        h += '</div>';
       }
     }
-
-    // Check Items Page 1: インデックス0〜2（ококチＥ換気フード・室内フィルター・給湯器）
     function renderCheckPage(items, subtitle) {
-      var s = '<div class="pp">';
-      s += '<div class="pk-title">検査項目　' + subtitle + '</div>';
+      var s = '<div class="pp"><div class="pk-title">点検項目 ' + subtitle + '</div>';
       items.forEach(function(item) {
-        s += '<div class="pk-item">';
-        s += '<div class="pk-item-title">■ ' + item.name + '</div>';
-        s += '<div class="pk-photos">';
-        s += '<div>';
-        s += item.photoFar ? '<img src="' + item.photoFar + '">' : '<div class="no-photo">写真なし</div>';
-        s += '</div><div>';
-        s += item.photoClose ? '<img src="' + item.photoClose + '">' : '<div class="no-photo">写真なし</div>';
-        s += '</div></div>';
-        s += '<div class="pk-comment"><span class="clabel">コメント：</span>' + esc(item.comment || 'なし') + '</div>';
-        s += '</div>';
+        s += '<div class="pk-item"><div class="pk-item-title">' + esc(item.name) + '</div><div class="pk-photos"><div>' + (item.photoFar ? '<img src="' + item.photoFar + '">' : '<div class="no-photo">写真なし</div>') + '</div><div>' + (item.photoClose ? '<img src="' + item.photoClose + '">' : '<div class="no-photo">写真なし</div>') + '</div></div><div class="pk-comment"><span class="clabel">コメント: </span>' + esc(item.comment || 'なし') + '</div></div>';
       });
       s += '</div>';
       return s;
     }
     var ci = appData.checkItems;
-    // ページ1：最初の3項目（ококチＥ×2 ＋ 給湯器）
-    h += renderCheckPage(ci.slice(0, 3), '①');
-    // ページ2：残り（天井裏・床下）
-    if (ci.length > 3) {
-      h += renderCheckPage(ci.slice(3), '②');
-    }
-
-    // Blueprint Pages (1 per page, full width, no rotation)
-    var numLabels=['①','②','③','④','⑤','⑥'];
-    appData.blueprints.forEach(function(bp,i){
-      if(bp.photo){
-        h+='<div class="pp-land">';
-        h+='<div class="pb-bar">図面'+numLabels[i]+'</div>';
-        h+='<div class="pb-img-full"><img src="'+bp.photo+'"></div>';
-        h+='</div>';
-      }
+    h += renderCheckPage(ci.slice(0, 3), '1');
+    if (ci.length > 3) h += renderCheckPage(ci.slice(3), '2');
+    appData.blueprints.forEach(function(bp, i) {
+      if (bp.photo) h += '<div class="pp-land"><div class="pb-bar">図面' + (i + 1) + '</div><div class="pb-img-full"><img src="' + bp.photo + '"></div></div>';
     });
-
-    pa.innerHTML=h;
-
-    // 空白ページ対策: DOMに挿入後に最後のページのbreak-afterをavoidに設定
-    // CSS側の :last-child ルールはSafariで効きにくいためJSでも明示的に制御する
-    var allPages=pa.querySelectorAll('.pp,.pp-land');
-    allPages.forEach(function(p){
-      p.style.pageBreakAfter='always';
-      p.style.breakAfter='page';
-    });
-    if(allPages.length>0){
-      var last=allPages[allPages.length-1];
-      last.style.pageBreakAfter='avoid';
-      last.style.breakAfter='avoid';
-    }
-
-    // Set document title for PDF filename
-    var m=String(today.getMonth()+1).padStart(2,'0');
-    var d=String(today.getDate()).padStart(2,'0');
-    document.title=m+d+'_'+appData.inspectionType+'_'+appData.customerName+'様_'+appData.staffName;
+    pa.innerHTML = h;
+    var allPages = pa.querySelectorAll('.pp,.pp-land');
+    allPages.forEach(function(page) { page.style.pageBreakAfter = 'always'; page.style.breakAfter = 'page'; });
+    if (allPages.length > 0) { var last = allPages[allPages.length - 1]; last.style.pageBreakAfter = 'avoid'; last.style.breakAfter = 'avoid'; }
+    var m = String(today.getMonth() + 1).padStart(2, '0');
+    var d = String(today.getDate()).padStart(2, '0');
+    document.title = m + d + '_' + appData.inspectionType + '_' + appData.customerName + '様_' + appData.staffName;
   }
-
-  function esc(s){
-    if(!s)return '';
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
+  function esc(s) { if (!s) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 })();
 </script>
 </body>
