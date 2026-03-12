@@ -815,6 +815,92 @@ body {
     return String(value||'').replace(/\r?\n/g,' ').replace(/[ \t\u3000]+/g,' ').trim();
   }
 
+  function stripUTF8BOM(text){
+    var s=String(text||'');
+    return s.charCodeAt(0)===0xFEFF ? s.slice(1) : s;
+  }
+
+  function decodeBase64UTF8(text){
+    var normalized=String(text||'').replace(/-/g,'+').replace(/_/g,'/').replace(/\s+/g,'');
+    if(!normalized || normalized.length % 4===1 || !/^[A-Za-z0-9+/=]+$/.test(normalized)) return '';
+    try{
+      var binary=atob(normalized);
+      var bytes=new Uint8Array(binary.length);
+      for(var i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+      return new TextDecoder('utf-8', { fatal:true }).decode(bytes);
+    }catch(e){
+      return '';
+    }
+  }
+
+  function collectQRJsonCandidates(rawText){
+    var text=stripUTF8BOM(String(rawText||'').trim());
+    var candidates=[];
+    function add(v){
+      var x=stripUTF8BOM(String(v||'').trim());
+      if(!x) return;
+      if(candidates.indexOf(x)===-1) candidates.push(x);
+    }
+    add(text);
+    add(repairMojibakeText(text));
+
+    if(/[?&=]/.test(text)){
+      try{
+        var query=text;
+        var qIndex=text.indexOf('?');
+        if(qIndex>=0) query=text.slice(qIndex+1);
+        var params=new URLSearchParams(query);
+        ['payload','data','q','qr'].forEach(function(key){
+          var v=params.get(key);
+          if(v){
+            add(v);
+            add(repairMojibakeText(v));
+            add(decodeBase64UTF8(v));
+          }
+        });
+      }catch(e){}
+    }
+
+    if(/%[0-9A-Fa-f]{2}/.test(text)){
+      try{ add(decodeURIComponent(text)); }catch(e){}
+      try{ add(decodeURIComponent(text.replace(/\+/g,'%20'))); }catch(e){}
+    }
+
+    add(decodeBase64UTF8(text));
+    return candidates;
+  }
+
+  function parseQRPayload(rawText){
+    var candidates=collectQRJsonCandidates(rawText);
+    if(!candidates.length) return { ok:false, message:'QRコードを読み取れませんでした。' };
+    var data;
+    for(var i=0;i<candidates.length;i++){
+      try{
+        data=JSON.parse(candidates[i]);
+        break;
+      }catch(e){}
+    }
+    if(!data){
+      return { ok:false, message:'QRコードの内容が正しくありません。' };
+    }
+    if(data.version===undefined || data.version===null || String(data.version).trim()===''){
+      return { ok:false, message:'QRコードに必要な項目が不足しています。' };
+    }
+    if(Number(data.version)!==1){
+      return { ok:false, message:'対応していないQRコード形式です。' };
+    }
+    var payload={
+      version:1,
+      customerCode: normalizeQRText(repairMojibakeText(data.customerCode)),
+      customerName: normalizeQRText(repairMojibakeText(data.customerName)).replace(/\s*様$/,'').trim(),
+      address: normalizeQRText(repairMojibakeText(data.address))
+    };
+    if(!payload.customerCode || !payload.customerName || !payload.address){
+      return { ok:false, message:'QRコードに必要な項目が不足しています。' };
+    }
+    return { ok:true, data:payload };
+  }
+
   function parseQRPayload(rawText){
     var text=String(rawText||'').trim();
     if(!text) return { ok:false, message:'QRコードを読み取れませんでした。' };
