@@ -465,18 +465,18 @@ body {
 </div>
 <div class="camera-overlay" id="photoCameraOverlay">
   <div class="camera-topbar">
-    <div class="camera-title" id="photoCameraTitle">?????</div>
-    <div class="camera-sub" id="photoCameraSub">??????????????????????</div>
+    <div class="camera-title" id="photoCameraTitle">&#x5199;&#x771F;&#x3092;&#x64AE;&#x5F71;</div>
+    <div class="camera-sub" id="photoCameraSub">&#x30AC;&#x30A4;&#x30C9;&#x67A0;&#x306B;&#x88AB;&#x5199;&#x4F53;&#x3092;&#x5408;&#x308F;&#x305B;&#x3066;&#x64AE;&#x5F71;&#x3057;&#x3066;&#x304F;&#x3060;&#x3055;&#x3044;&#x3002;</div>
   </div>
   <div class="camera-stage">
     <video id="photoCameraVideo" playsinline muted autoplay></video>
     <div class="camera-guide guide-detail" id="photoCameraGuide">
-      <div class="camera-guide-label" id="photoCameraGuideLabel">???????????????????</div>
+      <div class="camera-guide-label" id="photoCameraGuideLabel">&#x30AC;&#x30A4;&#x30C9;&#x5185;&#x306B;&#x53CE;&#x307E;&#x308B;&#x3088;&#x3046;&#x306B;&#x8ABF;&#x6574;&#x3057;&#x3066;&#x304F;&#x3060;&#x3055;&#x3044;</div>
     </div>
   </div>
   <div class="camera-actions">
-    <button class="btn btn-outline" id="btnClosePhotoCamera" type="button">???</button>
-    <button class="btn btn-success btn-lg" id="btnCapturePhoto" type="button">????</button>
+    <button class="btn btn-outline" id="btnClosePhotoCamera" type="button">&#x9589;&#x3058;&#x308B;</button>
+    <button class="btn btn-success btn-lg" id="btnCapturePhoto" type="button">&#x64AE;&#x5F71;&#x3059;&#x308B;</button>
   </div>
 </div>
 
@@ -838,17 +838,17 @@ body {
     photoCaptureMode = type === 'exterior' ? 'exterior' : 'detail';
     guide.className = 'camera-guide ' + (photoCaptureMode === 'exterior' ? 'guide-exterior' : 'guide-detail');
     if (type === 'exterior') {
-      title.textContent = '???????';
-      sub.textContent = '???????????????????????';
-      label.textContent = '????????????????????';
+      title.textContent = '外観写真を撮影';
+      sub.textContent = '建物全体がガイド内に収まるようにしてください。';
+      label.textContent = '建物全体が枠に入るように調整してください';
     } else if (type === 'issue_far' || type === 'issue_close') {
-      title.textContent = '??????????';
-      sub.textContent = '????????????????????????????';
-      label.textContent = type === 'issue_close' ? '???????????????????' : '?????????????????';
+      title.textContent = '指摘事項の写真を撮影';
+      sub.textContent = '指摘箇所がガイド内に入るように調整して撮影してください。';
+      label.textContent = type === 'issue_close' ? '接写対象をガイド中央に合わせてください' : '指摘範囲をガイド内に収めてください';
     } else {
-      title.textContent = '??????????';
-      sub.textContent = '??????????????????????????';
-      label.textContent = '??????????????????????';
+      title.textContent = '指摘事項の写真を撮影';
+      sub.textContent = '対象がガイド内に入るように調整して撮影してください。';
+      label.textContent = '対象がガイド内に収まるように調整してください';
     }
     overlay.classList.add('active');
     navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } } }).then(function(stream) {
@@ -857,7 +857,7 @@ body {
       return video.play();
     }).catch(function(err) {
       stopPhotoCamera();
-      alert('??????????????: ' + (err && err.name ? err.name : 'unknown'));
+      alert('カメラを起動できませんでした: ' + (err && err.name ? err.name : 'unknown'));
     });
   }
   function stopPhotoCamera() {
