@@ -423,7 +423,7 @@ body {
     </div>
     <div class="form-group">
       <label>顧客コード</label>
-      <input type="text" id="customerCode" inputmode="tel" pattern="[0-9-]*" placeholder="顧客コードを入力（数字・ハイフン）">
+      <input type="text" id="customerCode" placeholder="????????">
     </div>
     <div class="form-group">
       <label>お客様名</label>
@@ -542,11 +542,9 @@ body {
     return { inspectionType: '6ヶ月', branchName: '埼玉支社', staffName: '', customerCode: '', customerName: '', address: '', exteriorPhoto: null, issues: [], checkItems: CHECK_ITEMS.map(function(name) { return { name: name, photoFar: null, photoClose: null, comment: '' }; }), blueprints: [] };
   }
   function sanitizeCustomerCode(value) {
-    return String(value || '')
-      .replace(/[\uFF10-\uFF19]/g, function(ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); })
-      .replace(/[\u2010\u2011\u2012\u2013\u2014\u2015\u30FC\uFF0D\uFF70]/g, '-')
-      .replace(/[^0-9-]/g, '');
+    return String(value || '').trim();
   }
+
   function createUid(prefix) {
     return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
