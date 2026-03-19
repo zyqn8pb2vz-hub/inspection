@@ -797,8 +797,8 @@ body {
       appData = getDefaultData();
       appData.branchName = branch || appData.branchName;
       appData.staffName = staff || '';
-      await saveData();
       await renderAll();
+      await saveData();
       document.getElementById('resetModal').classList.remove('active');
     });
     addClick('btnAddIssue', addIssue);
