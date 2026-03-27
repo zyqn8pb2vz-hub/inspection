@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>アフター点検報告書</title>
+<style>
+:root {
+  --primary: #1a5276;
+  --primary-light: #2980b9;
+  --bg: #f0f3f6;
+  --card: #ffffff;
+  --text: #2c3e50;
+  --text-light: #7f8c8d;
+  --border: #dce1e6;
+  --danger: #e74c3c;
+  --success: #27ae60;
+  --radius: 12px;
+  --blueprint: #5b3e8a;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 100px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+.app-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  padding: 16px 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+.app-header h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.app-header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+.section {
+  background: var(--card);
+  margin: 12px;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.section-title {
+  background: var(--primary);
+  color: white;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title.green-bg { background: var(--success); }
+.section-title.blueprint-bg { background: var(--blueprint); }
+.section-body { padding: 16px; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.form-note { font-size: 11px; color: var(--text-light); margin-top: 4px; line-height: 1.5; }
+.form-group select,
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  background: #fafbfc;
+  color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.form-group select {
+  background: #fafbfc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237f8c8d' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;
+  padding-right: 36px;
+}
+.form-group textarea { resize: vertical; min-height: 60px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+.btn:active { opacity: 0.85; transform: scale(0.98); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-success { background: var(--success); color: white; }
+.btn-outline { background: transparent; color: var(--primary-light); border: 1.5px solid var(--primary-light); }
+.btn-block { width: 100%; }
+.btn-lg { padding: 14px 24px; font-size: 16px; border-radius: 10px; }
+.photo-slot {
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  background: #eef1f5;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+.photo-slot img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; background: #f0f3f6; }
+.photo-slot .placeholder { text-align: center; color: var(--text-light); pointer-events: none; }
+.photo-slot .placeholder .icon { font-size: 32px; margin-bottom: 4px; }
+.photo-slot .placeholder .text { font-size: 12px; }
+.photo-slot .remove-photo,
+.photo-slot-free .remove-photo {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  background: rgba(231,76,60,0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  touch-action: manipulation;
+}
+.photo-slot-free {
+  width: 100%;
+  min-height: 100px;
+  background: #f3eef8;
+  border: 2px dashed #c4b5d6;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+.photo-slot-free img { width: 100%; border-radius: 6px; }
+.photo-slot-free .placeholder { text-align: center; color: var(--blueprint); pointer-events: none; }
+.photo-slot-free .placeholder .icon { font-size: 32px; margin-bottom: 4px; }
+.photo-slot-free .placeholder .text { font-size: 12px; }
+.photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.photo-label { font-size: 11px; text-align: center; color: var(--text-light); margin-bottom: 4px; }
+.status-group { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+.status-option { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--text); }
+.status-option input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  -webkit-appearance: radio;
+  appearance: auto;
+  accent-color: var(--primary);
+  background: white;
+  flex: 0 0 auto;
+}
+.issue-card {
+  background: #f8f9fb;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.issue-card .issue-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.issue-card .delete-issue,
+.blueprint-card .delete-bp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  touch-action: manipulation;
+}
+.check-item-card {
+  background: #f0faf4;
+  border: 1px solid #b8e6cc;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.check-item-card .item-title { font-size: 14px; font-weight: 700; color: var(--success); margin-bottom: 8px; }
+.blueprint-card {
+  background: #f5f0fa;
+  border: 1px solid #c4b5d6;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.blueprint-card .bp-title { font-size: 14px; font-weight: 700; color: var(--blueprint); margin-bottom: 8px; }
+.new-issue-btn,
+.new-bp-btn {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.new-issue-btn { border: 2px dashed var(--primary-light); color: var(--primary-light); }
+.new-issue-btn:active { background: #eaf2f8; }
+.new-bp-btn { border: 2px dashed var(--blueprint); color: var(--blueprint); }
+.new-bp-btn:active { background: #f5f0fa; }
+.qr-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.qr-video-wrap {
+  display: none;
+  margin-top: 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+}
+.qr-video-wrap video { width: 100%; height: auto; display: block; }
+.pdf-section { padding: 20px 12px; text-align: center; }
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+.modal-box h3 { margin-bottom: 12px; font-size: 16px; }
+.modal-box p { font-size: 14px; color: var(--text-light); margin-bottom: 20px; line-height: 1.6; }
+.modal-buttons { display: flex; gap: 10px; }
+.modal-buttons .btn { flex: 1; }
+.modal-buttons.stack { flex-direction: column; }
+.modal-buttons.stack .btn { width: 100%; flex: none; }
+.preview-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  z-index: 2000;
+  flex-direction: column;
+}
+.preview-overlay.active { display: flex; }
+.preview-image-container { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; }
+.preview-image-container img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.preview-controls { background: rgba(0,0,0,0.85); padding: 20px 30px; display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.preview-controls .btn { flex: 1 1 180px; }
+.camera-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 2100;
+  flex-direction: column;
+}
+.camera-overlay.active { display: flex; }
+.camera-topbar { padding: 14px 16px 10px; color: white; }
+.camera-title { font-size: 16px; font-weight: 700; }
+.camera-sub { font-size: 12px; opacity: 0.85; margin-top: 4px; line-height: 1.5; }
+.camera-stage { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.camera-stage video { width: 100%; height: 100%; object-fit: cover; }
+.camera-guide { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.camera-guide::before { content: ''; width: min(84vw, 520px); border: 2px solid rgba(255,255,255,0.95); border-radius: 18px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.38); }
+.camera-guide.guide-detail::before { aspect-ratio: 5 / 4; }
+.camera-guide.guide-exterior::before { aspect-ratio: 3 / 4; width: min(68vw, 360px); }
+.camera-guide.no-guide::before { display: none; }
+.camera-guide-label { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
+.camera-actions { padding: 16px 16px 30px; display: flex; gap: 12px; align-items: stretch; background: rgba(0,0,0,0.92); }
+.camera-actions .btn { min-width: 120px; }
+.camera-actions .btn-outline { flex: 0 0 110px; }
+.camera-actions .btn-success { flex: 1 1 auto; min-height: 64px; font-size: 18px; border-radius: 14px; }
+.camera-count-note { margin-top: 8px; font-size: 12px; color: rgba(255,255,255,0.78); text-align: center; }
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid var(--border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+  font-size: 12px;
+  color: var(--text-light);
+}
+.status-bar .save-status { display: flex; align-items: center; gap: 4px; }
+.status-bar .save-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+#printArea { display: none; }
+@page { margin: 6mm 7mm; }
+@media print {
+  body > *:not(#printArea) { display: none !important; }
+  #printArea { display: block !important; }
+  body { background: white; padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pp, .pp-land { page-break-after: always; break-after: always; width: 100%; padding: 4mm 5mm; position: relative; box-sizing: border-box; }
+  #printArea > *:last-child { page-break-after: avoid !important; break-after: avoid !important; }
+  .pc-title { background: linear-gradient(135deg,#1a5276,#2980b9) !important; color: white; text-align: center; padding: 10px 0; font-size: 22px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 10px; }
+  .pc-header { display: flex; gap: 14px; margin-bottom: 10px; align-items: flex-start; }
+  .pc-photo { width: 130px; flex-shrink: 0; }
+  .pc-photo img { width: 100%; border: 1px solid #ddd; border-radius: 3px; }
+  .pc-photo .no-ph { width: 100%; height: 160px; background: #f5f5f5; border: 1px dashed #ccc; border-radius: 3px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 9px; }
+  .pc-info { flex: 1; }
+  .pc-info table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .pc-info th { background: #f0f3f6 !important; padding: 6px 9px; text-align: left; border: 1px solid #dce1e6; font-weight: 700; white-space: nowrap; }
+  .pc-info td { padding: 6px 9px; border: 1px solid #dce1e6; }
+  .pi-title, .pd-title { background: linear-gradient(135deg,#1a5276,#2980b9) !important; color: white; padding: 7px 13px; font-size: 13px; font-weight: 700; border-radius: 3px; margin-bottom: 8px; }
+  .pi-table { width: 100%; border-collapse: collapse; }
+  .pi-table th { background: #f0f3f6 !important; padding: 5px 7px; font-size: 10px; border: 1px solid #dce1e6; text-align: left; }
+  .pi-table td { padding: 5px 7px; font-size: 10px; border: 1px solid #dce1e6; vertical-align: top; line-height: 1.5; word-break: break-all; }
+  .pd-item { border: 1.5px solid #1a5276; border-radius: 4px; padding: 7px; margin-bottom: 7px; }
+  .pd-badge { display: inline-block; background: #1a5276 !important; color: white; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .pd-photos { display: flex; gap: 8px; margin-bottom: 4px; }
+  .pd-photos > div { flex: 1; }
+  .pd-photos img { width: 100%; max-height: 160px; object-fit: cover; border: 1px solid #ddd; border-radius: 2px; }
+  .pd-photos .no-photo, .pk-photos .no-photo { width: 100%; height: 110px; background: #f5f5f5; border: 1px dashed #ccc; border-radius: 2px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 9px; }
+  .pd-loc { font-size: 12px; color: #1a5276; font-weight: 700; }
+  .pd-info { font-size: 12px; line-height: 1.5; }
+  .pk-title { background: linear-gradient(135deg,#219a52,#27ae60) !important; color: white; padding: 7px 13px; font-size: 13px; font-weight: 700; border-radius: 3px; margin-bottom: 10px; }
+  .pk-item { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #ddd; }
+  .pk-item:last-child { border-bottom: none; margin-bottom: 0; }
+  .pk-item-title { background: #f0faf4 !important; border: 1px solid #b8e6cc; padding: 6px 11px; font-size: 12px; font-weight: 700; color: #27ae60; border-radius: 3px; margin-bottom: 8px; }
+  .pk-photos { display: flex; gap: 10px; margin-bottom: 6px; }
+  .pk-photos > div { flex: 1; max-width: 50%; }
+  .pk-photos img { width: 100%; max-height: 155px; object-fit: cover; border: 1px solid #ddd; border-radius: 2px; }
+  .pk-comment { font-size: 11px; line-height: 1.5; }
+  .pk-comment .clabel { font-size: 10px; color: #666; font-weight: 600; }
+  .pb-bar { background: linear-gradient(135deg,#5b3e8a,#7b52b9) !important; color: white; padding: 7px 13px; font-size: 14px; font-weight: 700; border-radius: 3px; margin-bottom: 8px; }
+  .pb-img-full { width: 100%; }
+  .pb-img-full img { width: 100%; max-height: 260mm; object-fit: contain; border: 1px solid #ddd; border-radius: 3px; }
+}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <h1>アフター点検報告書</h1>
+  <div class="sub">アフター点検入力システム</div>
+</header>
+<div style="padding: 12px 12px 0;">
+  <button class="btn btn-danger btn-block" id="btnReset">新規入力を開始する</button>
+</div>
+<div class="section">
+  <div class="section-title">基本情報</div>
+  <div class="section-body">
+    <div class="form-group">
+      <label>支社名</label>
+      <select id="branchName">
+        <option value="埼玉支社" selected>埼玉支社</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>担当者</label>
+      <input type="text" id="staffName" placeholder="担当者名を入力（初回のみ）">
+      <div class="form-note">一度入力すると次回以降も自動で記憶されます。</div>
+    </div>
+    <div class="form-group">
+      <label>点検種別</label>
+      <select id="inspectionType">
+        <option value="6ヶ月">6ヶ月</option>
+        <option value="2年">2年</option>
+        <option value="随時">随時</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>QRコードスキャン</label>
+      <div class="qr-actions">
+        <button class="btn btn-outline" id="btnScanQR" type="button">QRコードを読み取る</button>
+        <button class="btn btn-outline" id="btnStopScanQR" type="button" style="display:none;">停止</button>
+      </div>
+      <div id="qrScanStatus" class="form-note">QRコードを読み取ると、顧客コード・お客様名・住所を自動入力します。</div>
+      <div id="qrScannerWrap" class="qr-video-wrap">
+        <video id="qrVideo" playsinline muted></video>
+      </div>
+      <div class="form-note">うまく読めない場合は、QRコードを画面中央に大きく映してください。</div>
+    </div>
+    <div class="form-group">
+      <label>顧客コード</label>
+      <input type="text" id="customerCode" placeholder="&#x9867;&#x5BA2;&#x30B3;&#x30FC;&#x30C9;&#x3092;&#x5165;&#x529B;">
+    </div>
+    <div class="form-group">
+      <label>お客様名</label>
+      <input type="text" id="customerName" placeholder="お客様名を入力">
+    </div>
+    <div class="form-group">
+      <label>住所</label>
+      <input type="text" id="address" placeholder="住所を入力">
+    </div>
+    <div class="form-group">
+      <label>外観写真</label>
+      <div class="form-note">スマートフォンを縦向きにして撮影してください。</div>
+      <div class="photo-slot" id="exteriorPhotoSlot" data-photo-target="exterior" style="max-width: 60%;">
+        <div class="placeholder"><div class="icon">&#128247;</div><div class="text">タップして外観写真を撮影</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title">指摘事項 <span id="issueCount" style="margin-left:auto;font-size:12px;opacity:0.8">0件</span></div>
+  <div class="section-body">
+    <div id="issuesContainer"></div>
+    <button class="new-issue-btn" id="btnAddIssue">指摘事項を追加</button>
+  </div>
+</div>
+<div class="section">
+  <div class="section-title green-bg">点検項目</div>
+  <div class="section-body" id="checkItemsContainer"></div>
+</div>
+<div class="section">
+  <div class="section-title blueprint-bg">図面 <span id="bpCount" style="margin-left:auto;font-size:12px;opacity:0.8">0枚</span></div>
+  <div class="section-body">
+    <div id="blueprintsContainer"></div>
+    <button class="new-bp-btn" id="btnAddBP">図面を追加</button>
+  </div>
+</div>
+<div class="pdf-section">
+  <button class="btn btn-success btn-lg btn-block" id="btnPDF">PDF出力</button>
+</div>
+<div class="modal-overlay" id="resetModal">
+  <div class="modal-box">
+    <h3>新規入力を開始しますか？</h3>
+    <p>現在の入力内容はリセットされます。支社名と担当者は保持したまま、新しい案件の入力を開始します。</p>
+    <div class="modal-buttons">
+      <button class="btn btn-outline" id="btnResetNo">いいえ</button>
+      <button class="btn btn-danger" id="btnResetYes">はい</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="photoSourceModal">
+  <div class="modal-box">
+    <h3>&#x5199;&#x771F;&#x306E;&#x5165;&#x529B;&#x65B9;&#x6CD5;</h3>
+    <p>&#x30AB;&#x30E1;&#x30E9;&#x3067;&#x64AE;&#x5F71;&#x3059;&#x308B;&#x304B;&#x3001;&#x4FDD;&#x5B58;&#x6E08;&#x307F;&#x306E;&#x5199;&#x771F;&#x304B;&#x3089;&#x9078;&#x629E;&#x3057;&#x3066;&#x304F;&#x3060;&#x3055;&#x3044;&#x3002;</p>
+    <div class="modal-buttons stack">
+      <button class="btn btn-success" id="btnPhotoSourceCamera" type="button">&#x30AB;&#x30E1;&#x30E9;&#x3067;&#x64AE;&#x5F71;</button>
+      <button class="btn btn-outline" id="btnPhotoSourceLibrary" type="button">&#x5199;&#x771F;&#x3092;&#x9078;&#x629E;</button>
+      <button class="btn btn-danger" id="btnPhotoSourceCancel" type="button">&#x30AD;&#x30E3;&#x30F3;&#x30BB;&#x30EB;</button>
+    </div>
+  </div>
+</div>
+<div class="preview-overlay" id="previewOverlay">
+  <div class="preview-image-container"><img id="previewImage" src="" alt="プレビュー"></div>
+  <div class="preview-controls">
+    <button class="btn btn-outline btn-lg" id="btnSaveOriginal">&#x5143;&#x753B;&#x50CF;&#x4FDD;&#x5B58;</button>
+    <button class="btn btn-danger btn-lg" id="btnRetake">撮り直す</button>
+    <button class="btn btn-success btn-lg" id="btnConfirm">OK</button>
+  </div>
+</div>
+<div class="camera-overlay" id="photoCameraOverlay">
+  <div class="camera-topbar">
+    <div class="camera-title" id="photoCameraTitle">&#x5199;&#x771F;&#x3092;&#x64AE;&#x5F71;</div>
+    <div class="camera-sub" id="photoCameraSub">&#x30AC;&#x30A4;&#x30C9;&#x67A0;&#x306B;&#x88AB;&#x5199;&#x4F53;&#x3092;&#x5408;&#x308F;&#x305B;&#x3066;&#x64AE;&#x5F71;&#x3057;&#x3066;&#x304F;&#x3060;&#x3055;&#x3044;&#x3002;</div>
+  </div>
+  <div class="camera-stage">
+    <video id="photoCameraVideo" playsinline muted autoplay></video>
+    <div class="camera-guide guide-detail" id="photoCameraGuide">
+      <div class="camera-guide-label" id="photoCameraGuideLabel">&#x30AC;&#x30A4;&#x30C9;&#x5185;&#x306B;&#x53CE;&#x307E;&#x308B;&#x3088;&#x3046;&#x306B;&#x8ABF;&#x6574;&#x3057;&#x3066;&#x304F;&#x3060;&#x3055;&#x3044;</div>
+    </div>
+  </div>
+  <div class="camera-actions">
+    <button class="btn btn-outline" id="btnClosePhotoCamera" type="button">&#x9589;&#x3058;&#x308B;</button>
+    <button class="btn btn-success btn-lg" id="btnCapturePhoto" type="button">&#xFF12;&#x79D2;&#x5F8C;&#x306B;&#x64AE;&#x5F71;</button>
+  </div>
+  <div class="camera-count-note" id="photoCameraCountNote">&#x30B7;&#x30E3;&#x30C3;&#x30BF;&#x30FC;&#x5F8C;&#x3082;&#xFF11;&#x79D2;&#x307B;&#x3069;&#x6B62;&#x307E;&#x3063;&#x3066;&#x304F;&#x3060;&#x3055;&#x3044;</div>
+</div>
+
+<div class="status-bar">
+  <div class="save-status"><div class="save-dot"></div> 自動保存中</div>
+  <div id="dateDisplay"></div>
+</div>
+<canvas id="photoCanvas" style="display:none;"></canvas>
+<canvas id="qrScanCanvas" style="display:none;"></canvas>
+<div id="printArea"></div>
+<script src="./jsQR.js"></script>
+<script>
+(function() {
+  'use strict';
+  var LOCATIONS = ['玄関', '廊下', '洗面', '洋室', '和室', '北側バルコニー', '南側バルコニー', 'ホール(A)', 'ホール(B)', '浴室', 'LDK', 'キッチン', '物入', 'UB', 'トイレ(A)', 'トイレ(B)', '階段', '洋室(A)', '洋室(B)', '洋室(C)', '洋室(D)', '洋室(E)', '床下収納庫', 'バルコニー', '設備・リビング', '網戸', 'その他'];
+  var CHECK_ITEMS = ['\u63db\u6c17\u30d5\u30fc\u30c9', '\u7d66\u6e6f\u5668', '\u5929\u4e95\u88cf', '\u5e8a\u4e0b', '\u70b9\u691c', '\u70b9\u691c'];
+  var ISSUE_STATUS_OPTIONS = [
+    { value: 'todo', label: '\u8981\u5bfe\u5fdc' },
+    { value: 'fixed', label: '\u662f\u6b63\u6e08' },
+    { value: 'watch', label: '\u7d4c\u904e\u89b3\u5bdf' }
+  ];
+  var DB_NAME = 'afterInspectionDB';
+  var DB_VERSION = 1;
+  var DRAFT_STORE = 'drafts';
+  var PHOTO_STORE = 'photos';
+  var SETTINGS_STORE = 'settings';
+  var CURRENT_DRAFT_ID = 'current';
+  var STAFF_KEY = 'staffName';
+  var MAX_ISSUES = 30;
+  var MAX_BLUEPRINTS = 6;
+  var appData = getDefaultData();
+  var currentPhotoTarget = null;
+  var pendingPhotoBlob = null;
+  var pendingOriginalBlob = null;
+  var pendingOriginalFilename = '';
+  var qrStream = null;
+  var qrScanTimer = null;
+  var qrBusy = false;
+  var photoStream = null;
+  var photoCaptureMode = 'detail';
+  var photoCaptureCountdownTimer = null;
+  var photoCaptureCountdownValue = 0;
+  var dbPromise = null;
+  var activePhotoUrls = {};
+  var previewObjectUrl = null;
+  function getDefaultData() {
+    return { inspectionType: '6ヶ月', branchName: '埼玉支社', staffName: '', customerCode: '', customerName: '', address: '', exteriorPhoto: null, issues: [], checkItems: CHECK_ITEMS.map(function(name) { return { name: name, photoFar: null, photoClose: null, comment: '' }; }), blueprints: [] };
+  }
+  function sanitizeCustomerCode(value) {
+    return String(value || '').trim();
+  }
+
+  function createUid(prefix) {
+    return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+  function makeIssue(issue) {
+    return {
+      uid: issue && issue.uid ? issue.uid : createUid('issue'),
+      location: issue && issue.location ? issue.location : '',
+      locationFree: issue && issue.locationFree ? issue.locationFree : '',
+      comment: issue && issue.comment ? issue.comment : '',
+      photoFar: issue ? (issue.photoFar || null) : null,
+      photoClose: issue ? (issue.photoClose || null) : null,
+      status: normalizeIssueStatus(issue && issue.status)
+    };
+  }
+  function makeBlueprint(bp) {
+    return {
+      uid: bp && bp.uid ? bp.uid : createUid('bp'),
+      photo: bp ? (bp.photo || null) : null
+    };
+  }
+  function isLegacyCheckItemName(name) {
+    return /^\u70b9\u691c(?:\u9805\u76ee)?\d+$/.test(String(name || ''));
+  }
+  function normalizeAppData(data) {
+    var base = getDefaultData();
+    var source = data && typeof data === 'object' ? data : {};
+    var next = Object.assign(base, source);
+    next.customerCode = sanitizeCustomerCode(next.customerCode || '');
+    next.issues = Array.isArray(source.issues) ? source.issues.map(makeIssue) : [];
+    var checkItems = Array.isArray(source.checkItems) ? source.checkItems : [];
+    while (checkItems.length < CHECK_ITEMS.length) checkItems.push({ name: CHECK_ITEMS[checkItems.length], photoFar: null, photoClose: null, comment: '' });
+    next.checkItems = checkItems.slice(0, CHECK_ITEMS.length).map(function(item, i) {
+      return {
+        name: item && item.name && !isLegacyCheckItemName(item.name) ? item.name : CHECK_ITEMS[i],
+        photoFar: item ? (item.photoFar || item.photo || null) : null,
+        photoClose: item ? (item.photoClose || null) : null,
+        comment: item ? (item.comment || '') : ''
+      };
+    });
+    next.blueprints = Array.isArray(source.blueprints) ? source.blueprints.map(makeBlueprint) : [];
+    next.exteriorPhoto = next.exteriorPhoto || null;
+    return next;
+  }
+  function collectPhotoIds(data) {
+    var ids = [];
+    if (!data) return ids;
+    if (data.exteriorPhoto) ids.push(data.exteriorPhoto);
+    (data.issues || []).forEach(function(issue) {
+      if (issue.photoFar) ids.push(issue.photoFar);
+      if (issue.photoClose) ids.push(issue.photoClose);
+    });
+    (data.checkItems || []).forEach(function(item) {
+      if (item.photoFar) ids.push(item.photoFar);
+      if (item.photoClose) ids.push(item.photoClose);
+    });
+    (data.blueprints || []).forEach(function(bp) {
+      if (bp.photo) ids.push(bp.photo);
+    });
+    return ids.filter(function(id, index, arr) { return id && arr.indexOf(id) === index; });
+  }
+  function openDatabase() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise(function(resolve, reject) {
+      if (!window.indexedDB) {
+        reject(new Error('IndexedDB is not supported.'));
+        return;
+      }
+      var request = window.indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = function(event) {
+        var db = event.target.result;
+        if (!db.objectStoreNames.contains(DRAFT_STORE)) db.createObjectStore(DRAFT_STORE, { keyPath: 'id' });
+        if (!db.objectStoreNames.contains(PHOTO_STORE)) db.createObjectStore(PHOTO_STORE, { keyPath: 'id' });
+        if (!db.objectStoreNames.contains(SETTINGS_STORE)) db.createObjectStore(SETTINGS_STORE, { keyPath: 'key' });
+      };
+      request.onsuccess = function() { resolve(request.result); };
+      request.onerror = function() { reject(request.error || new Error('IndexedDB open failed.')); };
+    });
+    return dbPromise;
+  }
+  function dbGet(storeName, key) {
+    return openDatabase().then(function(db) {
+      return new Promise(function(resolve, reject) {
+        var tx = db.transaction(storeName, 'readonly');
+        var req = tx.objectStore(storeName).get(key);
+        req.onsuccess = function() { resolve(req.result || null); };
+        req.onerror = function() { reject(req.error || new Error('IndexedDB get failed.')); };
+      });
+    });
+  }
+  function dbPut(storeName, value) {
+    return openDatabase().then(function(db) {
+      return new Promise(function(resolve, reject) {
+        var tx = db.transaction(storeName, 'readwrite');
+        tx.oncomplete = function() { resolve(value); };
+        tx.onerror = function() { reject(tx.error || new Error('IndexedDB put failed.')); };
+        tx.objectStore(storeName).put(value);
+      });
+    });
+  }
+  function deletePhotoEntries(photoIds) {
+    if (!photoIds || !photoIds.length) return Promise.resolve();
+    return openDatabase().then(function(db) {
+      return new Promise(function(resolve, reject) {
+        var tx = db.transaction(PHOTO_STORE, 'readwrite');
+        var store = tx.objectStore(PHOTO_STORE);
+        tx.oncomplete = function() { resolve(); };
+        tx.onerror = function() { reject(tx.error || new Error('IndexedDB delete failed.')); };
+        photoIds.forEach(function(id) { if (id) store.delete(id); });
+      });
+    });
+  }
+  function setSetting(key, value) {
+    return dbPut(SETTINGS_STORE, { key: key, value: value });
+  }
+  function getSetting(key) {
+    return dbGet(SETTINGS_STORE, key).then(function(entry) { return entry ? entry.value : ''; });
+  }
+  function revokePhotoUrl(photoId) {
+    var url = activePhotoUrls[photoId];
+    if (!url) return;
+    try { URL.revokeObjectURL(url); } catch (e) {}
+    delete activePhotoUrls[photoId];
+  }
+  function revokeAllPhotoUrls() {
+    Object.keys(activePhotoUrls).forEach(revokePhotoUrl);
+  }
+  function setPendingOriginalBlob(blob, filename) {
+    pendingOriginalBlob = blob || null;
+    pendingOriginalFilename = filename || '';
+    updateSaveOriginalButton();
+  }
+  function updateSaveOriginalButton() {
+    var btn = document.getElementById('btnSaveOriginal');
+    if (!btn) return;
+    btn.disabled = !pendingOriginalBlob;
+    btn.style.opacity = pendingOriginalBlob ? '1' : '0.5';
+  }
+  async function saveOriginalPhoto() {
+    if (!pendingOriginalBlob) return;
+    var blob = pendingOriginalBlob;
+    var filename = pendingOriginalFilename || ('after_raw_' + Date.now() + '.jpg');
+    if (typeof navigator.share === 'function' && typeof File === 'function') {
+      try {
+        var file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+        if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: '\u5143\u753b\u50cf\u4fdd\u5b58' });
+          return;
+        }
+      } catch (err) {}
+    }
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function() { try { URL.revokeObjectURL(url); } catch (e) {} }, 1000);
+    alert('\u5171\u6709\u30b7\u30fc\u30c8\u304c\u958b\u304b\u306a\u3044\u5834\u5408\u306f\u3001\u8868\u793a\u3055\u308c\u305f\u753b\u50cf\u3092\u9577\u62bc\u3057\u3057\u3066\u4fdd\u5b58\u3057\u3066\u304f\u3060\u3055\u3044\u3002');
+  }
+  function clearPreviewBlob() {
+    pendingPhotoBlob = null;
+    pendingOriginalBlob = null;
+    pendingOriginalFilename = '';
+    updateSaveOriginalButton();
+    if (previewObjectUrl) {
+      try { URL.revokeObjectURL(previewObjectUrl); } catch (e) {}
+      previewObjectUrl = null;
+    }
+    var img = document.getElementById('previewImage');
+    if (img) img.removeAttribute('src');
+  }
+  function syncPhotoUrls() {
+    var photoIds = collectPhotoIds(appData);
+    revokeAllPhotoUrls();
+    if (!photoIds.length) return Promise.resolve();
+    return Promise.all(photoIds.map(function(photoId) {
+      return dbGet(PHOTO_STORE, photoId).then(function(entry) {
+        if (entry && entry.blob) activePhotoUrls[photoId] = URL.createObjectURL(entry.blob);
+      });
+    })).then(function() {});
+  }
+  function getPhotoUrl(photoId) {
+    return photoId && activePhotoUrls[photoId] ? activePhotoUrls[photoId] : '';
+  }
+  function getPhotoIdForTarget(target) {
+    if (!target) return null;
+    if (target.type === 'exterior') return 'exterior_photo';
+    if (target.type === 'issue_far' && appData.issues[target.index]) return appData.issues[target.index].uid + '_far';
+    if (target.type === 'issue_close' && appData.issues[target.index]) return appData.issues[target.index].uid + '_close';
+    if (target.type === 'check_far' && appData.checkItems[target.index]) return 'check_' + target.index + '_far';
+    if (target.type === 'check_close' && appData.checkItems[target.index]) return 'check_' + target.index + '_close';
+    if (target.type === 'blueprint' && appData.blueprints[target.index]) return appData.blueprints[target.index].uid + '_photo';
+    return null;
+  }
+  function assignPhotoId(target, photoId) {
+    if (!target || !photoId) return;
+    if (target.type === 'exterior') appData.exteriorPhoto = photoId;
+    else if (target.type === 'issue_far' && appData.issues[target.index]) appData.issues[target.index].photoFar = photoId;
+    else if (target.type === 'issue_close' && appData.issues[target.index]) appData.issues[target.index].photoClose = photoId;
+    else if (target.type === 'check_far' && appData.checkItems[target.index]) appData.checkItems[target.index].photoFar = photoId;
+    else if (target.type === 'check_close' && appData.checkItems[target.index]) appData.checkItems[target.index].photoClose = photoId;
+    else if (target.type === 'blueprint' && appData.blueprints[target.index]) appData.blueprints[target.index].photo = photoId;
+  }
+  function getPhotoIdForRemoval(type, idx) {
+    if (type === 'exterior') return appData.exteriorPhoto;
+    if (type === 'issue_far' && appData.issues[idx]) return appData.issues[idx].photoFar;
+    if (type === 'issue_close' && appData.issues[idx]) return appData.issues[idx].photoClose;
+    if (type === 'check_far' && appData.checkItems[idx]) return appData.checkItems[idx].photoFar;
+    if (type === 'check_close' && appData.checkItems[idx]) return appData.checkItems[idx].photoClose;
+    if (type === 'blueprint' && appData.blueprints[idx]) return appData.blueprints[idx].photo;
+    return null;
+  }
+  function clearPhotoField(type, idx) {
+    if (type === 'exterior') appData.exteriorPhoto = null;
+    else if (type === 'issue_far' && appData.issues[idx]) appData.issues[idx].photoFar = null;
+    else if (type === 'issue_close' && appData.issues[idx]) appData.issues[idx].photoClose = null;
+    else if (type === 'check_far' && appData.checkItems[idx]) appData.checkItems[idx].photoFar = null;
+    else if (type === 'check_close' && appData.checkItems[idx]) appData.checkItems[idx].photoClose = null;
+    else if (type === 'blueprint' && appData.blueprints[idx]) appData.blueprints[idx].photo = null;
+  }
+  function canvasToBlob(canvas, quality) {
+    return new Promise(function(resolve, reject) {
+      canvas.toBlob(function(blob) {
+        if (blob) resolve(blob);
+        else reject(new Error('Canvas toBlob failed.'));
+      }, 'image/jpeg', quality);
+    });
+  }
+  function loadImageFromBlob(blob) {
+    return new Promise(function(resolve, reject) {
+      var url = URL.createObjectURL(blob);
+      var img = new Image();
+      img.onload = function() {
+        try { URL.revokeObjectURL(url); } catch (e) {}
+        resolve(img);
+      };
+      img.onerror = function() {
+        try { URL.revokeObjectURL(url); } catch (e) {}
+        reject(new Error('Image load failed.'));
+      };
+      img.src = url;
+    });
+  }
+  function showPreviewBlob(blob) {
+    clearPreviewBlob();
+    pendingPhotoBlob = blob;
+    previewObjectUrl = URL.createObjectURL(blob);
+    document.getElementById('previewImage').src = previewObjectUrl;
+    updateSaveOriginalButton();
+  }
+  function normalizeIssueStatus(value) {
+    return value === 'fixed' || value === 'watch' ? value : 'todo';
+  }
+  function getIssueStatusLabel(value) {
+    var status = normalizeIssueStatus(value);
+    for (var i = 0; i < ISSUE_STATUS_OPTIONS.length; i++) {
+      if (ISSUE_STATUS_OPTIONS[i].value === status) return ISSUE_STATUS_OPTIONS[i].label;
+    }
+    return '\u8981\u5bfe\u5fdc';
+  }
+  function getIssuePhotoLabels(issue) {
+    return normalizeIssueStatus(issue && issue.status) === 'fixed'
+      ? { primary: '\u662f\u6b63\u524d', secondary: '\u662f\u6b63\u6e08\u307f' }
+      : { primary: '\u9060\u666f', secondary: '\u63a5\u5199' };
+  }
+  async function init() {
+    await loadData();
+    await renderAll();
+    updateDateDisplay();
+    bindEvents();
+    window.addEventListener('beforeunload', function() {
+      revokeAllPhotoUrls();
+      clearPreviewBlob();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function() { init().catch(handleAsyncError); }); else init().catch(handleAsyncError);
+  function updateDateDisplay() {
+    var now = new Date();
+    var el = document.getElementById('dateDisplay');
+    if (el) el.textContent = now.getFullYear() + '/' + String(now.getMonth() + 1).padStart(2, '0') + '/' + String(now.getDate()).padStart(2, '0');
+  }
+  function bindEvents() {
+    addClick('btnReset', function() { document.getElementById('resetModal').classList.add('active'); });
+    addClick('btnResetNo', function() { document.getElementById('resetModal').classList.remove('active'); });
+    addClick('btnResetYes', async function() {
+      var branch = appData.branchName;
+      var staff = appData.staffName;
+      await deletePhotoEntries(collectPhotoIds(appData));
+      revokeAllPhotoUrls();
+      appData = getDefaultData();
+      appData.branchName = branch || appData.branchName;
+      appData.staffName = staff || '';
+      await renderAll();
+      await saveData();
+      document.getElementById('resetModal').classList.remove('active');
+    });
+    addClick('btnPhotoSourceCamera', function() { startCameraCapture(); });
+    addClick('btnPhotoSourceLibrary', function() { startLibraryPick(); });
+    addClick('btnPhotoSourceCancel', function() { closePhotoSourceModal(true); });
+    addClick('btnAddIssue', addIssue);
+    addClick('btnAddBP', addBlueprint);
+    addClick('btnPDF', generatePDF);
+    addClick('btnScanQR', startQrScan);
+    addClick('btnStopScanQR', stopQrScan);
+    addClick('exteriorPhotoSlot', function(e) { if (e.target.closest('.remove-photo')) return; takePhoto('exterior', 0); });
+    addClick('btnSaveOriginal', function() { saveOriginalPhoto(); });
+    addClick('btnRetake', function() {
+      document.getElementById('previewOverlay').classList.remove('active');
+      clearPreviewBlob();
+      if (currentPhotoTarget) takePhoto(currentPhotoTarget.type, currentPhotoTarget.index);
+    });
+    addClick('btnConfirm', async function() {
+      document.getElementById('previewOverlay').classList.remove('active');
+      if (pendingPhotoBlob && currentPhotoTarget) {
+        var blob = pendingPhotoBlob;
+        await savePhotoToTarget(blob);
+      }
+      clearPreviewBlob();
+    });
+    addClick('btnClosePhotoCamera', function() { stopPhotoCamera(); });
+    addClick('btnCapturePhoto', function() { startPhotoCaptureCountdown(); });
+    ['branchName', 'staffName', 'inspectionType', 'customerCode', 'customerName', 'address'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', function() { saveData().catch(handleAsyncError); });
+        el.addEventListener('change', function() { saveData().catch(handleAsyncError); });
+      }
+    });
+    var customerCodeEl = document.getElementById('customerCode');
+    if (customerCodeEl) {
+      customerCodeEl.addEventListener('input', function() {
+        var sanitized = sanitizeCustomerCode(customerCodeEl.value);
+        if (customerCodeEl.value !== sanitized) customerCodeEl.value = sanitized;
+      });
+    }
+    document.addEventListener('click', function(e) {
+      var delBtn = e.target.closest('.delete-issue');
+      if (delBtn) { deleteIssue(parseInt(delBtn.getAttribute('data-idx'), 10)).catch(handleAsyncError); return; }
+      var delBP = e.target.closest('.delete-bp');
+      if (delBP) { deleteBlueprint(parseInt(delBP.getAttribute('data-idx'), 10)).catch(handleAsyncError); return; }
+      var rmBtn = e.target.closest('.remove-photo');
+      if (rmBtn) { e.stopPropagation(); handleRemovePhoto(rmBtn).catch(handleAsyncError); return; }
+      var slot = e.target.closest('.photo-slot, .photo-slot-free');
+      if (slot && !e.target.closest('.remove-photo')) {
+        var pt = slot.getAttribute('data-photo-target');
+        var pi = parseInt(slot.getAttribute('data-photo-idx') || '0', 10);
+        if (pt) takePhoto(pt, pi);
+      }
+    });
+    document.addEventListener('input', function(e) { if (e.target.id && (e.target.id.indexOf('issue_') === 0 || e.target.id.indexOf('check_') === 0)) saveData().catch(handleAsyncError); });
+    document.addEventListener('change', function(e) {
+      if (!e.target.id && !e.target.name) return;
+      if ((e.target.id && e.target.id.indexOf('issue_loc_') === 0) || (e.target.name && e.target.name.indexOf('issue_status_') === 0)) saveData().catch(handleAsyncError);
+    });
+  }
+  function handleAsyncError(err) {
+    if (err) console.error(err);
+  }
+  function addClick(id, fn) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', function(event) {
+      try {
+        var result = fn(event);
+        if (result && typeof result.then === 'function') result.catch(handleAsyncError);
+      } catch (err) {
+        handleAsyncError(err);
+      }
+    });
+  }
+  function setQrStatus(msg, isError) {
+    var el = document.getElementById('qrScanStatus');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = isError ? '#e74c3c' : '#7f8c8d';
+  }
+  function parseQrPayloadFromText(rawText) {
+    if (!rawText) return null;
+    rawText = String(rawText).replace(/^\uFEFF/, '').trim();
+    try {
+      var prefix = 'GUIDEMAPQR2:';
+      if (rawText.indexOf(prefix) === 0) {
+        var encoded = rawText.slice(prefix.length);
+        var normalized = encoded.replace(/-/g, '+').replace(/_/g, '/');
+        while (normalized.length % 4) normalized += '=';
+        var binary = atob(normalized);
+        var bytes = new Uint8Array(binary.length);
+        for (var j = 0; j < binary.length; j++) bytes[j] = binary.charCodeAt(j);
+        var decodedText = new TextDecoder('utf-8', { fatal: false }).decode(bytes);
+        var compact = JSON.parse(decodedText);
+        if (compact && typeof compact === 'object') return { version: compact.v || 2, customerCode: compact.c || '', customerName: compact.n || '', address: compact.a || '' };
+      }
+    } catch (e) {}
+    try { var obj = JSON.parse(rawText); if (obj && typeof obj === 'object') return obj; } catch (e) {}
+    try {
+      var legacyBytes = new Uint8Array(rawText.length);
+      for (var i = 0; i < rawText.length; i++) legacyBytes[i] = rawText.charCodeAt(i) & 0xFF;
+      var decoded = new TextDecoder('utf-8', { fatal: false }).decode(legacyBytes);
+      var obj2 = JSON.parse(decoded);
+      if (obj2 && typeof obj2 === 'object') return obj2;
+    } catch (e) {}
+    return null;
+  }
+  function applyCustomerFromQrPayload(payload) {
+    if (!payload) return false;
+    var code = sanitizeCustomerCode((payload.customerCode || payload.code || '').toString().trim());
+    var name = (payload.customerName || payload.name || '').toString().trim();
+    var addr = (payload.address || payload.addr || payload.customerAddr || '').toString().trim();
+    if (!code && !name && !addr) return false;
+    sv('customerCode', code); sv('customerName', name); sv('address', addr);
+    appData.customerCode = code; appData.customerName = name; appData.address = addr;
+    saveData().catch(handleAsyncError);
+    return true;
+  }
+  function startQrScan() {
+    if (qrStream) return;
+    if (typeof jsQR !== 'function') { setQrStatus('QR読み取りライブラリが見つかりません。jsQR.js を確認してください。', true); return; }
+    var video = document.getElementById('qrVideo');
+    var wrap = document.getElementById('qrScannerWrap');
+    var btnStart = document.getElementById('btnScanQR');
+    var btnStop = document.getElementById('btnStopScanQR');
+    setQrStatus('カメラを起動中です...', false);
+    if (wrap) wrap.style.display = 'block';
+    if (btnStart) btnStart.style.display = 'none';
+    if (btnStop) btnStop.style.display = 'inline-flex';
+    navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } }).then(function(stream) {
+      qrStream = stream;
+      video.srcObject = stream;
+      return video.play();
+    }).then(function() {
+      setQrStatus('QRコードをカメラに映してください。', false);
+      if (qrScanTimer) clearInterval(qrScanTimer);
+      qrScanTimer = setInterval(function() { scanQrOnce().catch(function() {}); }, 250);
+    }).catch(function(err) {
+      stopQrScan();
+      setQrStatus('カメラの起動に失敗しました: ' + (err && err.name ? err.name : 'unknown'), true);
+    });
+  }
+  function stopQrScan() {
+    if (qrScanTimer) { clearInterval(qrScanTimer); qrScanTimer = null; }
+    qrBusy = false;
+    var video = document.getElementById('qrVideo');
+    var wrap = document.getElementById('qrScannerWrap');
+    var btnStart = document.getElementById('btnScanQR');
+    var btnStop = document.getElementById('btnStopScanQR');
+    if (video) { try { video.pause(); } catch (e) {} try { video.srcObject = null; } catch (e) {} }
+    if (qrStream) {
+      try { qrStream.getTracks().forEach(function(track) { try { track.stop(); } catch (e) {} }); } catch (e) {}
+      qrStream = null;
+    }
+    if (wrap) wrap.style.display = 'none';
+    if (btnStart) btnStart.style.display = 'inline-flex';
+    if (btnStop) btnStop.style.display = 'none';
+  }
+  function scanQrOnce() {
+    return new Promise(function(resolve) {
+      if (qrBusy) return resolve();
+      var video = document.getElementById('qrVideo');
+      var canvas = document.getElementById('qrScanCanvas');
+      if (!video || !canvas || video.readyState < 2) return resolve();
+      qrBusy = true;
+      try {
+        var width = video.videoWidth || 0;
+        var height = video.videoHeight || 0;
+        if (!width || !height) { qrBusy = false; return resolve(); }
+        canvas.width = width; canvas.height = height;
+        var ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(video, 0, 0, width, height);
+        var imageData = ctx.getImageData(0, 0, width, height);
+        var code = jsQR(imageData.data, width, height, { inversionAttempts: 'dontInvert' });
+        if (!code || !code.data) { qrBusy = false; return resolve(); }
+        var payload = parseQrPayloadFromText(code.data);
+        if (payload && applyCustomerFromQrPayload(payload)) {
+          setQrStatus('QRコードを読み取り、顧客情報を入力しました。', false);
+          stopQrScan();
+          qrBusy = false;
+          return resolve();
+        }
+        setQrStatus('QRコードは読み取れましたが、案内図ツールの形式ではありません。', true);
+      } catch (e) {}
+      qrBusy = false;
+      resolve();
+    });
+  }
+  async function handleRemovePhoto(btn) {
+    var type = btn.getAttribute('data-rm-type');
+    var idx = parseInt(btn.getAttribute('data-rm-idx'), 10);
+    var photoId = getPhotoIdForRemoval(type, idx);
+    clearPhotoField(type, idx);
+    if (photoId) {
+      revokePhotoUrl(photoId);
+      await deletePhotoEntries([photoId]);
+    }
+    await saveData();
+    await renderAll();
+  }
+  async function saveData() {
+    appData.branchName = gv('branchName');
+    appData.staffName = gv('staffName');
+    appData.inspectionType = gv('inspectionType');
+    appData.customerCode = sanitizeCustomerCode(gv('customerCode'));
+    sv('customerCode', appData.customerCode);
+    appData.customerName = gv('customerName');
+    appData.address = gv('address');
+    appData.issues.forEach(function(issue, i) {
+      var ls = document.getElementById('issue_loc_' + i);
+      var lf = document.getElementById('issue_locfree_' + i);
+      var cm = document.getElementById('issue_comment_' + i);
+      var statusEl = document.querySelector('input[name="issue_status_' + i + '"]:checked');
+      if (ls) issue.location = ls.value;
+      if (lf) issue.locationFree = lf.value;
+      if (cm) issue.comment = cm.value;
+      issue.status = normalizeIssueStatus(statusEl ? statusEl.value : issue.status);
+    });
+    appData.checkItems.forEach(function(item, i) {
+      var cm = document.getElementById('check_comment_' + i);
+      if (cm) item.comment = cm.value;
+    });
+    if (appData.staffName) await setSetting(STAFF_KEY, appData.staffName);
+    await dbPut(DRAFT_STORE, Object.assign({ id: CURRENT_DRAFT_ID, updatedAt: Date.now() }, appData));
+  }
+  async function loadData() {
+    var saved = await dbGet(DRAFT_STORE, CURRENT_DRAFT_ID);
+    appData = normalizeAppData(saved);
+    if (!appData.staffName) {
+      var savedStaff = await getSetting(STAFF_KEY);
+      if (savedStaff) appData.staffName = savedStaff;
+    }
+  }
+  function gv(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+  function sv(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; }
+  async function renderAll() {
+    appData = normalizeAppData(appData);
+    await syncPhotoUrls();
+    sv('branchName', appData.branchName);
+    sv('staffName', appData.staffName);
+    sv('inspectionType', appData.inspectionType);
+    sv('customerCode', appData.customerCode || '');
+    sv('customerName', appData.customerName);
+    sv('address', appData.address);
+    renderExteriorPhoto();
+    renderIssues();
+    renderCheckItems();
+    renderBlueprints();
+  }
+  function renderExteriorPhoto() {
+    var slot = document.getElementById('exteriorPhotoSlot');
+    if (!slot) return;
+    var exteriorUrl = getPhotoUrl(appData.exteriorPhoto);
+    slot.innerHTML = exteriorUrl ? '<img src="' + exteriorUrl + '"><button class="remove-photo" data-rm-type="exterior" data-rm-idx="0">&#215;</button>' : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">\u30bf\u30c3\u30d7\u3057\u3066\u5916\u89b3\u5199\u771f\u3092\u64ae\u5f71</div></div>';
+  }
+  function renderIssues() {
+    var container = document.getElementById('issuesContainer');
+    if (!container) return;
+    var cnt = document.getElementById('issueCount');
+    if (cnt) cnt.textContent = appData.issues.length + '件';
+    var html = '';
+    appData.issues.forEach(function(issue, i) {
+      issue.status = normalizeIssueStatus(issue.status);
+      var labels = getIssuePhotoLabels(issue);
+      var opts = LOCATIONS.map(function(loc) { return '<option value="' + loc + '"' + (issue.location === loc ? ' selected' : '') + '>' + loc + '</option>'; }).join('');
+      var statusHtml = ISSUE_STATUS_OPTIONS.map(function(option) {
+        var checked = issue.status === option.value ? ' checked' : '';
+        return '<label class="status-option"><input type="radio" id="issue_status_' + i + '_' + option.value + '" name="issue_status_' + i + '" value="' + option.value + '"' + checked + '><span>' + option.label + '</span></label>';
+      }).join('');
+      var farUrl = getPhotoUrl(issue.photoFar);
+      var closeUrl = getPhotoUrl(issue.photoClose);
+      var farHtml = farUrl
+        ? '<img src="' + farUrl + '"><button class="remove-photo" data-rm-type="issue_far" data-rm-idx="' + i + '">&#215;</button>'
+        : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">' + labels.primary + '</div></div>';
+      var closeHtml = closeUrl
+        ? '<img src="' + closeUrl + '"><button class="remove-photo" data-rm-type="issue_close" data-rm-idx="' + i + '">&#215;</button>'
+        : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">' + labels.secondary + '</div></div>';
+      html += '<div class="issue-card" id="issueCard_' + i + '">';
+      html += '<div class="issue-number">' + (i + 1) + '</div>';
+      html += '<button class="delete-issue" data-idx="' + i + '">削除</button>';
+      html += '<div class="photo-pair">';
+      html += '<div><div class="photo-label">' + labels.primary + '</div><div class="photo-slot" data-photo-target="issue_far" data-photo-idx="' + i + '">' + farHtml + '</div></div>';
+      html += '<div><div class="photo-label">' + labels.secondary + '</div><div class="photo-slot" data-photo-target="issue_close" data-photo-idx="' + i + '">' + closeHtml + '</div></div>';
+      html += '</div>';
+      html += '<div class="form-group" style="margin-bottom:8px;"><label>場所</label><select id="issue_loc_' + i + '"><option value="">選択してください</option>' + opts + '</select></div>';
+      html += '<div class="form-group" style="margin-bottom:8px;"><input type="text" id="issue_locfree_' + i + '" value="' + esc(issue.locationFree) + '" placeholder="その他の場所を入力"></div></div>';
+      html += '<div class="form-group" style="margin-bottom:8px;"><label>ステータス</label><div class="status-group">' + statusHtml + '</div></div>';
+      html += '<div class="form-group" style="margin-bottom:0;"><label>コメント</label><textarea id="issue_comment_' + i + '" placeholder="コメントを入力">' + esc(issue.comment) + '</textarea></div>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+  function renderCheckItems() {
+    var container = document.getElementById('checkItemsContainer');
+    if (!container) return;
+    var html = '';
+    appData.checkItems.forEach(function(item, i) {
+      var farUrl = getPhotoUrl(item.photoFar);
+      var closeUrl = getPhotoUrl(item.photoClose);
+      var farHtml = farUrl ? '<img src="' + farUrl + '"><button class="remove-photo" data-rm-type="check_far" data-rm-idx="' + i + '">&#215;</button>' : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">\u5199\u771f1</div></div>';
+      var closeHtml = closeUrl ? '<img src="' + closeUrl + '"><button class="remove-photo" data-rm-type="check_close" data-rm-idx="' + i + '">&#215;</button>' : '<div class="placeholder"><div class="icon">&#128247;</div><div class="text">\u5199\u771f2</div></div>';
+      html += '<div class="check-item-card"><div class="item-title">' + item.name + '</div><div class="photo-pair"><div><div class="photo-label">写真1</div><div class="photo-slot" data-photo-target="check_far" data-photo-idx="' + i + '">' + farHtml + '</div></div><div><div class="photo-label">写真2</div><div class="photo-slot" data-photo-target="check_close" data-photo-idx="' + i + '">' + closeHtml + '</div></div></div><div class="form-group" style="margin-bottom:0;"><label>コメント</label><textarea id="check_comment_' + i + '" placeholder="コメントを入力">' + esc(item.comment) + '</textarea></div></div>';
+    });
+    container.innerHTML = html;
+  }
+  function renderBlueprints() {
+    var container = document.getElementById('blueprintsContainer');
+    if (!container) return;
+    var cnt = document.getElementById('bpCount');
+    if (cnt) cnt.textContent = appData.blueprints.length + '枚';
+    var html = '';
+    appData.blueprints.forEach(function(bp, i) {
+      var bpUrl = getPhotoUrl(bp.photo);
+      var ph = bpUrl ? '<img src="' + bpUrl + '"><button class="remove-photo" data-rm-type="blueprint" data-rm-idx="' + i + '">&#215;</button>' : '<div class="placeholder"><div class="icon">&#128506;</div><div class="text">\u30bf\u30c3\u30d7\u3057\u3066\u56f3\u9762\u3092\u8ffd\u52a0</div></div>';
+      html += '<div class="blueprint-card"><div class="bp-title">図面' + (i + 1) + '</div><button class="delete-bp" data-idx="' + i + '">削除</button><div class="photo-slot-free" data-photo-target="blueprint" data-photo-idx="' + i + '">' + ph + '</div></div>';
+    });
+    container.innerHTML = html;
+    var addBtn = document.getElementById('btnAddBP');
+    if (addBtn) addBtn.style.display = appData.blueprints.length >= MAX_BLUEPRINTS ? 'none' : 'block';
+  }
+  async function addIssue() {
+    if (appData.issues.length >= MAX_ISSUES) { alert('最大' + MAX_ISSUES + '件までです。'); return; }
+    appData.issues.push(makeIssue());
+    await saveData();
+    renderIssues();
+    setTimeout(function() { var el = document.getElementById('issueCard_' + (appData.issues.length - 1)); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+  }
+  async function deleteIssue(idx) {
+    if (!confirm('指摘事項 ' + (idx + 1) + ' を削除しますか？')) return;
+    var issue = appData.issues[idx];
+    if (!issue) return;
+    await deletePhotoEntries([issue.photoFar, issue.photoClose].filter(Boolean));
+    if (issue.photoFar) revokePhotoUrl(issue.photoFar);
+    if (issue.photoClose) revokePhotoUrl(issue.photoClose);
+    appData.issues.splice(idx, 1);
+    await saveData();
+    await renderAll();
+  }
+  async function addBlueprint() {
+    if (appData.blueprints.length >= MAX_BLUEPRINTS) { alert('図面は最大' + MAX_BLUEPRINTS + '枚までです。'); return; }
+    appData.blueprints.push(makeBlueprint());
+    await saveData();
+    renderBlueprints();
+    setTimeout(function() { takePhoto('blueprint', appData.blueprints.length - 1); }, 200);
+  }
+  async function deleteBlueprint(idx) {
+    if (!confirm('図面 ' + (idx + 1) + ' を削除しますか？')) return;
+    var bp = appData.blueprints[idx];
+    if (!bp) return;
+    await deletePhotoEntries([bp.photo].filter(Boolean));
+    if (bp.photo) revokePhotoUrl(bp.photo);
+    appData.blueprints.splice(idx, 1);
+    await saveData();
+    await renderAll();
+  }
+  var photoLock = false;
+  function openPhotoSourceModal() {
+    var modal = document.getElementById('photoSourceModal');
+    if (modal) modal.classList.add('active');
+  }
+  function closePhotoSourceModal(clearTarget) {
+    var modal = document.getElementById('photoSourceModal');
+    if (modal) modal.classList.remove('active');
+    if (clearTarget) currentPhotoTarget = null;
+  }
+  function takePhoto(type, idx) {
+    if (photoLock) return;
+    photoLock = true;
+    setTimeout(function() { photoLock = false; }, 1000);
+    currentPhotoTarget = { type: type, index: idx };
+    openPhotoSourceModal();
+  }
+  function startCameraCapture() {
+    if (!currentPhotoTarget) return;
+    closePhotoSourceModal(false);
+    if (currentPhotoTarget.type === 'blueprint') {
+      openFilePickerForPhoto(true);
+      return;
+    }
+    openPhotoCamera(currentPhotoTarget.type);
+  }
+  function startLibraryPick() {
+    if (!currentPhotoTarget) return;
+    closePhotoSourceModal(false);
+    openFilePickerForPhoto(false);
+  }
+  function openFilePickerForPhoto(preferCamera) {
+    var old = document.getElementById('photoFileInput');
+    if (old) old.parentNode.removeChild(old);
+    var inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/*';
+    if (preferCamera) inp.setAttribute('capture', 'environment');
+    inp.id = 'photoFileInput';
+    inp.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;z-index:-1;';
+    inp.onchange = function(e) {
+      var file = e.target.files && e.target.files[0];
+      if (!file || !currentPhotoTarget) return;
+      setPendingOriginalBlob(file, file.name || ('selected_' + Date.now() + '.jpg'));
+      var isFreeSize = currentPhotoTarget.type === 'exterior' || currentPhotoTarget.type === 'blueprint';
+      if (isFreeSize) resizeNoCrop(file).catch(handleAsyncError);
+      else cropAndPreview(file).catch(handleAsyncError);
+    };
+    document.body.appendChild(inp);
+    setTimeout(function() { inp.click(); }, 200);
+  }
+  function setPhotoCaptureButtonState(label, disabled) {
+    var btn = document.getElementById('btnCapturePhoto');
+    if (!btn) return;
+    btn.textContent = label;
+    btn.disabled = !!disabled;
+    btn.style.opacity = disabled ? '0.8' : '1';
+  }
+  function clearPhotoCaptureCountdown() {
+    if (photoCaptureCountdownTimer) {
+      clearInterval(photoCaptureCountdownTimer);
+      photoCaptureCountdownTimer = null;
+    }
+    photoCaptureCountdownValue = 0;
+  }
+  function updatePhotoCountNote(text) {
+    var note = document.getElementById('photoCameraCountNote');
+    if (note) note.textContent = text;
+  }
+  function startPhotoCaptureCountdown() {
+    if (photoCaptureCountdownTimer) return;
+    var video = document.getElementById('photoCameraVideo');
+    if (!video || video.readyState < 2) return;
+    photoCaptureCountdownValue = 2;
+    updatePhotoCountNote('\u7aef\u672b\u3092\u6b62\u3081\u3066\u305d\u306e\u307e\u307e\u304a\u5f85\u3061\u304f\u3060\u3055\u3044');
+    setPhotoCaptureButtonState('\u3042\u3068' + photoCaptureCountdownValue + '\u79d2', true);
+    photoCaptureCountdownTimer = setInterval(function() {
+      photoCaptureCountdownValue -= 1;
+      if (photoCaptureCountdownValue > 0) {
+        setPhotoCaptureButtonState('\u3042\u3068' + photoCaptureCountdownValue + '\u79d2', true);
+        return;
+      }
+      clearPhotoCaptureCountdown();
+      setPhotoCaptureButtonState('\u64ae\u5f71\u4e2d...', true);
+      capturePhotoFrame();
+    }, 1000);
+  }
+  function openPhotoCamera(type) {
+    stopQrScan();
+    var overlay = document.getElementById('photoCameraOverlay');
+    var video = document.getElementById('photoCameraVideo');
+    var guide = document.getElementById('photoCameraGuide');
+    var title = document.getElementById('photoCameraTitle');
+    var sub = document.getElementById('photoCameraSub');
+    var label = document.getElementById('photoCameraGuideLabel');
+    photoCaptureMode = type === 'exterior' ? 'exterior' : 'detail';
+    guide.className = 'camera-guide ' + (photoCaptureMode === 'exterior' ? 'no-guide' : 'guide-detail');
+    label.style.display = type === 'exterior' ? 'none' : 'block';
+    if (type === 'exterior') {
+      title.textContent = '\u5916\u89b3\u5199\u771f\u3092\u64ae\u5f71';
+      sub.textContent = '\u5efa\u7269\u5168\u4f53\u304c\u5165\u308b\u3088\u3046\u306b\u3001\u5c11\u3057\u5f15\u3044\u3066\u64ae\u5f71\u3057\u3066\u304f\u3060\u3055\u3044\u3002';
+      label.textContent = '';
+    } else if (type === 'issue_far' || type === 'issue_close') {
+      title.textContent = '\u6307\u6458\u4e8b\u9805\u306e\u5199\u771f\u3092\u64ae\u5f71';
+      sub.textContent = '\u6307\u6458\u7b87\u6240\u304c\u30ac\u30a4\u30c9\u5185\u306b\u5165\u308b\u3088\u3046\u306b\u8abf\u6574\u3057\u3066\u64ae\u5f71\u3057\u3066\u304f\u3060\u3055\u3044\u3002';
+      label.textContent = type === 'issue_close'
+        ? '\u63a5\u5199\u5bfe\u8c61\u3092\u30ac\u30a4\u30c9\u4e2d\u592e\u306b\u5408\u308f\u305b\u3066\u304f\u3060\u3055\u3044'
+        : '\u6307\u6458\u7bc4\u56f2\u3092\u30ac\u30a4\u30c9\u5185\u306b\u53ce\u3081\u3066\u304f\u3060\u3055\u3044';
+    } else {
+      title.textContent = '\u70b9\u691c\u9805\u76ee\u306e\u5199\u771f\u3092\u64ae\u5f71';
+      sub.textContent = '\u5bfe\u8c61\u304c\u30ac\u30a4\u30c9\u5185\u306b\u5165\u308b\u3088\u3046\u306b\u8abf\u6574\u3057\u3066\u64ae\u5f71\u3057\u3066\u304f\u3060\u3055\u3044\u3002';
+      label.textContent = '\u5bfe\u8c61\u304c\u30ac\u30a4\u30c9\u5185\u306b\u53ce\u307e\u308b\u3088\u3046\u306b\u8abf\u6574\u3057\u3066\u304f\u3060\u3055\u3044';
+    }
+    setPhotoCaptureButtonState('\uFF12\u79D2\u5F8C\u306B\u64AE\u5F71', false);
+    updatePhotoCountNote('\u30b7\u30e3\u30c3\u30bf\u30fc\u5f8c\u3082\uFF11\u79d2\u307b\u3069\u6b62\u307e\u3063\u3066\u304f\u3060\u3055\u3044');
+    overlay.classList.add('active');
+    navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } } }).then(function(stream) {
+      photoStream = stream;
+      video.srcObject = stream;
+      return video.play();
+    }).catch(function(err) {
+      stopPhotoCamera();
+    alert('\u5171\u6709\u30b7\u30fc\u30c8\u304c\u958b\u304b\u306a\u3044\u5834\u5408\u306f\u3001\u8868\u793a\u3055\u308c\u305f\u753b\u50cf\u3092\u9577\u62bc\u3057\u3057\u3066\u4fdd\u5b58\u3057\u3066\u304f\u3060\u3055\u3044\u3002');
+    });
+  }
+  function stopPhotoCamera() {
+    clearPhotoCaptureCountdown();
+    setPhotoCaptureButtonState('\uFF12\u79D2\u5F8C\u306B\u64AE\u5F71', false);
+    updatePhotoCountNote('\u30b7\u30e3\u30c3\u30bf\u30fc\u5f8c\u3082\uFF11\u79d2\u307b\u3069\u6b62\u307e\u3063\u3066\u304f\u3060\u3055\u3044');
+    var overlay = document.getElementById('photoCameraOverlay');
+    var video = document.getElementById('photoCameraVideo');
+    if (video) {
+      try { video.pause(); } catch (e) {}
+      try { video.srcObject = null; } catch (e) {}
+    }
+    if (photoStream) {
+      try { photoStream.getTracks().forEach(function(track) { try { track.stop(); } catch (e) {} }); } catch (e) {}
+      photoStream = null;
+    }
+    if (overlay) overlay.classList.remove('active');
+  }
+  async function capturePhotoFrame() {
+    if (!currentPhotoTarget) return;
+    var video = document.getElementById('photoCameraVideo');
+    if (!video || video.readyState < 2) return;
+    var captureCanvas = document.getElementById('photoCanvas');
+    var width = video.videoWidth || 0;
+    var height = video.videoHeight || 0;
+    if (!width || !height) return;
+    captureCanvas.width = width;
+    captureCanvas.height = height;
+    captureCanvas.getContext('2d').drawImage(video, 0, 0, width, height);
+    stopPhotoCamera();
+    try {
+      var rawBlob = await canvasToBlob(captureCanvas, 0.92);
+      setPendingOriginalBlob(rawBlob, 'camera_raw_' + Date.now() + '.jpg');
+      if (currentPhotoTarget.type === 'exterior') await resizeNoCrop(rawBlob);
+      else await cropAndPreview(rawBlob);
+    } catch (e) {
+      handleAsyncError(e);
+      alert('\u753b\u50cf\u8aad\u307f\u8fbc\u307f\u30a8\u30e9\u30fc');
+    }
+  }
+  async function cropAndPreview(blob) {
+    var img = await loadImageFromBlob(blob);
+    var canvas = document.getElementById('photoCanvas');
+    var targetRatio = 5 / 4;
+    var sw;
+    var sh;
+    if (img.width / img.height > targetRatio) { sh = img.height; sw = Math.round(sh * targetRatio); }
+    else { sw = img.width; sh = Math.round(sw / targetRatio); }
+    var isClose = currentPhotoTarget && (currentPhotoTarget.type === 'issue_close' || currentPhotoTarget.type === 'check_close');
+    var outW = isClose ? 1000 : 750;
+    var outH = isClose ? 800 : 600;
+    var quality = isClose ? 0.85 : 0.78;
+    canvas.width = outW;
+    canvas.height = outH;
+    canvas.getContext('2d').drawImage(img, Math.round((img.width - sw) / 2), Math.round((img.height - sh) / 2), sw, sh, 0, 0, outW, outH);
+    var previewBlob = await canvasToBlob(canvas, quality);
+    showPreviewBlob(previewBlob);
+    document.getElementById('previewOverlay').classList.add('active');
+  }
+  async function resizeNoCrop(blob) {
+    var img = await loadImageFromBlob(blob);
+    var canvas = document.getElementById('photoCanvas');
+    var isExterior = currentPhotoTarget && currentPhotoTarget.type === 'exterior';
+    var maxW = isExterior ? 600 : 1300;
+    var quality = isExterior ? 0.58 : 0.65;
+    var w = img.width;
+    var h = img.height;
+    if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    var previewBlob = await canvasToBlob(canvas, quality);
+    showPreviewBlob(previewBlob);
+    document.getElementById('previewOverlay').classList.add('active');
+  }
+  async function savePhotoToTarget(blob) {
+    var target = currentPhotoTarget;
+    if (!target || !blob) return;
+    var photoId = getPhotoIdForTarget(target);
+    if (!photoId) return;
+    await dbPut(PHOTO_STORE, { id: photoId, blob: blob, updatedAt: Date.now() });
+    assignPhotoId(target, photoId);
+    await saveData();
+    currentPhotoTarget = null;
+    await renderAll();
+  }
+  async function generatePDF() {
+    await saveData();
+    if (!appData.staffName) { alert('\u62c5\u5f53\u8005\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002'); return; }
+    if (!appData.customerName) { alert('\u304a\u5ba2\u69d8\u540d\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002'); return; }
+    if (!appData.address) { alert('\u4f4f\u6240\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044\u3002'); return; }
+    await syncPhotoUrls();
+    await buildPrintArea();
+    setTimeout(function() { window.print(); }, 300);
+  }
+  async function buildPrintArea() {
+    var pa = document.getElementById('printArea');
+    var today = new Date();
+    var dateStr = today.getFullYear() + '?' + (today.getMonth() + 1) + '?' + today.getDate() + '?';
+    var h = '';
+
+    h += '<div class="pp"><div class="pc-title">アフター点検報告書</div><div class="pc-header"><div class="pc-photo">';
+    h += appData.exteriorPhoto && getPhotoUrl(appData.exteriorPhoto) ? '<img src="' + getPhotoUrl(appData.exteriorPhoto) + '">' : '<div class="no-ph">外観写真なし</div>';
+    h += '</div><div class="pc-info"><table>';
+    h += '<tr><th>支社名</th><td>' + esc(appData.branchName) + '</td><th>担当者</th><td>' + esc(appData.staffName) + '</td></tr>';
+    h += '<tr><th>点検種別</th><td>' + esc(appData.inspectionType) + '点検</td><th>点検日</th><td>' + dateStr + '</td></tr>';
+    h += '<tr><th>お客様名</th><td>' + esc(appData.customerName) + ' 様</td><th>顧客コード</th><td>' + esc(appData.customerCode || '') + '</td></tr>';
+    h += '<tr><th>住所</th><td colspan="3">' + esc(appData.address) + '</td></tr>';
+    h += '</table></div></div>';
+
+    if (appData.issues.length > 0) {
+      h += '<div style="margin-top:10px;"><div class="pi-title">指摘事項一覧（全' + appData.issues.length + '件）</div>';
+      h += '<table class="pi-table"><tr><th style="width:28px;text-align:center;">No.</th><th style="width:86px;">ステータス</th><th style="width:100px;">場所</th><th>コメント</th></tr>';
+      appData.issues.forEach(function(issue, i) {
+        var loc = (issue.location || '') + (issue.locationFree ? ' ' + issue.locationFree : '');
+        h += '<tr><td style="text-align:center;font-weight:700;color:#1a5276;">' + (i + 1) + '</td><td>' + esc(getIssueStatusLabel(issue.status)) + '</td><td>' + esc(loc) + '</td><td style="word-break:break-all;">' + esc(issue.comment) + '</td></tr>';
+      });
+      h += '</table></div>';
+    }
+    h += '</div>';
+
+    if (appData.issues.length > 0) {
+      for (var p = 0; p < Math.ceil(appData.issues.length / 3); p++) {
+        h += '<div class="pp"><div class="pd-title">指摘事項詳細</div>';
+        for (var s = 0; s < 3; s++) {
+          var idx = p * 3 + s;
+          if (idx < appData.issues.length) {
+            var iss = appData.issues[idx];
+            var loc2 = (iss.location || '') + (iss.locationFree ? ' ' + iss.locationFree : '');
+            var issueLabels = getIssuePhotoLabels(iss);
+            var farUrl = getPhotoUrl(iss.photoFar);
+            var closeUrl = getPhotoUrl(iss.photoClose);
+            h += '<div class="pd-item">';
+            h += '<div class="pd-photos">';
+            h += '<div><div class="photo-label" style="text-align:left;margin-bottom:4px;">' + issueLabels.primary + '</div>' + (farUrl ? '<img src="' + farUrl + '">' : '<div class="no-photo">写真なし</div>') + '</div>';
+            h += '<div><div class="photo-label" style="text-align:left;margin-bottom:4px;">' + issueLabels.secondary + '</div>' + (closeUrl ? '<img src="' + closeUrl + '">' : '<div class="no-photo">写真なし</div>') + '</div>';
+            h += '</div>';
+            h += '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:5px;font-size:12px;flex-wrap:wrap;">';
+            h += '<div style="font-weight:700;color:#1a5276;white-space:nowrap;">No.' + (idx + 1) + '</div>';
+            h += '<div style="min-width:110px;font-weight:700;color:#1a5276;white-space:nowrap;">ステータス: ' + esc(getIssueStatusLabel(iss.status)) + '</div>';
+            h += '<div class="pd-loc" style="flex:1;min-width:180px;">場所: ' + esc(loc2) + '</div>';
+            h += '</div>';
+            h += '<div class="pd-info">コメント: ' + esc(iss.comment) + '</div>';
+            h += '</div>';
+          }
+        }
+        h += '</div>';
+      }
+    }
+
+    function renderCheckPage(items, subtitle) {
+      var s = '<div class="pp"><div class="pk-title">点検項目 ' + subtitle + '</div>';
+      items.forEach(function(item) {
+        var farUrl = getPhotoUrl(item.photoFar);
+        var closeUrl = getPhotoUrl(item.photoClose);
+        s += '<div class="pk-item"><div class="pk-item-title">' + esc(item.name) + '</div><div class="pk-photos"><div>' + (farUrl ? '<img src="' + farUrl + '">' : '<div class="no-photo">写真なし</div>') + '</div><div>' + (closeUrl ? '<img src="' + closeUrl + '">' : '<div class="no-photo">写真なし</div>') + '</div></div><div class="pk-comment"><span class="clabel">コメント: </span>' + esc(item.comment || 'なし') + '</div></div>';
+      });
+      s += '</div>';
+      return s;
+    }
+
+    var ci = appData.checkItems;
+    h += renderCheckPage(ci.slice(0, 3), '1');
+    if (ci.length > 3) h += renderCheckPage(ci.slice(3), '2');
+
+    appData.blueprints.forEach(function(bp, i) {
+      var bpUrl = getPhotoUrl(bp.photo);
+      if (bpUrl) h += '<div class="pp-land"><div class="pb-bar">図面' + (i + 1) + '</div><div class="pb-img-full"><img src="' + bpUrl + '"></div></div>';
+    });
+
+    pa.innerHTML = h;
+    var allPages = pa.querySelectorAll('.pp,.pp-land');
+    allPages.forEach(function(page) { page.style.pageBreakAfter = 'always'; page.style.breakAfter = 'page'; });
+    if (allPages.length > 0) { var last = allPages[allPages.length - 1]; last.style.pageBreakAfter = 'avoid'; last.style.breakAfter = 'avoid'; }
+    var m = String(today.getMonth() + 1).padStart(2, '0');
+    var d = String(today.getDate()).padStart(2, '0');
+    document.title = m + d + '_' + appData.inspectionType + '_' + appData.customerName + '様_' + appData.staffName;
+  }
+  function esc(s) { if (!s) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+})();
+</script>
+</body>
+</html>
