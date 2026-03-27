@@ -279,6 +279,8 @@ body {
 .modal-box p { font-size: 14px; color: var(--text-light); margin-bottom: 20px; line-height: 1.6; }
 .modal-buttons { display: flex; gap: 10px; }
 .modal-buttons .btn { flex: 1; }
+.modal-buttons.stack { flex-direction: column; }
+.modal-buttons.stack .btn { width: 100%; flex: none; }
 .preview-overlay {
   display: none;
   position: fixed;
@@ -312,6 +314,7 @@ body {
 .camera-guide::before { content: ''; width: min(84vw, 520px); border: 2px solid rgba(255,255,255,0.95); border-radius: 18px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.38); }
 .camera-guide.guide-detail::before { aspect-ratio: 5 / 4; }
 .camera-guide.guide-exterior::before { aspect-ratio: 3 / 4; width: min(68vw, 360px); }
+.camera-guide.no-guide::before { display: none; }
 .camera-guide-label { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: white; padding: 6px 12px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
 .camera-actions { padding: 16px 16px 30px; display: flex; gap: 12px; align-items: stretch; background: rgba(0,0,0,0.92); }
 .camera-actions .btn { min-width: 120px; }
@@ -423,7 +426,7 @@ body {
     </div>
     <div class="form-group">
       <label>顧客コード</label>
-      <input type="text" id="customerCode" placeholder="????????">
+      <input type="text" id="customerCode" placeholder="&#x9867;&#x5BA2;&#x30B3;&#x30FC;&#x30C9;&#x3092;&#x5165;&#x529B;">
     </div>
     <div class="form-group">
       <label>お客様名</label>
@@ -473,6 +476,17 @@ body {
     </div>
   </div>
 </div>
+<div class="modal-overlay" id="photoSourceModal">
+  <div class="modal-box">
+    <h3>&#x5199;&#x771F;&#x306E;&#x5165;&#x529B;&#x65B9;&#x6CD5;</h3>
+    <p>&#x30AB;&#x30E1;&#x30E9;&#x3067;&#x64AE;&#x5F71;&#x3059;&#x308B;&#x304B;&#x3001;&#x4FDD;&#x5B58;&#x6E08;&#x307F;&#x306E;&#x5199;&#x771F;&#x304B;&#x3089;&#x9078;&#x629E;&#x3057;&#x3066;&#x304F;&#x3060;&#x3055;&#x3044;&#x3002;</p>
+    <div class="modal-buttons stack">
+      <button class="btn btn-success" id="btnPhotoSourceCamera" type="button">&#x30AB;&#x30E1;&#x30E9;&#x3067;&#x64AE;&#x5F71;</button>
+      <button class="btn btn-outline" id="btnPhotoSourceLibrary" type="button">&#x5199;&#x771F;&#x3092;&#x9078;&#x629E;</button>
+      <button class="btn btn-danger" id="btnPhotoSourceCancel" type="button">&#x30AD;&#x30E3;&#x30F3;&#x30BB;&#x30EB;</button>
+    </div>
+  </div>
+</div>
 <div class="preview-overlay" id="previewOverlay">
   <div class="preview-image-container"><img id="previewImage" src="" alt="プレビュー"></div>
   <div class="preview-controls">
@@ -510,7 +524,7 @@ body {
 (function() {
   'use strict';
   var LOCATIONS = ['玄関', '廊下', '洗面', '洋室', '和室', '北側バルコニー', '南側バルコニー', 'ホール(A)', 'ホール(B)', '浴室', 'LDK', 'キッチン', '物入', 'UB', 'トイレ(A)', 'トイレ(B)', '階段', '洋室(A)', '洋室(B)', '洋室(C)', '洋室(D)', '洋室(E)', '床下収納庫', 'バルコニー', '設備・リビング', '網戸', 'その他'];
-  var CHECK_ITEMS = ['点検項目1', '点検項目2', '点検項目3', '点検項目4', '点検項目5'];
+  var CHECK_ITEMS = ['\u63db\u6c17\u30d5\u30fc\u30c9', '\u7d66\u6e6f\u5668', '\u5929\u4e95\u88cf', '\u5e8a\u4e0b', '\u70b9\u691c', '\u70b9\u691c'];
   var ISSUE_STATUS_OPTIONS = [
     { value: 'todo', label: '\u8981\u5bfe\u5fdc' },
     { value: 'fixed', label: '\u662f\u6b63\u6e08' },
@@ -565,6 +579,9 @@ body {
       photo: bp ? (bp.photo || null) : null
     };
   }
+  function isLegacyCheckItemName(name) {
+    return /^\u70b9\u691c(?:\u9805\u76ee)?\d+$/.test(String(name || ''));
+  }
   function normalizeAppData(data) {
     var base = getDefaultData();
     var source = data && typeof data === 'object' ? data : {};
@@ -575,7 +592,7 @@ body {
     while (checkItems.length < CHECK_ITEMS.length) checkItems.push({ name: CHECK_ITEMS[checkItems.length], photoFar: null, photoClose: null, comment: '' });
     next.checkItems = checkItems.slice(0, CHECK_ITEMS.length).map(function(item, i) {
       return {
-        name: item && item.name ? item.name : CHECK_ITEMS[i],
+        name: item && item.name && !isLegacyCheckItemName(item.name) ? item.name : CHECK_ITEMS[i],
         photoFar: item ? (item.photoFar || item.photo || null) : null,
         photoClose: item ? (item.photoClose || null) : null,
         comment: item ? (item.comment || '') : ''
@@ -801,6 +818,9 @@ body {
       await saveData();
       document.getElementById('resetModal').classList.remove('active');
     });
+    addClick('btnPhotoSourceCamera', function() { startCameraCapture(); });
+    addClick('btnPhotoSourceLibrary', function() { startLibraryPick(); });
+    addClick('btnPhotoSourceCancel', function() { closePhotoSourceModal(true); });
     addClick('btnAddIssue', addIssue);
     addClick('btnAddBP', addBlueprint);
     addClick('btnPDF', generatePDF);
@@ -1152,30 +1172,52 @@ body {
     await saveData();
     await renderAll();
   }
-  var photoLock = false;  function takePhoto(type, idx) {
+  var photoLock = false;
+  function openPhotoSourceModal() {
+    var modal = document.getElementById('photoSourceModal');
+    if (modal) modal.classList.add('active');
+  }
+  function closePhotoSourceModal(clearTarget) {
+    var modal = document.getElementById('photoSourceModal');
+    if (modal) modal.classList.remove('active');
+    if (clearTarget) currentPhotoTarget = null;
+  }
+  function takePhoto(type, idx) {
     if (photoLock) return;
     photoLock = true;
     setTimeout(function() { photoLock = false; }, 1000);
     currentPhotoTarget = { type: type, index: idx };
-    if (type === 'blueprint') {
-      openFilePickerForPhoto();
+    openPhotoSourceModal();
+  }
+  function startCameraCapture() {
+    if (!currentPhotoTarget) return;
+    closePhotoSourceModal(false);
+    if (currentPhotoTarget.type === 'blueprint') {
+      openFilePickerForPhoto(true);
       return;
     }
-    openPhotoCamera(type);
+    openPhotoCamera(currentPhotoTarget.type);
   }
-  function openFilePickerForPhoto() {
+  function startLibraryPick() {
+    if (!currentPhotoTarget) return;
+    closePhotoSourceModal(false);
+    openFilePickerForPhoto(false);
+  }
+  function openFilePickerForPhoto(preferCamera) {
     var old = document.getElementById('photoFileInput');
     if (old) old.parentNode.removeChild(old);
     var inp = document.createElement('input');
     inp.type = 'file';
     inp.accept = 'image/*';
-    inp.capture = 'environment';
+    if (preferCamera) inp.setAttribute('capture', 'environment');
     inp.id = 'photoFileInput';
     inp.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;z-index:-1;';
     inp.onchange = function(e) {
       var file = e.target.files && e.target.files[0];
-      if (!file) return;
-      resizeNoCrop(file).catch(handleAsyncError);
+      if (!file || !currentPhotoTarget) return;
+      var isFreeSize = currentPhotoTarget.type === 'exterior' || currentPhotoTarget.type === 'blueprint';
+      if (isFreeSize) resizeNoCrop(file).catch(handleAsyncError);
+      else cropAndPreview(file).catch(handleAsyncError);
     };
     document.body.appendChild(inp);
     setTimeout(function() { inp.click(); }, 200);
@@ -1225,11 +1267,12 @@ body {
     var sub = document.getElementById('photoCameraSub');
     var label = document.getElementById('photoCameraGuideLabel');
     photoCaptureMode = type === 'exterior' ? 'exterior' : 'detail';
-    guide.className = 'camera-guide ' + (photoCaptureMode === 'exterior' ? 'guide-exterior' : 'guide-detail');
+    guide.className = 'camera-guide ' + (photoCaptureMode === 'exterior' ? 'no-guide' : 'guide-detail');
+    label.style.display = type === 'exterior' ? 'none' : 'block';
     if (type === 'exterior') {
       title.textContent = '\u5916\u89b3\u5199\u771f\u3092\u64ae\u5f71';
-      sub.textContent = '\u5efa\u7269\u5168\u4f53\u304c\u30ac\u30a4\u30c9\u5185\u306b\u53ce\u307e\u308b\u3088\u3046\u306b\u3057\u3066\u304f\u3060\u3055\u3044\u3002';
-      label.textContent = '\u5efa\u7269\u5168\u4f53\u304c\u67a0\u306b\u5165\u308b\u3088\u3046\u306b\u8abf\u6574\u3057\u3066\u304f\u3060\u3055\u3044';
+      sub.textContent = '\u5efa\u7269\u5168\u4f53\u304c\u5165\u308b\u3088\u3046\u306b\u3001\u5c11\u3057\u5f15\u3044\u3066\u64ae\u5f71\u3057\u3066\u304f\u3060\u3055\u3044\u3002';
+      label.textContent = '';
     } else if (type === 'issue_far' || type === 'issue_close') {
       title.textContent = '\u6307\u6458\u4e8b\u9805\u306e\u5199\u771f\u3092\u64ae\u5f71';
       sub.textContent = '\u6307\u6458\u7b87\u6240\u304c\u30ac\u30a4\u30c9\u5185\u306b\u5165\u308b\u3088\u3046\u306b\u8abf\u6574\u3057\u3066\u64ae\u5f71\u3057\u3066\u304f\u3060\u3055\u3044\u3002';
